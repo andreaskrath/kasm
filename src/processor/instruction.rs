@@ -195,4 +195,33 @@ mod decode_push {
 }
 
 #[cfg(test)]
-mod decode_pop {}
+mod decode_pop {
+    use crate::processor::{error::InstructionError, register::Register};
+
+    use super::Instruction;
+
+    #[test]
+    fn valid_pop_instruction() {
+        let instruction = "pop ra";
+        let expected = Ok(Instruction::Pop(Register::A));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn incomplete_instruction_error() {
+        let instruction = "pop";
+        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_register_error() {
+        let instruction = "pop re";
+        let expected = Err(InstructionError::InvalidRegister("re"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+}
+
