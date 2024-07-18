@@ -34,6 +34,7 @@ impl Instruction {
     const SET: &'static str = "set";
     const PUSH: &'static str = "psh";
     const POP: &'static str = "pop";
+    const ADD: &'static str = "add";
     pub fn decode(s: &str) -> Result<Instruction, InstructionError> {
         use InstructionError as IE;
 
@@ -71,6 +72,16 @@ impl Instruction {
                 let reg = Register::parse(s_reg)?;
 
                 Ok(Instruction::Pop(reg))
+            }
+            Instruction::ADD => {
+                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
+                    return Err(IE::IncompleteInstruction(s));
+                };
+
+                let reg = Register::parse(s_reg)?;
+                let operand = Operand::parse(s_operand)?;
+
+                Ok(Instruction::Add(reg, operand))
             }
             unknown => Err(IE::UnknownInstruction(unknown)),
         }
@@ -225,3 +236,68 @@ mod decode_pop {
     }
 }
 
+#[cfg(test)]
+mod decode_add {
+    use crate::processor::{error::InstructionError, operand::Operand, register::Register};
+
+    use super::Instruction;
+
+    #[test]
+    fn valid_add_instruction_double_register() {
+        let instruction = "add ra rb";
+        let expected = Ok(Instruction::Add(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_add_instruction_register_constant() {
+        let instruction = "add ra 200";
+        let expected = Ok(Instruction::Add(Register::A, Operand::Constant(200)));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn incomplete_instruction_error_one_missing_param() {
+        let instruction = "add ra";
+        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn incomplete_instruction_error_two_missing_param() {
+        let instruction = "add";
+        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_register_error() {
+        let instruction = "add re 200";
+        let expected = Err(InstructionError::InvalidRegister("re"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_register() {
+        let instruction = "add ra re";
+        let expected = Err(InstructionError::InvalidOperand("re"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_constant() {
+        let instruction = "add ra 200u32";
+        let expected = Err(InstructionError::InvalidOperand("200u32"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+}
