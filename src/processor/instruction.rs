@@ -1,4 +1,4 @@
-use super::{constant::Word, error::InstructionError, operand::Operand, register::Register};
+use super::{error::InstructionError, operand::Operand, register::Register};
 
 /// The instruction set of the virtual processor.
 #[derive(Debug, PartialEq)]
