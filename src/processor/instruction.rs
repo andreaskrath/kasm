@@ -14,19 +14,19 @@ pub enum Instruction {
     /// Performs addition on two specified registers.
     ///
     /// The first specified register is also the destination.
-    Add,
+    Add(Register, Operand),
     /// Performs subtraction on two specified registers.
     ///
     /// The first specified register is also the destination.
-    Sub,
+    Sub(Register, Operand),
     /// Performs addition on two specified registers.
     ///
     /// The first multiplication register is also the destination.
-    Mul,
+    Mul(Register, Operand),
     /// Performs division on two specified registers.
     ///
     /// The first specified register is also the destination.
-    Div,
+    Div(Register, Operand),
 }
 
 impl Instruction {

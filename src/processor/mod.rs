@@ -124,10 +124,10 @@ impl<'a> Processor {
             Set(reg, operand) => self.set_register(reg, operand),
             Push(operand) => self.push(operand)?,
             Pop(reg) => self.pop(reg)?,
-            Add => todo!(),
-            Sub => todo!(),
-            Mul => todo!(),
-            Div => todo!(),
+            Add(reg, operand) => todo!(),
+            Sub(reg, operand) => todo!(),
+            Mul(reg, operand) => todo!(),
+            Div(reg, operand) => todo!(),
         }        
 
         Ok(())
