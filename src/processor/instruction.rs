@@ -157,7 +157,7 @@ mod decode_set {
 
 #[cfg(test)]
 mod decode_push {
-    use crate::processor::operand::Operand;
+    use crate::processor::{error::InstructionError, operand::Operand};
 
     use super::Instruction;
 
