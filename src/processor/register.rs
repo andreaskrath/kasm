@@ -37,3 +37,50 @@ impl IndexMut<Register> for [Word; REGISTER_AMOUNT] {
         &mut self[index as usize]
     }
 }
+
+#[cfg(test)]
+mod parse {
+    use crate::processor::error::DecodeError;
+
+    use super::Register;
+
+    #[test]
+    fn invalid_register_error() {
+        let s_reg = "hello";
+        let expected = Err(DecodeError::InvalidRegister(s_reg));
+        let actual = Register::parse(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_a_parse() {
+        let s_reg = "ra";
+        let expected = Ok(Register::A);
+        let actual = Register::parse(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_b_parse() {
+        let s_reg = "rb";
+        let expected = Ok(Register::B);
+        let actual = Register::parse(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_c_parse() {
+        let s_reg = "rc";
+        let expected = Ok(Register::C);
+        let actual = Register::parse(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_d_parse() {
+        let s_reg = "rd";
+        let expected = Ok(Register::D);
+        let actual = Register::parse(s_reg);
+        assert_eq!(actual, expected);
+    }
+}
