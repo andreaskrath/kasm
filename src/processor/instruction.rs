@@ -72,7 +72,7 @@ impl Instruction {
 
                 Ok(Instruction::Pop(reg))
             }
-            unknown => Err(InstructionError::UnknownInstruction(unknown)),
+            unknown => Err(IE::UnknownInstruction(unknown)),
         }
     }
 }
