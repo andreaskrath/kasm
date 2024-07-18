@@ -30,6 +30,10 @@ pub enum Instruction {
 }
 
 impl Instruction {
+    const STOP: &'static str = "stp";
+    const SET: &'static str = "set";
+    const PUSH: &'static str = "psh";
+    const POP: &'static str = "pop";
     pub fn decode(s: &str) -> Result<Instruction, InstructionError> {
         use InstructionError as IE;
 
@@ -39,8 +43,8 @@ impl Instruction {
         };
 
         match instruction.trim() {
-            "stp" => Ok(Instruction::Stop),
-            "set" => {
+            Instruction::STOP => Ok(Instruction::Stop),
+            Instruction::SET => {
                 let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
                     return Err(IE::IncompleteInstruction(s));
                 };
@@ -50,7 +54,7 @@ impl Instruction {
 
                 Ok(Instruction::Set(reg, operand))
             }
-            "psh" => {
+            Instruction::PUSH => {
                 let Some(s_operand) = s_iter.next() else {
                     return Err(IE::IncompleteInstruction(s));
                 };
@@ -59,7 +63,7 @@ impl Instruction {
 
                 Ok(Instruction::Push(operand))
             }
-            "pop" => {
+            Instruction::POP => {
                 let Some(s_reg) = s_iter.next() else {
                     return Err(IE::IncompleteInstruction(s));
                 };
