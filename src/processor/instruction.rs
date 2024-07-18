@@ -37,6 +37,8 @@ impl Instruction {
     const ADD: &'static str = "add";
     const SUB: &'static str = "sub";
     const MUL: &'static str = "mul";
+    const DIV: &'static str = "div";
+
     pub fn decode(s: &str) -> Result<Instruction, InstructionError> {
         use InstructionError as IE;
 
@@ -104,6 +106,16 @@ impl Instruction {
                 let operand = Operand::parse(s_operand)?;
 
                 Ok(Instruction::Mul(reg, operand))
+            }
+            Instruction::DIV => {
+                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
+                    return Err(IE::IncompleteInstruction(s));
+                };
+
+                let reg = Register::parse(s_reg)?;
+                let operand = Operand::parse(s_operand)?;
+
+                Ok(Instruction::Div(reg, operand))
             }
             unknown => Err(IE::UnknownInstruction(unknown)),
         }
@@ -456,3 +468,68 @@ mod decode_mul {
     }
 }
 
+#[cfg(test)]
+mod decode_div {
+    use crate::processor::{error::InstructionError, operand::Operand, register::Register};
+
+    use super::Instruction;
+
+    #[test]
+    fn valid_div_instruction_double_register() {
+        let instruction = "div ra rb";
+        let expected = Ok(Instruction::Div(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_div_instruction_register_constant() {
+        let instruction = "div ra 200";
+        let expected = Ok(Instruction::Div(Register::A, Operand::Constant(200)));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn incomplete_instruction_error_one_missing_param() {
+        let instruction = "div ra";
+        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn incomplete_instruction_error_two_missing_param() {
+        let instruction = "div";
+        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_register_error() {
+        let instruction = "div re 200";
+        let expected = Err(InstructionError::InvalidRegister("re"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_register() {
+        let instruction = "div ra re";
+        let expected = Err(InstructionError::InvalidOperand("re"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_constant() {
+        let instruction = "div ra 200u32";
+        let expected = Err(InstructionError::InvalidOperand("200u32"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+}
