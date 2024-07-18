@@ -115,8 +115,16 @@ mod decode_set {
     }
 
     #[test]
-    fn incomplete_instruction_error() {
+    fn incomplete_instruction_error_one_missing_param() {
         let instruction = "set ra";
+        let expected = Err(IE::IncompleteInstruction(instruction));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn incomplete_instruction_error_two_missing_param() {
+        let instruction = "set";
         let expected = Err(IE::IncompleteInstruction(instruction));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
@@ -131,9 +139,17 @@ mod decode_set {
     }
 
     #[test]
-    fn invalid_value_error() {
-        let instruction = "set ra hello";
-        let expected = Err(IE::InvalidOperand("hello"));
+    fn invalid_operand_error_bad_register() {
+        let instruction = "set ra re";
+        let expected = Err(IE::InvalidOperand("re"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_constant() {
+        let instruction = "set ra 18u32";
+        let expected = Err(IE::InvalidOperand("18u32"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
