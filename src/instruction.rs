@@ -118,7 +118,7 @@ impl Instruction {
 
 #[cfg(test)]
 mod parse_helper {
-    use crate::processor::error::DecodeError;
+    use crate::error::DecodeError;
     use super::Instruction;
 
     #[test]
@@ -141,7 +141,7 @@ mod parse_helper {
 
 #[cfg(test)]
 mod decode {
-    use crate::processor::error::DecodeError;
+    use crate::error::DecodeError;
     use super::Instruction;
 
     #[test]
@@ -163,7 +163,7 @@ mod decode {
 
 #[cfg(test)]
 mod decode_set {
-    use crate::processor::{operand::Operand, register::Register};
+    use crate::{operand::Operand, register::Register};
     use super::Instruction;
 
     #[test]
@@ -185,7 +185,7 @@ mod decode_set {
 
 #[cfg(test)]
 mod decode_push {
-    use crate::processor::{error::DecodeError, operand::Operand};
+    use crate::{error::DecodeError, operand::Operand};
     use super::Instruction;
 
     #[test]
@@ -223,7 +223,7 @@ mod decode_push {
 
 #[cfg(test)]
 mod decode_pop {
-    use crate::processor::{error::DecodeError, register::Register};
+    use crate::{error::DecodeError, register::Register};
     use super::Instruction;
 
     #[test]
@@ -253,7 +253,7 @@ mod decode_pop {
 
 #[cfg(test)]
 mod decode_add {
-    use crate::processor::{operand::Operand, register::Register};
+    use crate::{operand::Operand, register::Register};
     use super::Instruction;
 
     #[test]
@@ -278,7 +278,7 @@ mod decode_add {
 
 #[cfg(test)]
 mod decode_sub {
-    use crate::processor::{operand::Operand, register::Register};
+    use crate::{operand::Operand, register::Register};
     use super::Instruction;
 
     #[test]
@@ -303,7 +303,7 @@ mod decode_sub {
 
 #[cfg(test)]
 mod decode_mul {
-    use crate::processor::{operand::Operand, register::Register};
+    use crate::{operand::Operand, register::Register};
     use super::Instruction;
 
     #[test]
@@ -328,7 +328,7 @@ mod decode_mul {
 
 #[cfg(test)]
 mod decode_div {
-    use crate::processor::{operand::Operand, register::Register};
+    use crate::{operand::Operand, register::Register};
     use super::Instruction;
 
     #[test]

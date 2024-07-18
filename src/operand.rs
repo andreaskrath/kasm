@@ -23,7 +23,8 @@ impl Operand {
 
 #[cfg(test)]
 mod parse {
-    use crate::processor::{error::DecodeError, register::Register};
+
+    use crate::{error::DecodeError, register::Register};
 
     use super::Operand;
 

@@ -1,3 +1,5 @@
+//! Defines the constants, type aliases and central types to the virtual processor.
+
 use super::register::Register;
 
 /// The word size of the virtual processor.
@@ -22,5 +24,4 @@ const MEGA_BYTE: usize = 1_048_576;
 ///
 /// The value is in bytes.
 pub const STACK_SIZE: usize = MEGA_BYTE * 4;
-
 

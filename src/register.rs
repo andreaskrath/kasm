@@ -40,7 +40,7 @@ impl IndexMut<Register> for [Word; REGISTER_AMOUNT] {
 
 #[cfg(test)]
 mod parse {
-    use crate::processor::error::DecodeError;
+    use crate::error::DecodeError;
 
     use super::Register;
 
