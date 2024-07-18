@@ -47,7 +47,7 @@ impl<'a> Processor {
 
             let instruction = match Instruction::decode(code) {
                 Ok(ins) => ins,
-                Err(err) => return Err(ProcessorError::Instruction(self.pc(), err)), 
+                Err(err) => return Err(ProcessorError::Decode(self.pc(), err)), 
             };
 
             if instruction == Instruction::Stop {

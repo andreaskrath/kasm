@@ -1,4 +1,6 @@
-use super::{error::InstructionError, operand::Operand, register::Register};
+use std::str::SplitWhitespace;
+
+use super::{error::DecodeError, operand::Operand, register::Register};
 
 /// The instruction set of the virtual processor.
 #[derive(Debug, PartialEq)]
@@ -39,29 +41,42 @@ impl Instruction {
     const MUL: &'static str = "mul";
     const DIV: &'static str = "div";
 
-    pub fn decode(s: &str) -> Result<Instruction, InstructionError> {
-        use InstructionError as IE;
+    /// A helper that parses a register and operand.
+    fn parse_register_and_operand(mut iter: SplitWhitespace) -> Result<(Register, Operand), DecodeError> {
+        let (Some(s_reg), Some(s_operand)) = (iter.next(), iter.next()) else {
+            return Err(DecodeError::IncompleteInstruction);
+        };
+
+        let reg = Register::parse(s_reg)?;
+        let operand = Operand::parse(s_operand)?;
+
+        Ok((reg, operand))
+    }
+
+    /// Decodes an instruction.
+    ///
+    /// # Errors
+    /// Returns and error when there is a problem with the decoding process.
+    ///
+    /// Look at [`crate::processor::error::DecodeError`] for more details.
+    pub fn decode(s: &str) -> Result<Instruction, DecodeError> {
+        use DecodeError as DE;
 
         let mut s_iter = s.split_whitespace();
         let Some(instruction) = s_iter.next() else {
-            return Err(IE::EmptyLine);
+            return Err(DE::EmptyLine);
         };
 
         match instruction.trim() {
             Instruction::STOP => Ok(Instruction::Stop),
             Instruction::SET => {
-                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
-                    return Err(IE::IncompleteInstruction(s));
-                };
-
-                let reg = Register::parse(s_reg)?;
-                let operand = Operand::parse(s_operand)?;
+                let (reg, operand) = Instruction::parse_register_and_operand(s_iter)?;
 
                 Ok(Instruction::Set(reg, operand))
             }
             Instruction::PUSH => {
                 let Some(s_operand) = s_iter.next() else {
-                    return Err(IE::IncompleteInstruction(s));
+                    return Err(DE::IncompleteInstruction);
                 };
 
                 let operand = Operand::parse(s_operand)?;
@@ -70,7 +85,7 @@ impl Instruction {
             }
             Instruction::POP => {
                 let Some(s_reg) = s_iter.next() else {
-                    return Err(IE::IncompleteInstruction(s));
+                    return Err(DE::IncompleteInstruction);
                 };
 
                 let reg = Register::parse(s_reg)?;
@@ -78,59 +93,64 @@ impl Instruction {
                 Ok(Instruction::Pop(reg))
             }
             Instruction::ADD => {
-                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
-                    return Err(IE::IncompleteInstruction(s));
-                };
-
-                let reg = Register::parse(s_reg)?;
-                let operand = Operand::parse(s_operand)?;
+                let (reg, operand) = Instruction::parse_register_and_operand(s_iter)?;
 
                 Ok(Instruction::Add(reg, operand))
             }
             Instruction::SUB => {
-                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
-                    return Err(IE::IncompleteInstruction(s));
-                };
-
-                let reg = Register::parse(s_reg)?;
-                let operand = Operand::parse(s_operand)?;
+                let (reg, operand) = Instruction::parse_register_and_operand(s_iter)?;
 
                 Ok(Instruction::Sub(reg, operand))
             }
             Instruction::MUL => {
-                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
-                    return Err(IE::IncompleteInstruction(s));
-                };
-
-                let reg = Register::parse(s_reg)?;
-                let operand = Operand::parse(s_operand)?;
+                let (reg, operand) = Instruction::parse_register_and_operand(s_iter)?;
 
                 Ok(Instruction::Mul(reg, operand))
             }
             Instruction::DIV => {
-                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
-                    return Err(IE::IncompleteInstruction(s));
-                };
-
-                let reg = Register::parse(s_reg)?;
-                let operand = Operand::parse(s_operand)?;
+                let (reg, operand) = Instruction::parse_register_and_operand(s_iter)?;
 
                 Ok(Instruction::Div(reg, operand))
             }
-            unknown => Err(IE::UnknownInstruction(unknown)),
+            unknown => Err(DE::UnknownInstruction(unknown)),
         }
     }
 }
 
 #[cfg(test)]
-mod decode {
+mod parse_helper {
+    use crate::processor::error::DecodeError;
+
     use super::Instruction;
-    use crate::processor::instruction::InstructionError as IE;
+
+    #[test]
+    fn incomplete_instruction_error_missing_one_param() {
+        let instruction = "set ra";
+        let expected = Err(DecodeError::IncompleteInstruction);
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+
+    }
+
+    #[test]
+    fn incomplete_instruction_error_missing_two_param() {
+        let instruction = "set";
+        let expected = Err(DecodeError::IncompleteInstruction);
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+}
+
+#[cfg(test)]
+mod decode {
+    use crate::processor::error::DecodeError;
+
+    use super::Instruction;
 
     #[test]
     fn empty_line_error() {
         let instruction = "";
-        let expected = Err(IE::EmptyLine);
+        let expected = Err(DecodeError::EmptyLine);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -138,7 +158,7 @@ mod decode {
     #[test]
     fn unknown_instruction_error() {
         let instruction = "hello world!";
-        let expected = Err(IE::UnknownInstruction("hello"));
+        let expected = Err(DecodeError::UnknownInstruction("hello"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -147,8 +167,7 @@ mod decode {
 #[cfg(test)]
 mod decode_set {
     use crate::processor::{
-        error::InstructionError as IE, instruction::Instruction, operand::Operand,
-        register::Register,
+        error::DecodeError, instruction::Instruction, operand::Operand, register::Register
     };
 
     #[test]
@@ -162,7 +181,7 @@ mod decode_set {
     #[test]
     fn incomplete_instruction_error_one_missing_param() {
         let instruction = "set ra";
-        let expected = Err(IE::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -170,7 +189,7 @@ mod decode_set {
     #[test]
     fn incomplete_instruction_error_two_missing_param() {
         let instruction = "set";
-        let expected = Err(IE::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -178,7 +197,7 @@ mod decode_set {
     #[test]
     fn invalid_register_error() {
         let instruction = "set re 200";
-        let expected = Err(IE::InvalidRegister("re"));
+        let expected = Err(DecodeError::InvalidRegister("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -186,7 +205,7 @@ mod decode_set {
     #[test]
     fn invalid_operand_error_bad_register() {
         let instruction = "set ra re";
-        let expected = Err(IE::InvalidOperand("re"));
+        let expected = Err(DecodeError::InvalidOperand("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -194,7 +213,7 @@ mod decode_set {
     #[test]
     fn invalid_operand_error_bad_constant() {
         let instruction = "set ra 18u32";
-        let expected = Err(IE::InvalidOperand("18u32"));
+        let expected = Err(DecodeError::InvalidOperand("18u32"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -202,7 +221,7 @@ mod decode_set {
 
 #[cfg(test)]
 mod decode_push {
-    use crate::processor::{error::InstructionError, operand::Operand};
+    use crate::processor::{error::DecodeError, operand::Operand};
 
     use super::Instruction;
 
@@ -217,7 +236,7 @@ mod decode_push {
     #[test]
     fn incomplete_instruction_error() {
         let instruction = "psh";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -225,7 +244,7 @@ mod decode_push {
     #[test]
     fn invalid_operand_error_bad_register() {
         let instruction = "psh re";
-        let expected = Err(InstructionError::InvalidOperand("re"));
+        let expected = Err(DecodeError::InvalidOperand("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -233,7 +252,7 @@ mod decode_push {
     #[test]
     fn invalid_operand_error_bad_constant() {
         let instruction = "psh 18u32";
-        let expected = Err(InstructionError::InvalidOperand("18u32"));
+        let expected = Err(DecodeError::InvalidOperand("18u32"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -241,7 +260,7 @@ mod decode_push {
 
 #[cfg(test)]
 mod decode_pop {
-    use crate::processor::{error::InstructionError, register::Register};
+    use crate::processor::{error::DecodeError, register::Register};
 
     use super::Instruction;
 
@@ -256,7 +275,7 @@ mod decode_pop {
     #[test]
     fn incomplete_instruction_error() {
         let instruction = "pop";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -264,7 +283,7 @@ mod decode_pop {
     #[test]
     fn invalid_register_error() {
         let instruction = "pop re";
-        let expected = Err(InstructionError::InvalidRegister("re"));
+        let expected = Err(DecodeError::InvalidRegister("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -272,7 +291,7 @@ mod decode_pop {
 
 #[cfg(test)]
 mod decode_add {
-    use crate::processor::{error::InstructionError, operand::Operand, register::Register};
+    use crate::processor::{error::DecodeError, operand::Operand, register::Register};
 
     use super::Instruction;
 
@@ -298,7 +317,7 @@ mod decode_add {
     #[test]
     fn incomplete_instruction_error_one_missing_param() {
         let instruction = "add ra";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -306,7 +325,7 @@ mod decode_add {
     #[test]
     fn incomplete_instruction_error_two_missing_param() {
         let instruction = "add";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -314,7 +333,7 @@ mod decode_add {
     #[test]
     fn invalid_register_error() {
         let instruction = "add re 200";
-        let expected = Err(InstructionError::InvalidRegister("re"));
+        let expected = Err(DecodeError::InvalidRegister("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -322,7 +341,7 @@ mod decode_add {
     #[test]
     fn invalid_operand_error_bad_register() {
         let instruction = "add ra re";
-        let expected = Err(InstructionError::InvalidOperand("re"));
+        let expected = Err(DecodeError::InvalidOperand("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -330,7 +349,7 @@ mod decode_add {
     #[test]
     fn invalid_operand_error_bad_constant() {
         let instruction = "add ra 200u32";
-        let expected = Err(InstructionError::InvalidOperand("200u32"));
+        let expected = Err(DecodeError::InvalidOperand("200u32"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -338,7 +357,7 @@ mod decode_add {
 
 #[cfg(test)]
 mod decode_sub {
-    use crate::processor::{error::InstructionError, operand::Operand, register::Register};
+    use crate::processor::{error::DecodeError, operand::Operand, register::Register};
 
     use super::Instruction;
 
@@ -364,7 +383,7 @@ mod decode_sub {
     #[test]
     fn incomplete_instruction_error_one_missing_param() {
         let instruction = "sub ra";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -372,7 +391,7 @@ mod decode_sub {
     #[test]
     fn incomplete_instruction_error_two_missing_param() {
         let instruction = "sub";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -380,7 +399,7 @@ mod decode_sub {
     #[test]
     fn invalid_register_error() {
         let instruction = "sub re 200";
-        let expected = Err(InstructionError::InvalidRegister("re"));
+        let expected = Err(DecodeError::InvalidRegister("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -388,7 +407,7 @@ mod decode_sub {
     #[test]
     fn invalid_operand_error_bad_register() {
         let instruction = "sub ra re";
-        let expected = Err(InstructionError::InvalidOperand("re"));
+        let expected = Err(DecodeError::InvalidOperand("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -396,7 +415,7 @@ mod decode_sub {
     #[test]
     fn invalid_operand_error_bad_constant() {
         let instruction = "sub ra 200u32";
-        let expected = Err(InstructionError::InvalidOperand("200u32"));
+        let expected = Err(DecodeError::InvalidOperand("200u32"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -404,7 +423,7 @@ mod decode_sub {
 
 #[cfg(test)]
 mod decode_mul {
-    use crate::processor::{error::InstructionError, operand::Operand, register::Register};
+    use crate::processor::{error::DecodeError, operand::Operand, register::Register};
 
     use super::Instruction;
 
@@ -430,7 +449,7 @@ mod decode_mul {
     #[test]
     fn incomplete_instruction_error_one_missing_param() {
         let instruction = "mul ra";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -438,7 +457,7 @@ mod decode_mul {
     #[test]
     fn incomplete_instruction_error_two_missing_param() {
         let instruction = "mul";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -446,7 +465,7 @@ mod decode_mul {
     #[test]
     fn invalid_register_error() {
         let instruction = "mul re 200";
-        let expected = Err(InstructionError::InvalidRegister("re"));
+        let expected = Err(DecodeError::InvalidRegister("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -454,7 +473,7 @@ mod decode_mul {
     #[test]
     fn invalid_operand_error_bad_register() {
         let instruction = "mul ra re";
-        let expected = Err(InstructionError::InvalidOperand("re"));
+        let expected = Err(DecodeError::InvalidOperand("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -462,7 +481,7 @@ mod decode_mul {
     #[test]
     fn invalid_operand_error_bad_constant() {
         let instruction = "mul ra 200u32";
-        let expected = Err(InstructionError::InvalidOperand("200u32"));
+        let expected = Err(DecodeError::InvalidOperand("200u32"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -470,7 +489,7 @@ mod decode_mul {
 
 #[cfg(test)]
 mod decode_div {
-    use crate::processor::{error::InstructionError, operand::Operand, register::Register};
+    use crate::processor::{error::DecodeError, operand::Operand, register::Register};
 
     use super::Instruction;
 
@@ -496,7 +515,7 @@ mod decode_div {
     #[test]
     fn incomplete_instruction_error_one_missing_param() {
         let instruction = "div ra";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -504,7 +523,7 @@ mod decode_div {
     #[test]
     fn incomplete_instruction_error_two_missing_param() {
         let instruction = "div";
-        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let expected = Err(DecodeError::IncompleteInstruction);
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -512,7 +531,7 @@ mod decode_div {
     #[test]
     fn invalid_register_error() {
         let instruction = "div re 200";
-        let expected = Err(InstructionError::InvalidRegister("re"));
+        let expected = Err(DecodeError::InvalidRegister("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -520,7 +539,7 @@ mod decode_div {
     #[test]
     fn invalid_operand_error_bad_register() {
         let instruction = "div ra re";
-        let expected = Err(InstructionError::InvalidOperand("re"));
+        let expected = Err(DecodeError::InvalidOperand("re"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -528,7 +547,7 @@ mod decode_div {
     #[test]
     fn invalid_operand_error_bad_constant() {
         let instruction = "div ra 200u32";
-        let expected = Err(InstructionError::InvalidOperand("200u32"));
+        let expected = Err(DecodeError::InvalidOperand("200u32"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }

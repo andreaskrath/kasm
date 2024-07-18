@@ -1,6 +1,6 @@
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
-use super::{constant::{Word, REGISTER_AMOUNT}, error::InstructionError};
+use super::{constant::{Word, REGISTER_AMOUNT}, error::DecodeError};
 
 #[derive(Debug, PartialEq, VariantCount)]
 pub enum Register {
@@ -11,7 +11,7 @@ pub enum Register {
 }
 
 impl Register {
-    pub fn parse(s: &str) -> Result<Register, InstructionError> {
+    pub fn parse(s: &str) -> Result<Register, DecodeError> {
         use Register::*;
 
         match s {
@@ -19,7 +19,7 @@ impl Register {
             "rb" => Ok(B),
             "rc" => Ok(C),
             "rd" => Ok(D),
-            unknown => Err(InstructionError::InvalidRegister(unknown)),
+            unknown => Err(DecodeError::InvalidRegister(unknown)),
         }
     }
 }
