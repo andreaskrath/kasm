@@ -16,12 +16,12 @@ pub enum ProcessorError<'a> {
 pub enum InstructionError<'a> {
     #[error("invalid register '{0}'")]
     InvalidRegister(&'a str),
+    #[error("invalid operand '{0}', it must be a register or a constant value")]
+    InvalidOperand(&'a str),
     #[error("unknown instruction '{0}'")]
     UnknownInstruction(&'a str),
     #[error("incomplete instruction '{0}'")]
     IncompleteInstruction(&'a str),
-    #[error("invalid value '{0}'")]
-    InvalidValue(&'a str),
     #[error("empty line specified for execution")]
     EmptyLine,
 }

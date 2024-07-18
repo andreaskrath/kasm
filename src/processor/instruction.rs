@@ -1,18 +1,14 @@
-use super::{
-    constant::Word,
-    error::InstructionError,
-    register::Register,
-};
+use super::{constant::Word, error::InstructionError, operand::Operand, register::Register};
 
 /// The instruction set of the virtual processor.
 #[derive(Debug, PartialEq)]
 pub enum Instruction {
     /// Stops the execution of the program.
     Stop,
-    /// Assigns a value to a specified register.
-    Set(Register, Word),
-    /// Pushes a value onto the stack.
-    Push(Word),
+    /// Assigns an operand to a specified register.
+    Set(Register, Operand),
+    /// Pushes an operand onto the stack.
+    Push(Operand),
     /// Pops the top-most value on the stack into a specified register.
     Pop(Register),
     /// Performs addition on two specified registers.
@@ -45,29 +41,24 @@ impl Instruction {
         match instruction.trim() {
             "stp" => Ok(Instruction::Stop),
             "set" => {
-                let (Some(s_reg), Some(s_val)) = (s_iter.next(), s_iter.next()) else {
+                let (Some(s_reg), Some(s_operand)) = (s_iter.next(), s_iter.next()) else {
                     return Err(IE::IncompleteInstruction(s));
                 };
 
                 let reg = Register::parse(s_reg)?;
+                let operand = Operand::parse(s_operand)?;
 
-                let Ok(value) = s_val.parse() else {
-                    return Err(IE::InvalidValue(s_val));
-                };
-
-                Ok(Instruction::Set(reg, value))
+                Ok(Instruction::Set(reg, operand))
             }
             "psh" => {
-                let Some(s_val) = s_iter.next() else {
+                let Some(s_operand) = s_iter.next() else {
                     return Err(IE::IncompleteInstruction(s));
                 };
 
-                let Ok(value) = s_val.parse() else {
-                    return Err(IE::InvalidValue(s_val)); 
-                };
+                let operand = Operand::parse(s_operand)?;
 
-                Ok(Instruction::Push(value))
-            },
+                Ok(Instruction::Push(operand))
+            }
             "pop" => {
                 let Some(s_reg) = s_iter.next() else {
                     return Err(IE::IncompleteInstruction(s));
@@ -76,7 +67,7 @@ impl Instruction {
                 let reg = Register::parse(s_reg)?;
 
                 Ok(Instruction::Pop(reg))
-            },
+            }
             unknown => Err(InstructionError::UnknownInstruction(unknown)),
         }
     }
@@ -106,12 +97,15 @@ mod decode {
 
 #[cfg(test)]
 mod decode_set {
-    use crate::processor::{error::InstructionError as IE, instruction::Instruction, register::Register};
+    use crate::processor::{
+        error::InstructionError as IE, instruction::Instruction, operand::Operand,
+        register::Register,
+    };
 
     #[test]
     fn valid_set_instruction() {
         let instruction = "set ra 255";
-        let expected = Ok(Instruction::Set(Register::A, 255));
+        let expected = Ok(Instruction::Set(Register::A, Operand::Constant(255)));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
@@ -135,14 +129,32 @@ mod decode_set {
     #[test]
     fn invalid_value_error() {
         let instruction = "set ra hello";
-        let expected = Err(IE::InvalidValue("hello"));
+        let expected = Err(IE::InvalidOperand("hello"));
         let actual = Instruction::decode(instruction);
         assert_eq!(actual, expected);
     }
 }
 
 #[cfg(test)]
-mod decode_push {}
+mod decode_push {
+    use crate::processor::operand::Operand;
+
+    use super::Instruction;
+
+    #[test]
+    fn valid_push_instruction() {
+        let instruction = "psh 250";
+        let expected = Ok(Instruction::Push(Operand::Constant(250)));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn incomplete_instruction_error() {}
+
+    #[test]
+    fn invalid_value_error() {}
+}
 
 #[cfg(test)]
 mod decode_pop {}

@@ -1,12 +1,14 @@
 use constant::{Word, REGISTER_AMOUNT, STACK_SIZE, WORD_BYTE_SIZE};
 use error::{ExecuteError, ProcessorError};
 use instruction::Instruction;
+use operand::Operand;
 use register::Register;
 
-pub mod error;
+mod error;
 mod instruction;
 mod register;
 mod constant;
+mod operand;
 
 pub struct Processor {
     registers: [Word; REGISTER_AMOUNT],
@@ -68,15 +70,24 @@ impl<'a> Processor {
         self.stack_pointer as usize
     }
 
-    fn push(&mut self, value: Word) -> Result<(), ExecuteError> {
+    /// The value associated with an operand.
+    fn get_value(&self, operand: Operand) -> Word {
+        match operand {
+            Operand::Register(reg) => self.registers[reg],
+            Operand::Constant(val) => val,
+        }
+    }
+
+    fn push(&mut self, operand: Operand) -> Result<(), ExecuteError> {
         if self.sp() + WORD_BYTE_SIZE > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
         }
 
+        let value = self.get_value(operand);
+
         let bytes = value.to_le_bytes();
         for (index, byte) in bytes.into_iter().enumerate() {
-            self.stack[self.sp() + index] = byte; 
-
+            self.stack[self.sp() + index] = byte;
         }
 
         self.stack_pointer += WORD_BYTE_SIZE as u32;
@@ -99,7 +110,9 @@ impl<'a> Processor {
         Ok(())
     }
 
-    fn set_register(&mut self, reg: Register, value: Word) {
+    fn set_register(&mut self, reg: Register, operand: Operand) {
+        let value = self.get_value(operand);
+
         self.registers[reg] = value;
     }
 
@@ -108,8 +121,8 @@ impl<'a> Processor {
 
         match instruction {
             Stop => unreachable!("guarded in 'start' method of processor"),
-            Set(reg, value) => self.set_register(reg, value),
-            Push(value) => self.push(value)?, 
+            Set(reg, operand) => self.set_register(reg, operand),
+            Push(operand) => self.push(operand)?,
             Pop(reg) => self.pop(reg)?,
             Add => todo!(),
             Sub => todo!(),
