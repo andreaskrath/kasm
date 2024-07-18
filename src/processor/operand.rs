@@ -20,3 +20,44 @@ impl Operand {
         }
     }
 }
+
+#[cfg(test)]
+mod parse {
+    use crate::processor::{error::DecodeError, register::Register};
+
+    use super::Operand;
+
+    #[test]
+    fn valid_register_parse() {
+        let s_operand = "ra";
+        let expected = Ok(Operand::Register(Register::A));
+        let actual = Operand::parse(s_operand);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_constant_parse() {
+        let s_operand = "200";
+        let expected = Ok(Operand::Constant(200));
+        let actual = Operand::parse(s_operand);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_register() {
+        let s_operand = "re";
+        let expected = Err(DecodeError::InvalidOperand(s_operand));
+        let actual = Operand::parse(s_operand);
+        assert_eq!(actual, expected);
+
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_constant() {
+        let s_operand = "200u32";
+        let expected = Err(DecodeError::InvalidOperand(s_operand));
+        let actual = Operand::parse(s_operand);
+        assert_eq!(actual, expected);
+       
+    }
+}
