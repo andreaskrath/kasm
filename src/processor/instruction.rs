@@ -170,10 +170,28 @@ mod decode_push {
     }
 
     #[test]
-    fn incomplete_instruction_error() {}
+    fn incomplete_instruction_error() {
+        let instruction = "psh";
+        let expected = Err(InstructionError::IncompleteInstruction(instruction));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
 
     #[test]
-    fn invalid_value_error() {}
+    fn invalid_operand_error_bad_register() {
+        let instruction = "psh re";
+        let expected = Err(InstructionError::InvalidOperand("re"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error_bad_constant() {
+        let instruction = "psh 18u32";
+        let expected = Err(InstructionError::InvalidOperand("18u32"));
+        let actual = Instruction::decode(instruction);
+        assert_eq!(actual, expected);
+    }
 }
 
 #[cfg(test)]
