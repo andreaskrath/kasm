@@ -11,21 +11,21 @@ pub enum Instruction {
     Push(Operand),
     /// Pops the top-most value on the stack into a specified register.
     Pop(Register),
-    /// Performs addition on two specified registers.
+    /// Performs addition on two specified parameters.
     ///
-    /// The first specified register is also the destination.
+    /// The first specified parameter is also the destination.
     Add(Register, Operand),
-    /// Performs subtraction on two specified registers.
+    /// Performs subtraction on two specified parameters.
     ///
-    /// The first specified register is also the destination.
+    /// The first specified parameter is also the destination.
     Sub(Register, Operand),
-    /// Performs addition on two specified registers.
+    /// Performs addition on two specified parameters.
     ///
-    /// The first multiplication register is also the destination.
+    /// The first multiplication parameter is also the destination.
     Mul(Register, Operand),
-    /// Performs division on two specified registers.
+    /// Performs division on two specified parameters.
     ///
-    /// The first specified register is also the destination.
+    /// The first specified parameter is also the destination.
     Div(Register, Operand),
 }
 
