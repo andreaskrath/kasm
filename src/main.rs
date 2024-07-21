@@ -1,7 +1,5 @@
 use processor::Processor;
 
-mod processor;
-
 fn main() {
     let mut p = match Processor::new() {
         Ok(p) => p,
