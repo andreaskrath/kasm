@@ -1,5 +1,9 @@
 use std::str::SplitWhitespace;
+use jump::Jump;
+
 use super::{error::DecodeError, operand::Operand, register::Register};
+
+mod jump;
 
 /// The instruction set of the virtual processor.
 #[derive(Debug, PartialEq)]
@@ -28,6 +32,10 @@ pub enum Instruction {
     ///
     /// The first specified parameter is also the destination.
     Div(Register, Operand),
+    /// Performs a jump to another line in the source program.
+    ///
+    /// The jump target can either be a constant or the value found in a register.
+    Jump(Jump, Operand),
 }
 
 impl Instruction {
@@ -39,6 +47,7 @@ impl Instruction {
     const SUB: &'static str = "sub";
     const MUL: &'static str = "mul";
     const DIV: &'static str = "div";
+    const JUMP_PREFIX: char = 'j';
 
     /// A helper that parses a register and operand.
     fn parse_register_and_operand(mut iter: SplitWhitespace) -> Result<(Register, Operand), DecodeError> {
@@ -110,6 +119,16 @@ impl Instruction {
                 let (reg, operand) = Instruction::parse_register_and_operand(s_iter)?;
 
                 Ok(Instruction::Div(reg, operand))
+            }
+            s_jump if s_jump.starts_with(Instruction::JUMP_PREFIX) => {
+                let Some(s_operand) = s_iter.next() else {
+                    return Err(DE::IncompleteInstruction);
+                };
+
+                let jump = Jump::decode(s_jump)?;
+                let operand = Operand::parse(s_operand)?;
+
+                Ok(Instruction::Jump(jump, operand))
             }
             unknown => Err(DE::UnknownInstruction(unknown)),
         }
