@@ -80,6 +80,12 @@ impl<'a> Processor {
         }
     }
 
+    fn set_register(&mut self, reg: Register, operand: Operand) {
+        let value = self.get_value(operand);
+
+        self.registers[reg] = value;
+    }
+
     fn push(&mut self, operand: Operand) -> Result<(), ExecuteError> {
         if self.sp() + WORD_BYTE_SIZE > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
@@ -112,10 +118,13 @@ impl<'a> Processor {
         Ok(())
     }
 
-    fn set_register(&mut self, reg: Register, operand: Operand) {
-        let value = self.get_value(operand);
+    fn add(&mut self, reg: Register, operand: Operand) {
+        let a = self.registers[reg];
+        let b = self.get_value(operand);
 
-        self.registers[reg] = value;
+        let (result, overflow) = a.overflowing_add(b);
+        self.flags.set(result, overflow);
+        self.registers[reg] = result;
     }
 
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
@@ -126,10 +135,10 @@ impl<'a> Processor {
             Set(reg, operand) => self.set_register(reg, operand),
             Push(operand) => self.push(operand)?,
             Pop(reg) => self.pop(reg)?,
-            Add(reg, operand) => todo!(),
             Sub(reg, operand) => todo!(),
             Mul(reg, operand) => todo!(),
             Div(reg, operand) => todo!(),
+            Add(reg, operand) => self.add(reg, operand),
         }        
 
         Ok(())

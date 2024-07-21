@@ -2,7 +2,7 @@ use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
 use super::{constant::{Word, REGISTER_AMOUNT}, error::DecodeError};
 
-#[derive(Debug, PartialEq, VariantCount)]
+#[derive(Clone, Copy, Debug, PartialEq, VariantCount)]
 pub enum Register {
     A,
     B,
