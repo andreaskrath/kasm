@@ -144,6 +144,16 @@ impl<'a> Processor {
         self.flags.set(result, overflow);
         self.registers[reg] = result;
     }
+
+    fn div(&mut self, reg: Register, operand: Operand) {
+        let a = self.registers[reg];
+        let b = self.get_value(operand);
+
+        let (result, overflow) = a.overflowing_div(b);
+        self.flags.set(result, overflow);
+        self.registers[reg] = result;
+    }
+
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         use Instruction::*;
 
@@ -152,10 +162,10 @@ impl<'a> Processor {
             Set(reg, operand) => self.set_register(reg, operand),
             Push(operand) => self.push(operand)?,
             Pop(reg) => self.pop(reg)?,
-            Div(reg, operand) => todo!(),
             Add(reg, operand) => self.add(reg, operand),
             Sub(reg, operand) => self.sub(reg, operand),
             Mul(reg, operand) => self.mul(reg, operand),
+            Div(reg, operand) => self.div(reg, operand),
         }        
 
         Ok(())
