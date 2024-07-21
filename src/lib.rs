@@ -1,10 +1,12 @@
 use constant::{Word, REGISTER_AMOUNT, STACK_SIZE, WORD_BYTE_SIZE};
 use error::{ExecuteError, ProcessorError};
+use flags::Flags;
 use instruction::Instruction;
 use operand::Operand;
 use register::Register;
 
 mod error;
+mod flags;
 mod instruction;
 mod register;
 mod constant;
@@ -14,7 +16,7 @@ pub struct Processor {
     registers: [Word; REGISTER_AMOUNT],
     stack_pointer: Word,
     program_counter: Word,
-    flags: Word,
+    flags: Flags,
     stack: Box<[u8; STACK_SIZE]>, 
 
 }
@@ -28,8 +30,8 @@ impl<'a> Processor {
         let p = Self { 
                     registers: [0; REGISTER_AMOUNT],
                     stack_pointer: 0, 
-                    program_counter:0,
-                    flags:0, 
+                    program_counter: 0,
+                    flags: Flags::new(),
                     // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
                     // https://github.com/rust-lang/rust/issues/53827
                     stack,
