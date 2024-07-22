@@ -1,7 +1,7 @@
 use constant::{Word, REGISTER_AMOUNT, STACK_SIZE, WORD_BYTE_SIZE};
 use error::{ExecuteError, ProcessorError};
 use flags::Flags;
-use instruction::Instruction;
+use instruction::{Instruction, Jump};
 use operand::Operand;
 use register::Register;
 
@@ -154,6 +154,20 @@ impl<'a> Processor {
         self.registers[reg] = result;
     }
 
+    fn jump(&mut self, jump: Jump, operand: Operand) {
+        let destination = self.get_value(operand);
+
+        match jump {
+            Jump::Unconditional => self.program_counter = destination,
+            Jump::IfZero => if self.flags.zero { self.program_counter = destination },
+            Jump::NotZero => if !self.flags.zero { self.program_counter = destination },
+            Jump::IfSign => if self.flags.sign { self.program_counter = destination },
+            Jump::NotSign => if !self.flags.sign { self.program_counter = destination },
+            Jump::IfOverflow => if self.flags.overflow { self.program_counter = destination },
+            Jump::NotOverflow => if !self.flags.overflow { self.program_counter = destination },
+        }
+    }
+
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         use Instruction::*;
 
@@ -166,6 +180,7 @@ impl<'a> Processor {
             Sub(reg, operand) => self.sub(reg, operand),
             Mul(reg, operand) => self.mul(reg, operand),
             Div(reg, operand) => self.div(reg, operand),
+            Jump(jump, operand) => self.jump(jump, operand),
         }        
 
         Ok(())
