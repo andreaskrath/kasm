@@ -1,9 +1,8 @@
 use std::str::SplitWhitespace;
-use jump::Jump;
-
 use super::{error::DecodeError, operand::Operand, register::Register};
 
 mod jump;
+pub use jump::Jump;
 
 /// The instruction set of the virtual processor.
 #[derive(Debug, PartialEq)]
