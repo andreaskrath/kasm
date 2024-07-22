@@ -52,13 +52,13 @@ impl<'a> Processor {
                 Err(err) => return Err(ProcessorError::Decode(self.pc(), err)), 
             };
 
+            self.program_counter += 1;
+
             if instruction == Instruction::Stop {
                 return Ok(());
             } else if let Err(err) = self.execute_instruction(instruction) {
                 return Err(ProcessorError::Execute(self.pc(), err));
             }
-
-            self.program_counter += 1;
         }
     }
 
