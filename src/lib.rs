@@ -87,35 +87,42 @@ impl<'a> Processor {
     }
 
     fn push(&mut self, operand: Operand) -> Result<(), ExecuteError> {
+        let value = self.get_value(operand);
+        self.push_underlying(value)?;
+
+        Ok(())
+    }
+    
+    fn push_underlying(&mut self, value: Word) -> Result<(), ExecuteError> {
         if self.sp() + WORD_BYTE_SIZE > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
         }
-
-        let value = self.get_value(operand);
 
         let bytes = value.to_le_bytes();
         for (index, byte) in bytes.into_iter().enumerate() {
             self.stack[self.sp() + index] = byte;
         }
-
         self.stack_pointer += WORD_BYTE_SIZE as u32;
 
         Ok(())
     }
 
     fn pop(&mut self, reg: Register) -> Result<(), ExecuteError> {
+        self.registers[reg] = self.pop_underlying()?;
+
+        Ok(())
+    }
+
+    fn pop_underlying(&mut self) -> Result<Word, ExecuteError> {
         if self.sp().checked_sub(WORD_BYTE_SIZE).is_none() {
             return Err(ExecuteError::StackUnderflow);
         }
 
         let mut bytes: [u8; WORD_BYTE_SIZE] = [0; WORD_BYTE_SIZE];
         bytes.copy_from_slice(&self.stack[self.sp() - WORD_BYTE_SIZE..self.sp()]);
-
-        self.registers[reg] = Word::from_le_bytes(bytes);
-
         self.stack_pointer -= WORD_BYTE_SIZE as u32;
 
-        Ok(())
+        Ok(Word::from_le_bytes(bytes))
     }
 
     fn add(&mut self, reg: Register, operand: Operand) {
