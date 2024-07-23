@@ -1,5 +1,5 @@
-use std::str::SplitWhitespace;
 use super::{error::ParseError, operand::Operand, register::Register};
+use std::str::SplitWhitespace;
 
 mod jump;
 // Re-exporting Jump enum.
@@ -58,7 +58,9 @@ impl Instruction {
     const RETURN: &'static str = "ret";
 
     /// A helper that parses a register and operand.
-    fn parse_register_and_operand(mut iter: SplitWhitespace) -> Result<(Register, Operand), ParseError> {
+    fn parse_register_and_operand(
+        mut iter: SplitWhitespace,
+    ) -> Result<(Register, Operand), ParseError> {
         let (Some(s_reg), Some(s_operand)) = (iter.next(), iter.next()) else {
             return Err(ParseError::IncompleteInstruction);
         };
@@ -155,8 +157,8 @@ impl Instruction {
 
 #[cfg(test)]
 mod parse_helper {
-    use crate::error::ParseError;
     use super::Instruction;
+    use crate::error::ParseError;
 
     #[test]
     fn incomplete_instruction_error_missing_one_param() {
@@ -164,7 +166,6 @@ mod parse_helper {
         let expected = Err(ParseError::IncompleteInstruction);
         let actual = Instruction::parse(instruction);
         assert_eq!(actual, expected);
-
     }
 
     #[test]
@@ -178,8 +179,8 @@ mod parse_helper {
 
 #[cfg(test)]
 mod decode {
-    use crate::error::ParseError;
     use super::Instruction;
+    use crate::error::ParseError;
 
     #[test]
     fn empty_line_error() {
@@ -200,8 +201,8 @@ mod decode {
 
 #[cfg(test)]
 mod decode_set {
-    use crate::{operand::Operand, register::Register};
     use super::Instruction;
+    use crate::{operand::Operand, register::Register};
 
     #[test]
     fn valid_set_instruction_one_register_one_constant() {
@@ -214,7 +215,10 @@ mod decode_set {
     #[test]
     fn valid_set_instruction_double_register() {
         let instruction = "set ra rb";
-        let expected = Ok(Instruction::Set(Register::A, Operand::Register(Register::B)));
+        let expected = Ok(Instruction::Set(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
         let actual = Instruction::parse(instruction);
         assert_eq!(actual, expected);
     }
@@ -222,8 +226,8 @@ mod decode_set {
 
 #[cfg(test)]
 mod decode_push {
-    use crate::{error::ParseError, operand::Operand};
     use super::Instruction;
+    use crate::{error::ParseError, operand::Operand};
 
     #[test]
     fn valid_push_instruction() {
@@ -260,8 +264,8 @@ mod decode_push {
 
 #[cfg(test)]
 mod decode_pop {
-    use crate::{error::ParseError, register::Register};
     use super::Instruction;
+    use crate::{error::ParseError, register::Register};
 
     #[test]
     fn valid_pop_instruction() {
@@ -290,8 +294,8 @@ mod decode_pop {
 
 #[cfg(test)]
 mod decode_add {
-    use crate::{operand::Operand, register::Register};
     use super::Instruction;
+    use crate::{operand::Operand, register::Register};
 
     #[test]
     fn valid_add_instruction_double_register() {
@@ -315,8 +319,8 @@ mod decode_add {
 
 #[cfg(test)]
 mod decode_sub {
-    use crate::{operand::Operand, register::Register};
     use super::Instruction;
+    use crate::{operand::Operand, register::Register};
 
     #[test]
     fn valid_sub_instruction_double_register() {
@@ -340,8 +344,8 @@ mod decode_sub {
 
 #[cfg(test)]
 mod decode_mul {
-    use crate::{operand::Operand, register::Register};
     use super::Instruction;
+    use crate::{operand::Operand, register::Register};
 
     #[test]
     fn valid_mul_instruction_double_register() {
@@ -365,8 +369,8 @@ mod decode_mul {
 
 #[cfg(test)]
 mod decode_div {
-    use crate::{operand::Operand, register::Register};
     use super::Instruction;
+    use crate::{operand::Operand, register::Register};
 
     #[test]
     fn valid_div_instruction_double_register() {

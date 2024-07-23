@@ -16,7 +16,7 @@ impl Operand {
             (Ok(_), Ok(_)) => unreachable!("impossible to parse as both number and register"),
             (Ok(num), Err(_)) => Ok(Operand::Constant(num)),
             (Err(_), Ok(reg)) => Ok(Operand::Register(reg)),
-            (Err(_), Err(_)) => Err(ParseError::InvalidOperand(s))
+            (Err(_), Err(_)) => Err(ParseError::InvalidOperand(s)),
         }
     }
 }
@@ -24,8 +24,8 @@ impl Operand {
 #[cfg(test)]
 mod parse {
 
-    use crate::{error::ParseError, register::Register};
     use super::Operand;
+    use crate::{error::ParseError, register::Register};
 
     #[test]
     fn valid_register_parse() {
@@ -49,7 +49,6 @@ mod parse {
         let expected = Err(ParseError::InvalidOperand(s_operand));
         let actual = Operand::parse(s_operand);
         assert_eq!(actual, expected);
-
     }
 
     #[test]
@@ -58,6 +57,5 @@ mod parse {
         let expected = Err(ParseError::InvalidOperand(s_operand));
         let actual = Operand::parse(s_operand);
         assert_eq!(actual, expected);
-       
     }
 }

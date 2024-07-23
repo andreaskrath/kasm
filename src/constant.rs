@@ -19,9 +19,7 @@ pub const REGISTER_AMOUNT: usize = Register::VARIANT_COUNT;
 /// The amount of bytes in a mega byte.
 const MEGA_BYTE: usize = 1_048_576;
 
-
 /// The size of the stack in the virtual processor.
 ///
 /// The value is in bytes.
 pub const STACK_SIZE: usize = MEGA_BYTE * 4;
-

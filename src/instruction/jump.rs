@@ -35,4 +35,3 @@ impl Jump {
         Ok(jump)
     }
 }
-

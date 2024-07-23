@@ -1,6 +1,9 @@
+use super::{
+    constant::{Word, REGISTER_AMOUNT},
+    error::ParseError,
+};
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
-use super::{constant::{Word, REGISTER_AMOUNT}, error::ParseError};
 
 #[derive(Clone, Copy, Debug, PartialEq, VariantCount)]
 pub enum Register {
@@ -40,8 +43,8 @@ impl IndexMut<Register> for [Word; REGISTER_AMOUNT] {
 
 #[cfg(test)]
 mod parse {
-    use crate::error::ParseError;
     use super::Register;
+    use crate::error::ParseError;
 
     #[test]
     fn invalid_register_error() {

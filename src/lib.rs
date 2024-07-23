@@ -5,37 +5,36 @@ use instruction::{Instruction, Jump};
 use operand::Operand;
 use register::Register;
 
+mod constant;
 mod error;
 mod flags;
 mod instruction;
-mod register;
-mod constant;
 mod operand;
+mod register;
 
 pub struct Processor {
     registers: [Word; REGISTER_AMOUNT],
     stack_pointer: Word,
     program_counter: Word,
     flags: Flags,
-    stack: Box<[u8; STACK_SIZE]>, 
-
+    stack: Box<[u8; STACK_SIZE]>,
 }
 
 impl<'a> Processor {
-    pub fn new() -> Result<Self, ProcessorError<'a>>{
+    pub fn new() -> Result<Self, ProcessorError<'a>> {
         let Ok(stack) = vec![0; STACK_SIZE].into_boxed_slice().try_into() else {
             return Err(ProcessorError::FailedStackAllocation);
         };
 
-        let p = Self { 
-                    registers: [0; REGISTER_AMOUNT],
-                    stack_pointer: 0, 
-                    program_counter: 0,
-                    flags: Flags::new(),
-                    // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
-                    // https://github.com/rust-lang/rust/issues/53827
-                    stack,
-                };
+        let p = Self {
+            registers: [0; REGISTER_AMOUNT],
+            stack_pointer: 0,
+            program_counter: 0,
+            flags: Flags::new(),
+            // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
+            // https://github.com/rust-lang/rust/issues/53827
+            stack,
+        };
         Ok(p)
     }
 
@@ -49,7 +48,7 @@ impl<'a> Processor {
 
             let instruction = match Instruction::parse(code) {
                 Ok(ins) => ins,
-                Err(err) => return Err(ProcessorError::Parse(self.pc(), err)), 
+                Err(err) => return Err(ProcessorError::Parse(self.pc(), err)),
             };
 
             self.program_counter += 1;
@@ -92,7 +91,7 @@ impl<'a> Processor {
 
         Ok(())
     }
-    
+
     fn push_underlying(&mut self, value: Word) -> Result<(), ExecuteError> {
         if self.sp() + WORD_BYTE_SIZE > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
@@ -166,22 +165,46 @@ impl<'a> Processor {
 
         match jump {
             Jump::Unconditional => self.program_counter = destination,
-            Jump::IfZero => if self.flags.zero { self.program_counter = destination },
-            Jump::NotZero => if !self.flags.zero { self.program_counter = destination },
-            Jump::IfSign => if self.flags.sign { self.program_counter = destination },
-            Jump::NotSign => if !self.flags.sign { self.program_counter = destination },
-            Jump::IfOverflow => if self.flags.overflow { self.program_counter = destination },
-            Jump::NotOverflow => if !self.flags.overflow { self.program_counter = destination },
+            Jump::IfZero => {
+                if self.flags.zero {
+                    self.program_counter = destination
+                }
+            }
+            Jump::NotZero => {
+                if !self.flags.zero {
+                    self.program_counter = destination
+                }
+            }
+            Jump::IfSign => {
+                if self.flags.sign {
+                    self.program_counter = destination
+                }
+            }
+            Jump::NotSign => {
+                if !self.flags.sign {
+                    self.program_counter = destination
+                }
+            }
+            Jump::IfOverflow => {
+                if self.flags.overflow {
+                    self.program_counter = destination
+                }
+            }
+            Jump::NotOverflow => {
+                if !self.flags.overflow {
+                    self.program_counter = destination
+                }
+            }
         }
     }
 
-    fn call(&mut self, operand: Operand) -> Result<(), ExecuteError>{
+    fn call(&mut self, operand: Operand) -> Result<(), ExecuteError> {
         let ret = self.program_counter;
         self.push_underlying(ret)?;
 
         let destination = self.get_value(operand);
         self.program_counter = destination;
-        
+
         Ok(())
     }
 
@@ -206,7 +229,7 @@ impl<'a> Processor {
             Jump(jump, operand) => self.jump(jump, operand),
             Call(operand) => self.call(operand)?,
             Return => self.ret()?,
-        }        
+        }
 
         Ok(())
     }
