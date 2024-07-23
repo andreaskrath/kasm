@@ -175,6 +175,22 @@ impl<'a> Processor {
         }
     }
 
+    fn call(&mut self, operand: Operand) -> Result<(), ExecuteError>{
+        let ret = self.program_counter;
+        self.push_underlying(ret)?;
+
+        let destination = self.get_value(operand);
+        self.program_counter = destination;
+        
+        Ok(())
+    }
+
+    fn ret(&mut self) -> Result<(), ExecuteError> {
+        self.program_counter = self.pop_underlying()?;
+
+        Ok(())
+    }
+
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         use Instruction::*;
 
@@ -188,6 +204,8 @@ impl<'a> Processor {
             Mul(reg, operand) => self.mul(reg, operand),
             Div(reg, operand) => self.div(reg, operand),
             Jump(jump, operand) => self.jump(jump, operand),
+            Call(operand) => self.call(operand)?,
+            Return => self.ret()?,
         }        
 
         Ok(())

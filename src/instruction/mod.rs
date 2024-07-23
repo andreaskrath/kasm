@@ -36,6 +36,12 @@ pub enum Instruction {
     ///
     /// The jump target can either be a constant or the value found in a register.
     Jump(Jump, Operand),
+    /// Calls another line and pushes a return address onto the stack.
+    ///
+    /// The return address is the line below the call.
+    Call(Operand),
+    /// Pops the top value off the stack and jumps to there.
+    Return,
 }
 
 impl Instruction {
@@ -48,6 +54,8 @@ impl Instruction {
     const MUL: &'static str = "mul";
     const DIV: &'static str = "div";
     const JUMP_PREFIX: char = 'j';
+    const CALL: &'static str = "cll";
+    const RETURN: &'static str = "ret";
 
     /// A helper that parses a register and operand.
     fn parse_register_and_operand(mut iter: SplitWhitespace) -> Result<(Register, Operand), ParseError> {
@@ -130,6 +138,16 @@ impl Instruction {
 
                 Ok(Instruction::Jump(jump, operand))
             }
+            Instruction::CALL => {
+                let Some(s_operand) = s_iter.next() else {
+                    return Err(PE::IncompleteInstruction);
+                };
+
+                let operand = Operand::parse(s_operand)?;
+
+                Ok(Instruction::Call(operand))
+            }
+            Instruction::RETURN => Ok(Instruction::Return),
             unknown => Err(PE::UnknownInstruction(unknown)),
         }
     }
