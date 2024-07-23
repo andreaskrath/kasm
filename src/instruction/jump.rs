@@ -1,4 +1,4 @@
-use crate::error::DecodeError;
+use crate::error::ParseError;
 
 #[derive(Debug, PartialEq)]
 pub enum Jump {
@@ -20,7 +20,7 @@ impl Jump {
     const IF_OVERFLOW: &'static str = "jio";
     const NOT_OVERFLOW: &'static str = "jno";
 
-    pub fn decode(s_jump: &str) -> Result<Jump, DecodeError> {
+    pub fn parse(s_jump: &str) -> Result<Jump, ParseError> {
         let jump = match s_jump {
             Jump::UNCONDITIONAL => Jump::Unconditional,
             Jump::IF_ZERO => Jump::IfZero,
@@ -29,9 +29,10 @@ impl Jump {
             Jump::NOT_SIGN => Jump::NotSign,
             Jump::IF_OVERFLOW => Jump::IfOverflow,
             Jump::NOT_OVERFLOW => Jump::NotOverflow,
-            unknown => return Err(DecodeError::UnknownInstruction(unknown)),
+            unknown => return Err(ParseError::UnknownInstruction(unknown)),
         };
 
         Ok(jump)
     }
 }
+

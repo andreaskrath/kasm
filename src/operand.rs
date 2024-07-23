@@ -1,4 +1,4 @@
-use super::{constant::Word, error::DecodeError, register::Register};
+use super::{constant::Word, error::ParseError, register::Register};
 
 /// Represents a register or a constant value.
 ///
@@ -11,12 +11,12 @@ pub enum Operand {
 }
 
 impl Operand {
-    pub fn parse(s: &str) -> Result<Operand, DecodeError> {
+    pub fn parse(s: &str) -> Result<Operand, ParseError> {
         match (s.parse::<Word>(), Register::parse(s)) {
             (Ok(_), Ok(_)) => unreachable!("impossible to parse as both number and register"),
             (Ok(num), Err(_)) => Ok(Operand::Constant(num)),
             (Err(_), Ok(reg)) => Ok(Operand::Register(reg)),
-            (Err(_), Err(_)) => Err(DecodeError::InvalidOperand(s))
+            (Err(_), Err(_)) => Err(ParseError::InvalidOperand(s))
         }
     }
 }
@@ -24,8 +24,7 @@ impl Operand {
 #[cfg(test)]
 mod parse {
 
-    use crate::{error::DecodeError, register::Register};
-
+    use crate::{error::ParseError, register::Register};
     use super::Operand;
 
     #[test]
@@ -47,7 +46,7 @@ mod parse {
     #[test]
     fn invalid_operand_error_bad_register() {
         let s_operand = "re";
-        let expected = Err(DecodeError::InvalidOperand(s_operand));
+        let expected = Err(ParseError::InvalidOperand(s_operand));
         let actual = Operand::parse(s_operand);
         assert_eq!(actual, expected);
 
@@ -56,7 +55,7 @@ mod parse {
     #[test]
     fn invalid_operand_error_bad_constant() {
         let s_operand = "200u32";
-        let expected = Err(DecodeError::InvalidOperand(s_operand));
+        let expected = Err(ParseError::InvalidOperand(s_operand));
         let actual = Operand::parse(s_operand);
         assert_eq!(actual, expected);
        

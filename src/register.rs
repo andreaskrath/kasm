@@ -1,6 +1,6 @@
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
-use super::{constant::{Word, REGISTER_AMOUNT}, error::DecodeError};
+use super::{constant::{Word, REGISTER_AMOUNT}, error::ParseError};
 
 #[derive(Clone, Copy, Debug, PartialEq, VariantCount)]
 pub enum Register {
@@ -11,7 +11,7 @@ pub enum Register {
 }
 
 impl Register {
-    pub fn parse(s: &str) -> Result<Register, DecodeError> {
+    pub fn parse(s: &str) -> Result<Register, ParseError> {
         use Register::*;
 
         match s {
@@ -19,7 +19,7 @@ impl Register {
             "rb" => Ok(B),
             "rc" => Ok(C),
             "rd" => Ok(D),
-            unknown => Err(DecodeError::InvalidRegister(unknown)),
+            unknown => Err(ParseError::InvalidRegister(unknown)),
         }
     }
 }
@@ -40,14 +40,13 @@ impl IndexMut<Register> for [Word; REGISTER_AMOUNT] {
 
 #[cfg(test)]
 mod parse {
-    use crate::error::DecodeError;
-
+    use crate::error::ParseError;
     use super::Register;
 
     #[test]
     fn invalid_register_error() {
         let s_reg = "hello";
-        let expected = Err(DecodeError::InvalidRegister(s_reg));
+        let expected = Err(ParseError::InvalidRegister(s_reg));
         let actual = Register::parse(s_reg);
         assert_eq!(actual, expected);
     }

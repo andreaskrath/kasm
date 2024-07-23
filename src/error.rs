@@ -4,8 +4,8 @@ use thiserror::Error;
 pub enum ProcessorError<'a> {
     #[error("failed to allocated the stack")]
     FailedStackAllocation,
-    #[error("decode error on line {0}: {1}")]
-    Decode(usize, DecodeError<'a>),
+    #[error("failed to parse line {0}: {1}")]
+    Parse(usize, ParseError<'a>),
     #[error("execution error on line {0}: {1}")]
     Execute(usize, ExecuteError),
     #[error("tried to execute instruction on line {0} which is out outside the defined bounds of the program")]
@@ -13,7 +13,7 @@ pub enum ProcessorError<'a> {
 }
 
 #[derive(Debug, Error, PartialEq)]
-pub enum DecodeError<'a> {
+pub enum ParseError<'a> {
     #[error("invalid register '{0}'")]
     InvalidRegister(&'a str),
     #[error("invalid operand '{0}'")]

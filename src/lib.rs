@@ -47,9 +47,9 @@ impl<'a> Processor {
                 return Err(ProcessorError::OutOfBoundsProgramCounter(self.pc()));
             };
 
-            let instruction = match Instruction::decode(code) {
+            let instruction = match Instruction::parse(code) {
                 Ok(ins) => ins,
-                Err(err) => return Err(ProcessorError::Decode(self.pc(), err)), 
+                Err(err) => return Err(ProcessorError::Parse(self.pc(), err)), 
             };
 
             self.program_counter += 1;
