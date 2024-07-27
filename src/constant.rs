@@ -1,5 +1,7 @@
 //! Defines the constants, type aliases and central types to the virtual processor.
 
+use std::mem::size_of;
+
 use super::register::Register;
 
 /// The word size of the virtual processor.
@@ -8,7 +10,7 @@ use super::register::Register;
 pub type Word = u32;
 
 /// The amount of bytes in a [`crate::processor::constant::Word`].
-pub const WORD_BYTE_SIZE: usize = Word::BITS as usize / 8;
+pub const WORD_BYTE_SIZE: usize = size_of::<Word>();
 
 /// The amount of registers in the virtual processor.
 ///
