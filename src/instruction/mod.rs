@@ -42,6 +42,8 @@ pub enum Instruction {
     Call(Operand),
     /// Pops the top value off the stack and jumps to there.
     Return,
+    /// Performs a bitwise AND operation, discarding the result, but setting appropriate flags.
+    Test(Operand, Operand),
 }
 
 impl Instruction {
@@ -56,6 +58,7 @@ impl Instruction {
     const JUMP_PREFIX: char = 'j';
     const CALL: &'static str = "cll";
     const RETURN: &'static str = "ret";
+    const TEST: &'static str = "tst";
 
     /// A helper that parses a register and operand.
     fn parse_register_and_operand(
@@ -150,6 +153,16 @@ impl Instruction {
                 Ok(Instruction::Call(operand))
             }
             Instruction::RETURN => Ok(Instruction::Return),
+            Instruction::TEST => {
+                let (Some(s_operand_a), Some(s_operand_b)) = (s_iter.next(), s_iter.next()) else {
+                    return Err(PE::IncompleteInstruction);
+                };
+
+                let operand_a = Operand::parse(s_operand_a)?;
+                let operand_b = Operand::parse(s_operand_b)?;
+
+                Ok(Instruction::Test(operand_a, operand_b))
+            }
             unknown => Err(PE::UnknownInstruction(unknown)),
         }
     }

@@ -214,6 +214,14 @@ impl<'a> Processor {
         Ok(())
     }
 
+    fn test(&mut self, operand_a: Operand, operand_b: Operand) {
+        let value_a = self.get_value(operand_a);
+        let value_b = self.get_value(operand_b);
+
+        let result = value_a & value_b;
+        self.flags.set(result, false);
+    }
+
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         use Instruction::*;
 
@@ -229,6 +237,7 @@ impl<'a> Processor {
             Jump(jump, operand) => self.jump(jump, operand),
             Call(operand) => self.call(operand)?,
             Return => self.ret()?,
+            Test(operand_a, operand_b) => self.test(operand_a, operand_b),
         }
 
         Ok(())
