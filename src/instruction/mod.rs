@@ -44,6 +44,9 @@ pub enum Instruction {
     Return,
     /// Performs a bitwise AND operation, discarding the result, but setting appropriate flags.
     Test(Operand, Operand),
+    /// Compares two operands by subtracting the second operand from the first and seetings flags
+    /// with the result.
+    Compare(Operand, Operand),
 }
 
 impl Instruction {
@@ -59,6 +62,7 @@ impl Instruction {
     const CALL: &'static str = "cll";
     const RETURN: &'static str = "ret";
     const TEST: &'static str = "tst";
+    const COMPARE: &'static str = "cmp";
 
     /// A helper that parses a register and operand.
     fn parse_register_and_operand(
@@ -169,6 +173,11 @@ impl Instruction {
                 let (operand_a, operand_b) = Instruction::parse_two_operands(s_iter)?;
 
                 Ok(Instruction::Test(operand_a, operand_b))
+            }
+            Instruction::COMPARE => {
+                let (operand_a, operand_b) = Instruction::parse_two_operands(s_iter)?;
+
+                Ok(Instruction::Compare(operand_a, operand_b))
             }
             unknown => Err(PE::UnknownInstruction(unknown)),
         }

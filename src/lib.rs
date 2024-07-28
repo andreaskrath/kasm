@@ -222,6 +222,14 @@ impl<'a> Processor {
         self.flags.set(result, false);
     }
 
+    fn compare(&mut self, operand_a: Operand, operand_b: Operand) {
+        let value_a = self.get_value(operand_a);
+        let value_b = self.get_value(operand_b);
+
+        let (result, overflow) = value_a.overflowing_sub(value_b);
+        self.flags.set(result, overflow);
+    }
+
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         use Instruction::*;
 
@@ -238,6 +246,7 @@ impl<'a> Processor {
             Call(operand) => self.call(operand)?,
             Return => self.ret()?,
             Test(operand_a, operand_b) => self.test(operand_a, operand_b),
+            Compare(operand_a, operand_b) => self.compare(operand_a, operand_b),
         }
 
         Ok(())
