@@ -165,7 +165,7 @@ impl<'a> Processor {
 
         match jump {
             Jump::Unconditional => self.program_counter = destination,
-            Jump::IfZero => {
+            Jump::IfZero | Jump::EqualTo => {
                 if self.flags.zero {
                     self.program_counter = destination
                 }
@@ -185,13 +185,23 @@ impl<'a> Processor {
                     self.program_counter = destination
                 }
             }
-            Jump::IfOverflow => {
+            Jump::IfOverflow | Jump::LesserThan => {
                 if self.flags.overflow {
                     self.program_counter = destination
                 }
             }
-            Jump::NotOverflow => {
+            Jump::NotOverflow | Jump::GreaterThan => {
                 if !self.flags.overflow {
+                    self.program_counter = destination
+                }
+            }
+            Jump::LesserThanOrEqual => {
+                if self.flags.overflow || self.flags.zero {
+                    self.program_counter = destination
+                }
+            }
+            Jump::GreaterThanOrEqual => {
+                if !self.flags.overflow || self.flags.zero {
                     self.program_counter = destination
                 }
             }
