@@ -74,6 +74,18 @@ impl Instruction {
         Ok((reg, operand))
     }
 
+    /// A helper that parses two operands.
+    fn parse_two_operands(mut iter: SplitWhitespace) -> Result<(Operand, Operand), ParseError> {
+        let (Some(s_operand_a), Some(s_operand_b)) = (iter.next(), iter.next()) else {
+            return Err(ParseError::IncompleteInstruction);
+        };
+
+        let operand_a = Operand::parse(s_operand_a)?;
+        let operand_b = Operand::parse(s_operand_b)?;
+
+        Ok((operand_a, operand_b))
+    }
+
     /// Parses an instruction.
     ///
     /// # Errors
@@ -154,12 +166,7 @@ impl Instruction {
             }
             Instruction::RETURN => Ok(Instruction::Return),
             Instruction::TEST => {
-                let (Some(s_operand_a), Some(s_operand_b)) = (s_iter.next(), s_iter.next()) else {
-                    return Err(PE::IncompleteInstruction);
-                };
-
-                let operand_a = Operand::parse(s_operand_a)?;
-                let operand_b = Operand::parse(s_operand_b)?;
+                let (operand_a, operand_b) = Instruction::parse_two_operands(s_iter)?;
 
                 Ok(Instruction::Test(operand_a, operand_b))
             }
