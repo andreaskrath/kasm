@@ -14,14 +14,19 @@ pub enum Register {
 }
 
 impl Register {
+    const REG_A: &'static str = "ra";
+    const REG_B: &'static str = "rb";
+    const REG_C: &'static str = "rc";
+    const REG_D: &'static str = "rd";
+
     pub fn parse(s: &str) -> Result<Register, ParseError> {
         use Register::*;
 
         match s {
-            "ra" => Ok(A),
-            "rb" => Ok(B),
-            "rc" => Ok(C),
-            "rd" => Ok(D),
+            Register::REG_A => Ok(A),
+            Register::REG_B => Ok(B),
+            Register::REG_C => Ok(C),
+            Register::REG_D => Ok(D),
             unknown => Err(ParseError::InvalidRegister(unknown)),
         }
     }
