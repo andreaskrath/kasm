@@ -225,18 +225,18 @@ impl<'a> Processor {
     }
 
     fn test(&mut self, operand_a: Operand, operand_b: Operand) {
-        let value_a = self.get_value(operand_a);
-        let value_b = self.get_value(operand_b);
+        let a = self.get_value(operand_a);
+        let b = self.get_value(operand_b);
 
-        let result = value_a & value_b;
+        let result = a & b;
         self.flags.set(result, false);
     }
 
     fn compare(&mut self, operand_a: Operand, operand_b: Operand) {
-        let value_a = self.get_value(operand_a);
-        let value_b = self.get_value(operand_b);
+        let a = self.get_value(operand_a);
+        let b = self.get_value(operand_b);
 
-        let (result, overflow) = value_a.overflowing_sub(value_b);
+        let (result, overflow) = a.overflowing_sub(b);
         self.flags.set(result, overflow);
     }
 
