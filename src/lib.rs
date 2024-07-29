@@ -87,12 +87,12 @@ impl<'a> Processor {
 
     fn push(&mut self, operand: Operand) -> Result<(), ExecuteError> {
         let value = self.get_value(operand);
-        self.push_underlying(value)?;
+        self.push_word(value)?;
 
         Ok(())
     }
 
-    fn push_underlying(&mut self, value: Word) -> Result<(), ExecuteError> {
+    fn push_word(&mut self, value: Word) -> Result<(), ExecuteError> {
         if self.sp() + WORD_BYTE_SIZE > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
         }
@@ -107,12 +107,12 @@ impl<'a> Processor {
     }
 
     fn pop(&mut self, reg: Register) -> Result<(), ExecuteError> {
-        self.registers[reg] = self.pop_underlying()?;
+        self.registers[reg] = self.pop_word()?;
 
         Ok(())
     }
 
-    fn pop_underlying(&mut self) -> Result<Word, ExecuteError> {
+    fn pop_word(&mut self) -> Result<Word, ExecuteError> {
         if self.sp().checked_sub(WORD_BYTE_SIZE).is_none() {
             return Err(ExecuteError::StackUnderflow);
         }
@@ -210,7 +210,7 @@ impl<'a> Processor {
 
     fn call(&mut self, operand: Operand) -> Result<(), ExecuteError> {
         let ret = self.program_counter;
-        self.push_underlying(ret)?;
+        self.push_word(ret)?;
 
         let destination = self.get_value(operand);
         self.program_counter = destination;
@@ -219,7 +219,7 @@ impl<'a> Processor {
     }
 
     fn ret(&mut self) -> Result<(), ExecuteError> {
-        self.program_counter = self.pop_underlying()?;
+        self.program_counter = self.pop_word()?;
 
         Ok(())
     }
