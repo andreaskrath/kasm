@@ -30,6 +30,15 @@ impl Register {
             unknown => Err(ParseError::InvalidRegister(unknown)),
         }
     }
+
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Register::A => Register::REG_A,
+            Register::B => Register::REG_B,
+            Register::C => Register::REG_C,
+            Register::D => Register::REG_D,
+        }
+    }
 }
 
 impl Index<Register> for [Word; REGISTER_AMOUNT] {
