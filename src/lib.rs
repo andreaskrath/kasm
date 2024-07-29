@@ -22,6 +22,8 @@ pub struct Processor {
 
 impl<'a> Processor {
     pub fn new() -> Result<Self, ProcessorError<'a>> {
+        // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
+        // https://github.com/rust-lang/rust/issues/53827
         let Ok(stack) = vec![0; STACK_SIZE].into_boxed_slice().try_into() else {
             return Err(ProcessorError::FailedStackAllocation);
         };
@@ -31,8 +33,6 @@ impl<'a> Processor {
             stack_pointer: 0,
             program_counter: 0,
             flags: Flags::new(),
-            // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
-            // https://github.com/rust-lang/rust/issues/53827
             stack,
         };
         Ok(p)
