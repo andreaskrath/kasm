@@ -32,4 +32,6 @@ pub enum ExecuteError {
     StackOverflow,
     #[error("a stack underflow occured")]
     StackUnderflow,
+    #[error("an IO error occured, underlying cause is: {0}")]
+    IO(String),
 }

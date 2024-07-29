@@ -1,3 +1,5 @@
+use std::io::{stdout, Write};
+
 use constant::{Word, REGISTER_AMOUNT, STACK_SIZE, WORD_BYTE_SIZE};
 use error::{ExecuteError, ProcessorError};
 use flags::Flags;
@@ -17,6 +19,7 @@ pub struct Processor {
     stack_pointer: Word,
     program_counter: Word,
     flags: Flags,
+    output: Box<dyn Write>,
     stack: Box<[u8; STACK_SIZE]>,
 }
 
@@ -28,11 +31,14 @@ impl<'a> Processor {
             return Err(ProcessorError::FailedStackAllocation);
         };
 
+        let output = Box::new(stdout());
+
         let p = Self {
             registers: [0; REGISTER_AMOUNT],
             stack_pointer: 0,
             program_counter: 0,
             flags: Flags::new(),
+            output,
             stack,
         };
         Ok(p)
@@ -293,6 +299,31 @@ impl<'a> Processor {
         self.registers[reg] = result;
     }
 
+    fn print_register_word(&mut self, reg: Register) -> Result<(), ExecuteError> {
+        let s_reg = reg.as_str();
+        let value = self.registers[reg];
+
+        match writeln!(self.output, "{}: {}", s_reg, value) {
+            Ok(_) => Ok(()),
+            Err(err) => Err(ExecuteError::IO(err.to_string())),
+        }
+    }
+
+    fn print_stack_words(&mut self) -> Result<(), ExecuteError> {
+        let stack_slice = &self.stack[0..self.sp()];
+        let stack_chunks = stack_slice.chunks_exact(WORD_BYTE_SIZE);
+        let stack_words = stack_chunks.map(|bs| {
+            let mut exact_slice = [0;4];
+            exact_slice.copy_from_slice(&bs[0..WORD_BYTE_SIZE]);
+            Word::from_le_bytes(exact_slice)
+        }).collect::<Vec<Word>>();
+
+        match writeln!(self.output, "stack: {:?}", stack_words.as_slice()) {
+            Ok(_) => Ok(()),
+            Err(err) => Err(ExecuteError::IO(err.to_string()))
+        }
+    }
+
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         use Instruction::*;
 
@@ -316,6 +347,8 @@ impl<'a> Processor {
             Not(reg) => self.not(reg),
             ShiftLeft(reg, operand) => self.shift_left(reg, operand),
             ShiftRight(reg, operand) => self.shift_right(reg, operand),
+            PrintRegisterWord(reg) => self.print_register_word(reg)?,
+            PrintStackWords => self.print_stack_words()?,
         }
 
         Ok(())

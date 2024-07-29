@@ -61,6 +61,8 @@ pub enum Instruction {
     /// Performs a bitwise right shift as specified by the second parameter, and stores the result
     /// in the first parameter (register).
     ShiftRight(Register, Operand),
+    PrintRegisterWord(Register),
+    PrintStackWords,
 }
 
 impl Instruction {
@@ -83,6 +85,8 @@ impl Instruction {
     const NOT: &'static str = "not";
     const SHIFT_LEFT: &'static str = "shl";
     const SHIFT_RIGHT: &'static str = "shr";
+    const PRINT_REGISTER_WORD: &'static str = "prw";
+    const PRINT_STACK_WORDS: &'static str = "psw";
 
     /// A helper that parses a register and operand.
     fn parse_register_and_operand(
@@ -233,6 +237,16 @@ impl Instruction {
 
                 Ok(Instruction::ShiftRight(register, operand))
             }
+            Instruction::PRINT_REGISTER_WORD => {
+                let Some(s_reg) = s_iter.next() else {
+                    return Err(PE::IncompleteInstruction);
+                };
+
+                let register = Register::parse(s_reg)?;
+
+                Ok(Instruction::PrintRegisterWord(register))
+            }
+            Instruction::PRINT_STACK_WORDS => Ok(Instruction::PrintStackWords),
             unknown => Err(PE::UnknownInstruction(unknown)),
         }
     }
