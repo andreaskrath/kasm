@@ -240,6 +240,59 @@ impl<'a> Processor {
         self.flags.set(result, overflow);
     }
 
+    fn and(&mut self, reg: Register, operand: Operand) {
+        let a = self.registers[reg];
+        let b = self.get_value(operand);
+
+        let result = a & b;
+        self.flags.set(result, false);
+        self.registers[reg] = result;
+    }
+
+    fn or(&mut self, reg: Register, operand: Operand) {
+        let a = self.registers[reg];
+        let b = self.get_value(operand);
+
+        let result = a | b;
+        self.flags.set(result, false);
+        self.registers[reg] = result;
+    }
+
+    fn xor(&mut self, reg: Register, operand: Operand) {
+        let a = self.registers[reg];
+        let b = self.get_value(operand);
+
+        let result = a ^ b;
+        self.flags.set(result, false);
+        self.registers[reg] = result;
+    }
+
+    fn not(&mut self, reg: Register) {
+        let a = self.registers[reg];
+
+        let result = !a;
+        self.flags.set(result, false);
+        self.registers[reg] = result;
+    }
+
+    fn shift_left(&mut self, reg: Register, operand: Operand) {
+        let a = self.registers[reg];
+        let b = self.get_value(operand);
+
+        let result = a << b;
+        self.flags.set(result, false);
+        self.registers[reg] = result;
+    }
+
+    fn shift_right(&mut self, reg: Register, operand: Operand) {
+        let a = self.registers[reg];
+        let b = self.get_value(operand);
+
+        let result = a >> b;
+        self.flags.set(result, false);
+        self.registers[reg] = result;
+    }
+
     fn execute_instruction(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         use Instruction::*;
 
@@ -257,6 +310,12 @@ impl<'a> Processor {
             Return => self.ret()?,
             Test(operand_a, operand_b) => self.test(operand_a, operand_b),
             Compare(operand_a, operand_b) => self.compare(operand_a, operand_b),
+            And(reg, operand) => self.and(reg, operand),
+            Or(reg, operand) => self.or(reg, operand),
+            Xor(reg, operand) => self.xor(reg, operand),
+            Not(reg) => self.not(reg),
+            ShiftLeft(reg, operand) => self.shift_left(reg, operand),
+            ShiftRight(reg, operand) => self.shift_right(reg, operand),
         }
 
         Ok(())

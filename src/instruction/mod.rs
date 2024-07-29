@@ -47,6 +47,20 @@ pub enum Instruction {
     /// Compares two operands by subtracting the second operand from the first and seetings flags
     /// with the result.
     Compare(Operand, Operand),
+    /// Performs a bitwise AND operation and stores the result in the first parameter (register).
+    And(Register, Operand),
+    /// Performs a bitwise OR operation and stores the result in the first parameter (register).
+    Or(Register, Operand),
+    /// Performs a bitwise XOR operation and stores the result in the first parameter (register).
+    Xor(Register, Operand),
+    /// Performs a bitwise NOT operation and stores the result in the first parameter (register).
+    Not(Register),
+    /// Performs a bitwise left shift as specified by the second parameter, and stores the result
+    /// in the first parameter (register).
+    ShiftLeft(Register, Operand),
+    /// Performs a bitwise right shift as specified by the second parameter, and stores the result
+    /// in the first parameter (register).
+    ShiftRight(Register, Operand),
 }
 
 impl Instruction {
@@ -63,6 +77,12 @@ impl Instruction {
     const RETURN: &'static str = "ret";
     const TEST: &'static str = "tst";
     const COMPARE: &'static str = "cmp";
+    const AND: &'static str = "and";
+    const OR: &'static str = "orr";
+    const XOR: &'static str = "xor";
+    const NOT: &'static str = "not";
+    const SHIFT_LEFT: &'static str = "shl";
+    const SHIFT_RIGHT: &'static str = "shr";
 
     /// A helper that parses a register and operand.
     fn parse_register_and_operand(
@@ -178,6 +198,40 @@ impl Instruction {
                 let (operand_a, operand_b) = Instruction::parse_two_operands(s_iter)?;
 
                 Ok(Instruction::Compare(operand_a, operand_b))
+            }
+            Instruction::AND => {
+                let (register, operand) = Instruction::parse_register_and_operand(s_iter)?;
+
+                Ok(Instruction::And(register, operand))
+            }
+            Instruction::OR => {
+                let (register, operand) = Instruction::parse_register_and_operand(s_iter)?;
+
+                Ok(Instruction::Or(register, operand))
+            }
+            Instruction::XOR => {
+                let (register, operand) = Instruction::parse_register_and_operand(s_iter)?;
+
+                Ok(Instruction::Xor(register, operand))
+            }
+            Instruction::NOT => {
+                let Some(s_reg) = s_iter.next() else {
+                    return Err(PE::IncompleteInstruction);
+                };
+
+                let register = Register::parse(s_reg)?;
+
+                Ok(Instruction::Not(register))
+            }
+            Instruction::SHIFT_LEFT => {
+                let (register, operand) = Instruction::parse_register_and_operand(s_iter)?;
+
+                Ok(Instruction::ShiftLeft(register, operand))
+            }
+            Instruction::SHIFT_RIGHT => {
+                let (register, operand) = Instruction::parse_register_and_operand(s_iter)?;
+
+                Ok(Instruction::ShiftRight(register, operand))
             }
             unknown => Err(PE::UnknownInstruction(unknown)),
         }
