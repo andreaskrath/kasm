@@ -8,7 +8,7 @@ pub enum ProcessorError<'a> {
     Parse(usize, ParseError<'a>),
     #[error("execution error on line {0}: {1}")]
     Execute(usize, ExecuteError),
-    #[error("tried to execute instruction on line {0} which is out outside the defined bounds of the program")]
+    #[error("tried to execute instruction on line {0} which is outside the defined bounds of the program")]
     OutOfBoundsProgramCounter(usize),
 }
 
