@@ -1,11 +1,10 @@
 use std::io::{stdout, Write};
-
-use constant::{Word, REGISTER_AMOUNT, STACK_SIZE, WORD_BYTE_SIZE};
-use error::{ExecuteError, ProcessorError};
+use constant::{Registers, Word, REGISTER_AMOUNT, STACK_SIZE};
+use decode::DECODE_TABLE;
+use error::{ExecuteError, DecodeError, ProcessorError};
+use execute::EXECUTE_TABLE;
 use flags::Flags;
-use instruction::{Instruction, Jump};
-use operand::Operand;
-use register::Register;
+use instruction::Instruction;
 
 mod constant;
 mod error;
@@ -71,8 +70,15 @@ impl Processor {
         Ok(())
     }
 
+    fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
+        use DecodeError as DE;
 
+        let mut s_iter = s.split_whitespace();
+        let instruction = s_iter.next().ok_or(DE::EmptyLine)?;
+        let decoder = DECODE_TABLE.get(instruction).ok_or(DE::UnknownInstruction(instruction.to_string()))?;
+        let instruction = decoder(self, s_iter)?;
 
+        Ok(instruction)
     }
 
     /// Gets the program counter as a usize.
@@ -85,6 +91,9 @@ impl Processor {
         self.stack_pointer as usize
     }
 
+    fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
+        let executor = EXECUTE_TABLE[instruction];
+        executor(self)?;
         Ok(())
     }
 }
