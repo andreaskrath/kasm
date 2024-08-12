@@ -1,6 +1,6 @@
 use crate::{
-    constant::{Byte, Half, Quarter, Word},
-    error::ParseError,
+    constant::{Byte, Half, Quarter, Registers, Word},
+    error::DecodeError,
     register::Register,
 };
 
@@ -12,6 +12,51 @@ use crate::{
 pub enum Operand<Size> {
     Register(Register),
     Immediate(Size),
+}
+
+impl Operand<Byte> {
+    pub fn byte_val_as_word(self, registers: &Registers) -> Word {
+        match self {
+            Operand::Register(reg) => registers[reg].to_le_bytes()[0] as Word,
+            Operand::Immediate(val) => val as Word,
+        }
+    }
+}
+
+impl Operand<Quarter> {
+    pub fn quarter_val_as_word(self, registers: &Registers) -> Word {
+        match self {
+            Operand::Register(reg) => {
+                let mut bytes = [0; 2];
+                bytes.copy_from_slice(&registers[reg].to_le_bytes()[0..2]);
+                Quarter::from_le_bytes(bytes) as Word
+            }
+            Operand::Immediate(val) => val as Word,
+        }
+    }
+}
+
+impl Operand<Half> {
+    pub fn half_val_as_word(self, registers: &Registers) -> Word {
+        match self {
+            Operand::Register(reg) => {
+                let mut bytes = [0; 4];
+                bytes.copy_from_slice(&registers[reg].to_le_bytes()[0..5]);
+                Half::from_le_bytes(bytes) as Word
+
+            }
+            Operand::Immediate(val) => val as Word,
+        }
+    }
+}
+
+impl Operand<Word> {
+    pub fn word_val(self, registers: &Registers) -> Word {
+        match self {
+            Operand::Register(reg) => registers[reg],
+            Operand::Immediate(val) => val,
+        }
+    }
 }
 
 impl TryFrom<&str> for Operand<Byte> {
