@@ -30,3 +30,6 @@ pub const STACK_SIZE: usize = MEGA_BYTE * 4;
 
 pub type ExecuteFn = fn(&mut Processor) -> Result<(), ExecuteError>;
 pub type ExecuteTable = [ExecuteFn; Instruction::VARIANT_COUNT];
+
+type DecodeFn = fn(&mut Processor, SplitWhitespace) -> Result<Instruction, DecodeError>;
+pub type DecodeTable = Map<&'static str, DecodeFn>;
