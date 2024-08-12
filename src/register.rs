@@ -52,6 +52,10 @@ impl Register {
             Register::P2 => Register::REG_P2,
         }
     }
+
+    pub fn as_word(self) -> Word {
+        self as Word
+    }
 }
 
 impl TryFrom<&str> for Register {
