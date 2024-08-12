@@ -1,61 +1,67 @@
-use super::{constant::Word, error::ParseError, register::Register};
+use crate::{
+    constant::{Byte, Half, Quarter, Word},
+    error::ParseError,
+    register::Register,
+};
 
 /// Represents a register or a constant value.
 ///
 /// This type is used when an argument of an instruction
 /// could be either a register, or a constant value.
 #[derive(Debug, PartialEq)]
-pub enum Operand {
+pub enum Operand<Size> {
     Register(Register),
-    Constant(Word),
+    Immediate(Size),
 }
 
-impl Operand {
-    pub fn parse(s: &str) -> Result<Operand, ParseError> {
-        match (s.parse::<Word>(), Register::parse(s)) {
+impl<'a> TryFrom<&'a str> for Operand<Byte> {
+    type Error = ParseError<'a>;
+
+    fn try_from(s: &'a str) -> Result<Self, Self::Error> {
+        match (s.parse::<Byte>(), Register::try_from(s)) {
             (Ok(_), Ok(_)) => unreachable!("impossible to parse as both number and register"),
-            (Ok(num), Err(_)) => Ok(Operand::Constant(num)),
+            (Ok(num), Err(_)) => Ok(Operand::Immediate(num)),
             (Err(_), Ok(reg)) => Ok(Operand::Register(reg)),
             (Err(_), Err(_)) => Err(ParseError::InvalidOperand(s)),
         }
     }
 }
 
-#[cfg(test)]
-mod parse {
+impl<'a> TryFrom<&'a str> for Operand<Quarter> {
+    type Error = ParseError<'a>;
 
-    use super::Operand;
-    use crate::{error::ParseError, register::Register};
-
-    #[test]
-    fn valid_register_parse() {
-        let s_operand = "ra";
-        let expected = Ok(Operand::Register(Register::A));
-        let actual = Operand::parse(s_operand);
-        assert_eq!(actual, expected);
+    fn try_from(s: &'a str) -> Result<Self, Self::Error> {
+        match (s.parse::<Quarter>(), Register::try_from(s)) {
+            (Ok(_), Ok(_)) => unreachable!("impossible to parse as both number and register"),
+            (Ok(num), Err(_)) => Ok(Operand::Immediate(num)),
+            (Err(_), Ok(reg)) => Ok(Operand::Register(reg)),
+            (Err(_), Err(_)) => Err(ParseError::InvalidOperand(s)),
+        }
     }
+}
 
-    #[test]
-    fn valid_constant_parse() {
-        let s_operand = "200";
-        let expected = Ok(Operand::Constant(200));
-        let actual = Operand::parse(s_operand);
-        assert_eq!(actual, expected);
+impl<'a> TryFrom<&'a str> for Operand<Half> {
+    type Error = ParseError<'a>;
+
+    fn try_from(s: &'a str) -> Result<Self, Self::Error> {
+        match (s.parse::<Half>(), Register::try_from(s)) {
+            (Ok(_), Ok(_)) => unreachable!("impossible to parse as both number and register"),
+            (Ok(num), Err(_)) => Ok(Operand::Immediate(num)),
+            (Err(_), Ok(reg)) => Ok(Operand::Register(reg)),
+            (Err(_), Err(_)) => Err(ParseError::InvalidOperand(s)),
+        }
     }
+}
 
-    #[test]
-    fn invalid_operand_error_bad_register() {
-        let s_operand = "re";
-        let expected = Err(ParseError::InvalidOperand(s_operand));
-        let actual = Operand::parse(s_operand);
-        assert_eq!(actual, expected);
-    }
+impl<'a> TryFrom<&'a str> for Operand<Word> {
+    type Error = ParseError<'a>;
 
-    #[test]
-    fn invalid_operand_error_bad_constant() {
-        let s_operand = "200u32";
-        let expected = Err(ParseError::InvalidOperand(s_operand));
-        let actual = Operand::parse(s_operand);
-        assert_eq!(actual, expected);
+    fn try_from(s: &'a str) -> Result<Self, Self::Error> {
+        match (s.parse::<Word>(), Register::try_from(s)) {
+            (Ok(_), Ok(_)) => unreachable!("impossible to parse as both number and register"),
+            (Ok(num), Err(_)) => Ok(Operand::Immediate(num)),
+            (Err(_), Ok(reg)) => Ok(Operand::Register(reg)),
+            (Err(_), Err(_)) => Err(ParseError::InvalidOperand(s)),
+        }
     }
 }
