@@ -11,3 +11,11 @@ pub enum Instruction {
     SetHalf,
     SetWord,
 }
+
+impl Index<Instruction> for ExecuteTable {
+    type Output = ExecuteFn;
+
+    fn index(&self, index: Instruction) -> &Self::Output {
+        &self[index as usize]
+    }
+}
