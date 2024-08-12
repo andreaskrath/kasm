@@ -21,6 +21,7 @@ pub struct Processor {
     stack_pointer: Word,
     program_counter: Word,
     flags: Flags,
+    running: bool,
     output: Box<dyn Write>,
     stack: Box<[u8; STACK_SIZE]>,
 }
@@ -40,6 +41,7 @@ impl Processor {
             stack_pointer: 0,
             program_counter: 0,
             flags: Flags::new(),
+            running: true,
             output,
             stack,
         };
