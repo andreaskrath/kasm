@@ -78,6 +78,26 @@ impl TryFrom<&str> for Register {
     }
 }
 
+impl TryFrom<Word> for Register {
+    type Error = ExecuteError;
+
+    fn try_from(w: Word) -> Result<Self, Self::Error> {
+        use Register::*;
+
+        match w {
+            0 => Ok(A),
+            1 => Ok(B),
+            2 => Ok(C),
+            3 => Ok(D),
+            4 => Ok(E),
+            5 => Ok(F),
+            6 => Ok(G),
+            7 => Ok(H),
+            unknown => Err(ExecuteError::InvalidRegisterCast(unknown))
+        }
+    }
+}
+
 impl Index<Register> for [Word; REGISTER_AMOUNT] {
     type Output = Word;
 
