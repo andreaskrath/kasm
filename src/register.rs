@@ -11,6 +11,10 @@ pub enum Register {
     B,
     C,
     D,
+    E,
+    F,
+    G,
+    H,
 }
 
 impl Register {
@@ -18,12 +22,20 @@ impl Register {
     const REG_B: &'static str = "rb";
     const REG_C: &'static str = "rc";
     const REG_D: &'static str = "rd";
+    const REG_E: &'static str = "re";
+    const REG_F: &'static str = "rf";
+    const REG_G: &'static str = "rg";
+    const REG_H: &'static str = "rh";
     pub fn as_str(self) -> &'static str {
         match self {
             Register::A => Register::REG_A,
             Register::B => Register::REG_B,
             Register::C => Register::REG_C,
             Register::D => Register::REG_D,
+            Register::E => Register::REG_E,
+            Register::F => Register::REG_F,
+            Register::G => Register::REG_G,
+            Register::H => Register::REG_H,
         }
     }
 }
@@ -39,6 +51,10 @@ impl<'a> TryFrom<&'a str> for Register {
             Register::REG_B => Ok(B),
             Register::REG_C => Ok(C),
             Register::REG_D => Ok(D),
+            Register::REG_E => Ok(E),
+            Register::REG_F => Ok(F),
+            Register::REG_G => Ok(G),
+            Register::REG_H => Ok(H),
             unknown => Err(ParseError::InvalidRegister(unknown)),
         }
     }
@@ -99,6 +115,38 @@ mod parse {
     fn valid_register_d_parse() {
         let s_reg = "rd";
         let expected = Ok(Register::D);
+        let actual = Register::try_from(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_e_parse() {
+        let s_reg = "re";
+        let expected = Ok(Register::E);
+        let actual = Register::try_from(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_f_parse() {
+        let s_reg = "rf";
+        let expected = Ok(Register::F);
+        let actual = Register::try_from(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_g_parse() {
+        let s_reg = "rg";
+        let expected = Ok(Register::G);
+        let actual = Register::try_from(s_reg);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_register_h_parse() {
+        let s_reg = "rh";
+        let expected = Ok(Register::H);
         let actual = Register::try_from(s_reg);
         assert_eq!(actual, expected);
     }
