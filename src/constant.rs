@@ -1,20 +1,18 @@
 //! Defines the constants, type aliases and central types to the virtual processor.
 
-use std::mem::size_of;
+use std::str::SplitWhitespace;
 
+use phf::Map;
+
+use crate::{error::{DecodeError, ExecuteError}, instruction::Instruction, Processor};
 use super::register::Register;
 
-/// The word size of the virtual processor.
-///
-/// This is not intended to be changed.
-pub type Word = u32;
 pub type Byte = u8;
 pub type Quarter = u16;
 pub type Half = u32;
 pub type Word = u64;
 
-/// The amount of bytes in a [`crate::processor::constant::Word`].
-pub const WORD_BYTE_SIZE: usize = size_of::<Word>();
+pub type Registers = [Word; REGISTER_AMOUNT];
 
 /// The amount of registers in the virtual processor.
 ///
