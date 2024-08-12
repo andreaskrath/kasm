@@ -5,6 +5,9 @@ use super::{
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
 
+/// The X and Y registers are private registers for interal use in the processor.
+///
+/// They are inaccessible through assembly.
 #[derive(Clone, Copy, Debug, PartialEq, VariantCount)]
 pub enum Register {
     A,
@@ -15,6 +18,8 @@ pub enum Register {
     F,
     G,
     H,
+    X,
+    Y,
 }
 
 impl Register {
@@ -26,6 +31,9 @@ impl Register {
     const REG_F: &'static str = "rf";
     const REG_G: &'static str = "rg";
     const REG_H: &'static str = "rh";
+    const REG_X: &'static str = "rx";
+    const REG_Y: &'static str = "ry";
+
     pub fn as_str(self) -> &'static str {
         match self {
             Register::A => Register::REG_A,
@@ -36,6 +44,8 @@ impl Register {
             Register::F => Register::REG_F,
             Register::G => Register::REG_G,
             Register::H => Register::REG_H,
+            Register::X => Register::REG_X,
+            Register::Y => Register::REG_Y,
         }
     }
 }
@@ -81,7 +91,7 @@ mod parse {
 
     #[test]
     fn invalid_register_error() {
-        let s_reg = "hello";
+        let s_reg = "rx";
         let expected = Err(ParseError::InvalidRegister(s_reg));
         let actual = Register::try_from(s_reg);
         assert_eq!(actual, expected);
