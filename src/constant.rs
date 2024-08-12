@@ -27,3 +27,6 @@ const MEGA_BYTE: usize = 1_048_576;
 ///
 /// The value is in bytes.
 pub const STACK_SIZE: usize = MEGA_BYTE * 4;
+
+pub type ExecuteFn = fn(&mut Processor) -> Result<(), ExecuteError>;
+pub type ExecuteTable = [ExecuteFn; Instruction::VARIANT_COUNT];
