@@ -8,6 +8,10 @@ use super::register::Register;
 ///
 /// This is not intended to be changed.
 pub type Word = u32;
+pub type Byte = u8;
+pub type Quarter = u16;
+pub type Half = u32;
+pub type Word = u64;
 
 /// The amount of bytes in a [`crate::processor::constant::Word`].
 pub const WORD_BYTE_SIZE: usize = size_of::<Word>();
