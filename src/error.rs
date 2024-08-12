@@ -1,11 +1,12 @@
 use thiserror::Error;
+use crate::constant::Word;
 
 #[derive(Debug, Error, PartialEq)]
-pub enum ProcessorError<'a> {
+pub enum ProcessorError {
     #[error("failed to allocated the stack")]
     FailedStackAllocation,
-    #[error("failed to parse line {0}: {1}")]
-    Parse(usize, ParseError<'a>),
+    #[error("failed to decode line {0}: {1}")]
+    Decode(usize, DecodeError),
     #[error("execution error on line {0}: {1}")]
     Execute(usize, ExecuteError),
     #[error("tried to execute instruction on line {0} which is outside the defined bounds of the program")]
@@ -13,13 +14,13 @@ pub enum ProcessorError<'a> {
 }
 
 #[derive(Debug, Error, PartialEq)]
-pub enum ParseError<'a> {
+pub enum DecodeError {
     #[error("invalid register '{0}'")]
-    InvalidRegister(&'a str),
+    InvalidRegister(String),
     #[error("invalid operand '{0}'")]
-    InvalidOperand(&'a str),
+    InvalidOperand(String),
     #[error("unknown instruction '{0}'")]
-    UnknownInstruction(&'a str),
+    UnknownInstruction(String),
     #[error("incomplete instruction")]
     IncompleteInstruction,
     #[error("could not decode empty line")]
