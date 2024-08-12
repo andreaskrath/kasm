@@ -35,4 +35,7 @@ pub enum ExecuteError {
     StackUnderflow,
     #[error("an IO error occured, underlying cause is: {0}")]
     IO(String),
+    #[error("internal processor error: could not cast '{0}' to a valid register")]
+    InvalidRegisterCast(Word),
 }
+
