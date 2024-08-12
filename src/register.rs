@@ -1,11 +1,13 @@
+use crate::error::ExecuteError;
+
 use super::{
     constant::{Word, REGISTER_AMOUNT},
-    error::ParseError,
+    error::DecodeError,
 };
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
 
-/// The X and Y registers are private registers for interal use in the processor.
+/// The P1 and P2 registers are private registers for interal use in the processor.
 ///
 /// They are inaccessible through assembly.
 #[derive(Clone, Copy, Debug, PartialEq, VariantCount)]
@@ -18,8 +20,10 @@ pub enum Register {
     F,
     G,
     H,
-    X,
-    Y,
+    /// This register stores the first parameter of an instruction.
+    P1,
+    /// This register stores the second parameter of an instruction.
+    P2,
 }
 
 impl Register {
@@ -31,8 +35,8 @@ impl Register {
     const REG_F: &'static str = "rf";
     const REG_G: &'static str = "rg";
     const REG_H: &'static str = "rh";
-    const REG_X: &'static str = "rx";
-    const REG_Y: &'static str = "ry";
+    const REG_P1: &'static str = "rp1";
+    const REG_P2: &'static str = "rp2";
 
     pub fn as_str(self) -> &'static str {
         match self {
@@ -44,16 +48,16 @@ impl Register {
             Register::F => Register::REG_F,
             Register::G => Register::REG_G,
             Register::H => Register::REG_H,
-            Register::X => Register::REG_X,
-            Register::Y => Register::REG_Y,
+            Register::P1 => Register::REG_P1,
+            Register::P2 => Register::REG_P2,
         }
     }
 }
 
-impl<'a> TryFrom<&'a str> for Register {
-    type Error = ParseError<'a>;
+impl TryFrom<&str> for Register {
+    type Error = DecodeError;
 
-    fn try_from(s: &'a str) -> Result<Self, Self::Error> {
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
         use Register::*;
 
         match s {
@@ -65,7 +69,7 @@ impl<'a> TryFrom<&'a str> for Register {
             Register::REG_F => Ok(F),
             Register::REG_G => Ok(G),
             Register::REG_H => Ok(H),
-            unknown => Err(ParseError::InvalidRegister(unknown)),
+            unknown => Err(DecodeError::InvalidRegister(unknown.to_string())),
         }
     }
 }
@@ -87,12 +91,12 @@ impl IndexMut<Register> for [Word; REGISTER_AMOUNT] {
 #[cfg(test)]
 mod parse {
     use super::Register;
-    use crate::error::ParseError;
+    use crate::error::DecodeError;
 
     #[test]
     fn invalid_register_error() {
         let s_reg = "rx";
-        let expected = Err(ParseError::InvalidRegister(s_reg));
+        let expected = Err(DecodeError::InvalidRegister(s_reg.to_string()));
         let actual = Register::try_from(s_reg);
         assert_eq!(actual, expected);
     }
