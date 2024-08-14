@@ -1,9 +1,7 @@
 //! Defines the constants, type aliases and central types to the virtual processor.
 
 use std::str::SplitWhitespace;
-
 use phf::Map;
-
 use crate::{error::{DecodeError, ExecuteError}, instruction::Instruction, Processor};
 use super::register::Register;
 
