@@ -1,4 +1,4 @@
-use crate::{constant::ExecuteTable, error::ExecuteError, register::Register, registers::RegisterOperations, Processor};
+use crate::{constant::{ExecuteTable, Word}, error::ExecuteError, register::Register, registers::RegisterOperations, Processor};
 
 pub const EXECUTE_TABLE: ExecuteTable = [
     Processor::execute_stop,
@@ -53,6 +53,7 @@ impl Processor {
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_byte(result, overflow);
+        self.registers[register] = result as Word;
 
         Ok(())
     }
@@ -64,6 +65,7 @@ impl Processor {
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_quarter(result, overflow);
+        self.registers[register] = result as Word;
 
         Ok(())
     }
@@ -75,6 +77,7 @@ impl Processor {
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_half(result, overflow);
+        self.registers[register] = result as Word;
 
         Ok(())
     }
@@ -86,6 +89,7 @@ impl Processor {
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_word(result, overflow);
+        self.registers[register] = result as Word;
 
         Ok(())
     }
