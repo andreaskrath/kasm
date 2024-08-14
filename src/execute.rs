@@ -186,3 +186,36 @@ mod execute_add_quarter {
         assert!(p.flags.sign);
     }
 }
+
+#[cfg(test)]
+mod execute_add_half {
+    use crate::{constant::{Half, Word}, register::Register, Processor};
+
+    #[test]
+    fn add_causes_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = Half::MAX as Word;
+        p.registers[Register::P1] = Register::A.as_word();
+        p.registers[Register::P2] = 1;
+        p.execute_add_half().unwrap();
+        
+        assert_eq!(p.registers[Register::A], 0);
+        assert!(p.flags.zero);
+        assert!(p.flags.overflow);
+        assert!(!p.flags.sign);
+    }
+
+    #[test]
+    fn add_does_not_cause_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = Half::MAX as Word - 1;
+        p.registers[Register::P1] = Register::A.as_word();
+        p.registers[Register::P2] = 1;
+        p.execute_add_half().unwrap();
+        
+        assert_eq!(p.registers[Register::A], Half::MAX as Word);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.overflow);
+        assert!(p.flags.sign);
+    }
+}
