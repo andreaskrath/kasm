@@ -41,3 +41,106 @@ impl Flags {
     }
 }
 
+#[cfg(test)]
+mod set_from_byte_sign_flag {
+    use super::Flags;
+
+    #[test]
+    fn min_value_not_set() {
+        let mut f = Flags::new();
+        f.set_from_byte(0b0000_0000, false);
+        assert!(!f.sign);
+    }
+
+    #[test]
+    fn min_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_byte(0b1000_0000, false);
+        assert!(f.sign);
+    }
+
+    #[test]
+    fn max_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_byte(0b1111_1111, false);
+        assert!(f.sign);
+    }
+}
+
+#[cfg(test)]
+mod set_from_quarter_sign_flag {
+    use super::Flags;
+
+    #[test]
+    fn min_value_not_set() {
+        let mut f = Flags::new();
+        f.set_from_quarter(0b0000_0000_0000_0000, false);
+        assert!(!f.sign);
+    }
+
+    #[test]
+    fn min_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_quarter(0b1000_0000_0000_0000, false);
+        assert!(f.sign);
+    }
+
+    #[test]
+    fn max_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_quarter(0b1111_1111_1111_1111, false);
+        assert!(f.sign);
+    }
+}
+
+#[cfg(test)]
+mod set_from_half_sign_flag {
+    use super::Flags;
+
+    #[test]
+    fn min_value_not_set() {
+        let mut f = Flags::new();
+        f.set_from_half(0b00000000_00000000_00000000_00000000, false);
+        assert!(!f.sign);
+    }
+
+    #[test]
+    fn min_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_half(0b10000000_00000000_00000000_00000000, false);
+        assert!(f.sign);
+    }
+
+    #[test]
+    fn max_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_half(0b11111111_11111111_11111111_11111111, false);
+        assert!(f.sign);
+    }
+}
+
+#[cfg(test)]
+mod set_from_word_sign_flag {
+    use super::Flags;
+
+    #[test]
+    fn min_value_not_set() {
+        let mut f = Flags::new();
+        f.set_from_word(0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000, false);
+        assert!(!f.sign);
+    }
+
+    #[test]
+    fn min_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_word(0b10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000, false);
+        assert!(f.sign);
+    }
+
+    #[test]
+    fn max_value_that_sets() {
+        let mut f = Flags::new();
+        f.set_from_word(0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111, false);
+        assert!(f.sign);
+    }
+}
