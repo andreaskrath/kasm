@@ -370,3 +370,36 @@ mod execute_sub_quarter {
         assert!(!p.flags.sign);
     }
 }
+
+#[cfg(test)]
+mod execute_sub_half {
+    use crate::{constant::{Half, Word}, register::Register, Processor};
+
+    #[test]
+    fn sub_causes_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = Half::MIN as Word;
+        p.registers[Register::P1] = Register::A.as_word();
+        p.registers[Register::P2] = 1;
+        p.execute_sub_half().unwrap();
+        
+        assert_eq!(p.registers[Register::A], Half::MAX as Word);
+        assert!(!p.flags.zero);
+        assert!(p.flags.overflow);
+        assert!(p.flags.sign);
+    }
+
+    #[test]
+    fn sub_does_not_cause_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = Half::MAX as Word;
+        p.registers[Register::P1] = Register::A.as_word();
+        p.registers[Register::P2] = Half::MAX as Word;
+        p.execute_sub_half().unwrap();
+        
+        assert_eq!(p.registers[Register::A], 0);
+        assert!(p.flags.zero);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.sign);
+    }
+}
