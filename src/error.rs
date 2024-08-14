@@ -7,7 +7,7 @@ pub enum ProcessorError {
     FailedStackAllocation,
     #[error("failed to decode line {0}: {1}")]
     Decode(usize, DecodeError),
-    #[error("execution error on line {0}: {1}")]
+    #[error("failed to execute line {0}: {1}")]
     Execute(usize, ExecuteError),
     #[error("tried to execute instruction on line {0} which is outside the defined bounds of the program")]
     OutOfBoundsProgramCounter(usize),
