@@ -48,8 +48,8 @@ impl Processor {
 
     fn execute_add_byte(&mut self) -> Result<(), ExecuteError> {
         let register = Register::try_from(self.registers[Register::P1])?;
-        let a = self.registers.get_reg_as_byte(register);
-        let b = self.registers.get_reg_as_byte(Register::P2);
+        let a = self.registers.get_reg_val_as_byte(register);
+        let b = self.registers.get_reg_val_as_byte(Register::P2);
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_byte(result, overflow);
@@ -60,8 +60,8 @@ impl Processor {
 
     fn execute_add_quarter(&mut self) -> Result<(), ExecuteError> {
         let register = Register::try_from(self.registers[Register::P1])?;
-        let a = self.registers.get_reg_as_quarter(register);
-        let b = self.registers.get_reg_as_quarter(Register::P2);
+        let a = self.registers.get_reg_val_as_quarter(register);
+        let b = self.registers.get_reg_val_as_quarter(Register::P2);
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_quarter(result, overflow);
@@ -72,8 +72,8 @@ impl Processor {
 
     fn execute_add_half(&mut self) -> Result<(), ExecuteError> {
         let register = Register::try_from(self.registers[Register::P1])?;
-        let a = self.registers.get_reg_as_half(register);
-        let b = self.registers.get_reg_as_half(Register::P2);
+        let a = self.registers.get_reg_val_as_half(register);
+        let b = self.registers.get_reg_val_as_half(Register::P2);
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_half(result, overflow);
@@ -84,8 +84,8 @@ impl Processor {
 
     fn execute_add_word(&mut self) -> Result<(), ExecuteError> {
         let register = Register::try_from(self.registers[Register::P1])?;
-        let a = self.registers.get_reg(register);
-        let b = self.registers.get_reg(Register::P2);
+        let a = self.registers.get_reg_val(register);
+        let b = self.registers.get_reg_val(Register::P2);
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_word(result, overflow);
