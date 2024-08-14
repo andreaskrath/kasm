@@ -1,4 +1,4 @@
-use crate::{constant::ExecuteTable, error::ExecuteError, register::Register, Processor};
+use crate::{constant::ExecuteTable, error::ExecuteError, register::Register, registers::RegisterOperations, Processor};
 
 pub const EXECUTE_TABLE: ExecuteTable = [
     Processor::execute_stop,
@@ -6,6 +6,7 @@ pub const EXECUTE_TABLE: ExecuteTable = [
     Processor::execute_set_quarter,
     Processor::execute_set_half,
     Processor::execute_set_word,
+    Processor::execute_add_byte,
 ];
 
 impl Processor {
@@ -40,6 +41,17 @@ impl Processor {
 
     fn execute_set_word(&mut self) -> Result<(), ExecuteError> {
         self.execute_set()
+    }
+
+    fn execute_add_byte(&mut self) -> Result<(), ExecuteError> {
+        let register = Register::try_from(self.registers[Register::P1])?;
+        let a = self.registers.get_reg_as_byte(register);
+        let b = self.registers.get_reg_as_byte(Register::P2);
+        
+        let (result, overflow) = a.overflowing_add(b);
+        self.flags.set_from_byte(result, overflow);
+
+        Ok(())
     }
 }
 
