@@ -112,12 +112,12 @@ impl IndexMut<Register> for Registers {
 }
 
 #[cfg(test)]
-mod parse {
+mod try_from {
     use super::Register;
     use crate::error::DecodeError;
 
     #[test]
-    fn invalid_register_error() {
+    fn register_is_invalid() {
         let s_reg = "rx";
         let expected = Err(DecodeError::InvalidRegister(s_reg.to_string()));
         let actual = Register::try_from(s_reg);
@@ -125,7 +125,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_a_parse() {
+    fn register_is_valid_a() {
         let s_reg = "ra";
         let expected = Ok(Register::A);
         let actual = Register::try_from(s_reg);
@@ -133,7 +133,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_b_parse() {
+    fn register_is_valid_b() {
         let s_reg = "rb";
         let expected = Ok(Register::B);
         let actual = Register::try_from(s_reg);
@@ -141,7 +141,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_c_parse() {
+    fn register_is_valid_c() {
         let s_reg = "rc";
         let expected = Ok(Register::C);
         let actual = Register::try_from(s_reg);
@@ -149,7 +149,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_d_parse() {
+    fn register_is_valid_d() {
         let s_reg = "rd";
         let expected = Ok(Register::D);
         let actual = Register::try_from(s_reg);
@@ -157,7 +157,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_e_parse() {
+    fn register_is_valid_e() {
         let s_reg = "re";
         let expected = Ok(Register::E);
         let actual = Register::try_from(s_reg);
@@ -165,7 +165,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_f_parse() {
+    fn register_is_valid_f() {
         let s_reg = "rf";
         let expected = Ok(Register::F);
         let actual = Register::try_from(s_reg);
@@ -173,7 +173,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_g_parse() {
+    fn register_is_valid_g() {
         let s_reg = "rg";
         let expected = Ok(Register::G);
         let actual = Register::try_from(s_reg);
@@ -181,7 +181,7 @@ mod parse {
     }
 
     #[test]
-    fn valid_register_h_parse() {
+    fn register_is_valid_h() {
         let s_reg = "rh";
         let expected = Ok(Register::H);
         let actual = Register::try_from(s_reg);
