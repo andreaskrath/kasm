@@ -1,8 +1,4 @@
-use crate::{error::ExecuteError, registers::Registers};
-use super::{
-    constant::Word,
-    error::DecodeError,
-};
+use crate::{constant::Word, error::{DecodeError, ExecuteError}, registers::Registers};
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
 
