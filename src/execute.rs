@@ -13,6 +13,7 @@ pub const EXECUTE_TABLE: ExecuteTable = [
     Processor::execute_sub_byte,
     Processor::execute_sub_quarter,
     Processor::execute_sub_half,
+    Processor::execute_sub_word,
 ];
 
 impl Processor {
@@ -128,6 +129,18 @@ impl Processor {
 
         let (result, overflow) = a.overflowing_sub(b);
         self.flags.set_from_half(result, overflow);
+        self.registers[register] = result as Word;
+
+        Ok(())
+    }
+
+    fn execute_sub_word(&mut self) -> Result<(), ExecuteError> {
+        let register = Register::try_from(self.registers[Register::P1])?;
+        let a = self.registers.get_reg_val(register);
+        let b = self.registers.get_reg_val(Register::P2);
+
+        let (result, overflow) = a.overflowing_sub(b);
+        self.flags.set_from_word(result, overflow);
         self.registers[register] = result as Word;
 
         Ok(())
