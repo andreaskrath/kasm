@@ -1,10 +1,11 @@
 use std::io::{stdout, Write};
-use constant::{Registers, Word, REGISTER_AMOUNT, STACK_SIZE};
+use constant::{Word, REGISTER_AMOUNT, STACK_SIZE};
 use decode::DECODE_TABLE;
 use error::{ExecuteError, DecodeError, ProcessorError};
 use execute::EXECUTE_TABLE;
 use flags::Flags;
 use instruction::Instruction;
+use registers::Registers;
 
 mod constant;
 mod error;
@@ -14,6 +15,7 @@ mod operand;
 mod register;
 mod decode;
 mod execute;
+mod registers;
 
 pub struct Processor {
     registers: Registers,

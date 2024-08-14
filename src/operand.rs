@@ -1,7 +1,7 @@
 use crate::{
-    constant::{Byte, Half, Quarter, Registers, Word},
+    constant::{Byte, Half, Quarter, Word},
     error::DecodeError,
-    register::Register,
+    register::Register, registers::Registers,
 };
 
 /// Represents a register or a constant value.
