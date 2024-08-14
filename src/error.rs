@@ -9,8 +9,8 @@ pub enum ProcessorError {
     Decode(usize, DecodeError),
     #[error("failed to execute line {0}: {1}")]
     Execute(usize, ExecuteError),
-    #[error("tried to execute instruction on line {0} which is outside the defined bounds of the program")]
-    OutOfBoundsProgramCounter(usize),
+    #[error("program counter out of bounds on line '{0}'")]
+    InvalidProgramCounter(usize),
 }
 
 #[derive(Debug, Error, PartialEq)]

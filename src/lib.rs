@@ -52,7 +52,7 @@ impl Processor {
 
         while self.running {
             let Some(code) = program.get(self.pc()) else {
-                return Err(ProcessorError::OutOfBoundsProgramCounter(self.pc()));
+                return Err(ProcessorError::InvalidProgramCounter(self.pc()));
             };
 
             let instruction = match self.decode(code) {
