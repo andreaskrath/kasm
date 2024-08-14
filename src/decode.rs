@@ -71,3 +71,53 @@ impl Processor {
         Ok(Instruction::SetWord)
     }
 }
+
+#[cfg(test)]
+mod decode_set_byte {
+    use crate::{error::DecodeError, instruction::Instruction, Processor};
+
+    #[test]
+    fn register_is_valid_and_immediate_value_is_max() {
+        let mut p = Processor::new().unwrap();
+        let input = "ra 255".split_whitespace();
+        let expected = Ok(Instruction::SetByte);
+        let actual = p.decode_set_byte(input);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn register_is_valid_and_immediate_value_is_min() {
+        let mut p = Processor::new().unwrap();
+        let input = "ra 0".split_whitespace();
+        let expected = Ok(Instruction::SetByte);
+        let actual = p.decode_set_byte(input);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn immediate_value_is_above_max_byte() {
+        let mut p = Processor::new().unwrap();
+        let input = "ra 256".split_whitespace();
+        let expected = Err(DecodeError::InvalidOperand("256".to_string()));
+        let actual = p.decode_set_byte(input);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn immediate_value_is_negative() {
+        let mut p = Processor::new().unwrap();
+        let input = "ra -1".split_whitespace();
+        let expected = Err(DecodeError::InvalidOperand("-1".to_string()));
+        let actual = p.decode_set_byte(input);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn register_is_invalid() {
+        let mut p = Processor::new().unwrap();
+        let input = "rx 0".split_whitespace();
+        let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+        let actual = p.decode_set_byte(input);
+        assert_eq!(actual, expected);
+    }
+}
