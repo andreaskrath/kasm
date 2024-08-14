@@ -1,7 +1,7 @@
 use crate::error::ExecuteError;
 
 use super::{
-    constant::{Word, REGISTER_AMOUNT},
+    constant::Word,
     error::DecodeError,
 };
 use std::ops::{Index, IndexMut};
@@ -98,7 +98,7 @@ impl TryFrom<Word> for Register {
     }
 }
 
-impl Index<Register> for [Word; REGISTER_AMOUNT] {
+impl Index<Register> for Registers {
     type Output = Word;
 
     fn index(&self, index: Register) -> &Self::Output {
@@ -106,7 +106,7 @@ impl Index<Register> for [Word; REGISTER_AMOUNT] {
     }
 }
 
-impl IndexMut<Register> for [Word; REGISTER_AMOUNT] {
+impl IndexMut<Register> for Registers {
     fn index_mut(&mut self, index: Register) -> &mut Self::Output {
         &mut self[index as usize]
     }
