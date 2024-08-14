@@ -9,6 +9,7 @@ pub const EXECUTE_TABLE: ExecuteTable = [
     Processor::execute_add_byte,
     Processor::execute_add_quarter,
     Processor::execute_add_half,
+    Processor::execute_add_word,
 ];
 
 impl Processor {
@@ -74,6 +75,17 @@ impl Processor {
         
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_half(result, overflow);
+
+        Ok(())
+    }
+
+    fn execute_add_word(&mut self) -> Result<(), ExecuteError> {
+        let register = Register::try_from(self.registers[Register::P1])?;
+        let a = self.registers.get_reg(register);
+        let b = self.registers.get_reg(Register::P2);
+        
+        let (result, overflow) = a.overflowing_add(b);
+        self.flags.set_from_word(result, overflow);
 
         Ok(())
     }
