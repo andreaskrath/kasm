@@ -42,3 +42,29 @@ impl Processor {
         self.execute_set()
     }
 }
+
+#[cfg(test)]
+mod execute_set {
+    use crate::{error::ExecuteError, register::Register, Processor};
+
+    #[test]
+    fn destination_is_valid_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::P1] = Register::A.as_word();
+        p.registers[Register::P2] = 100;
+        p.execute_set().unwrap();
+        let expected = 100;
+        let actual = p.registers[Register::A];
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn destination_is_invalid_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::P1] = Register::P1.as_word();
+        p.registers[Register::P2] = 100;
+        let expected = Err(ExecuteError::InvalidRegisterCast(Register::P1.as_word()));
+        let actual = p.execute_set();
+        assert_eq!(actual, expected);
+    }
+}
