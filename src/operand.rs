@@ -41,7 +41,7 @@ impl Operand<Half> {
         match self {
             Operand::Register(reg) => {
                 let mut bytes = [0; 4];
-                bytes.copy_from_slice(&registers[reg].to_le_bytes()[0..5]);
+                bytes.copy_from_slice(&registers[reg].to_le_bytes()[0..4]);
                 Half::from_le_bytes(bytes) as Word
 
             }
