@@ -213,6 +213,15 @@ mod decode_set_half {
     use crate::{error::DecodeError, instruction::Instruction, Processor};
 
     #[test]
+    fn param1_register_and_param2_register_are_valid() {
+        let mut p = Processor::new().unwrap();
+        let input = "ra rb".split_whitespace();
+        let expected = Ok(Instruction::SetHalf);
+        let actual = p.decode_set_half(input);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
     fn param1_register_is_valid_and_param2_immediate_value_is_max() {
         let mut p = Processor::new().unwrap();
         let input = "ra 4294967295".split_whitespace();
@@ -253,6 +262,15 @@ mod decode_set_half {
         let mut p = Processor::new().unwrap();
         let input = "rx 0".split_whitespace();
         let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+        let actual = p.decode_set_half(input);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn param2_register_is_invalid() {
+        let mut p = Processor::new().unwrap();
+        let input = "ra rx".split_whitespace();
+        let expected = Err(DecodeError::InvalidOperand("rx".to_string()));
         let actual = p.decode_set_half(input);
         assert_eq!(actual, expected);
     }
