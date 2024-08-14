@@ -2,6 +2,13 @@ use std::str::SplitWhitespace;
 use phf::phf_map;
 use crate::{constant::DecodeTable, error::DecodeError, instruction::Instruction, operand::Operand, register::Register, Processor};
 
+/// This compile time assertion ensures that the size of the decode table matches the amount of
+/// enum variants in the Instruction enum.
+///
+/// In other words, it is a way to somewhat ensure that every instruction is represented in the
+/// decode table.
+const _: () = assert!(DECODE_TABLE.len() == Instruction::VARIANT_COUNT);
+
 pub const DECODE_TABLE: DecodeTable = phf_map! {
     "stop" => Processor::decode_stop,
     "setb" => Processor::decode_set_byte,
