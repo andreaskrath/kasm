@@ -50,34 +50,28 @@ impl Processor {
     }
 
     pub fn run(&mut self, program: &str) -> Result<(), ProcessorError> {
+        use ProcessorError::*;
         let program: Vec<&str> = program.lines().collect();
 
         while self.running {
-            let Some(code) = program.get(self.pc()) else {
-                return Err(ProcessorError::InvalidProgramCounter(self.pc()));
-            };
+            let code = program.get(self.pc()).ok_or(InvalidProgramCounter(self.pc()))?;
 
-            let instruction = match self.decode(code) {
-                Ok(ins) => ins,
-                Err(err) => return Err(ProcessorError::Decode(self.pc(), err)),
-            };
+            let instruction = self.decode(code).map_err(|e| Decode(self.pc(), e))?;
 
             self.program_counter += 1;
 
-            if let Err(err) = self.execute(instruction) {
-                return Err(ProcessorError::Execute(self.pc(), err));
-            }
+            self.execute(instruction).map_err(|e| Execute(self.pc(), e))?;
         }
 
         Ok(())
     }
 
     fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
-        use DecodeError as DE;
+        use DecodeError::*;
 
         let mut s_iter = s.split_whitespace();
-        let instruction = s_iter.next().ok_or(DE::EmptyLine)?;
-        let decoder = DECODE_TABLE.get(instruction).ok_or(DE::UnknownInstruction(instruction.to_string()))?;
+        let instruction = s_iter.next().ok_or(EmptyLine)?;
+        let decoder = DECODE_TABLE.get(instruction).ok_or(UnknownInstruction(instruction.to_string()))?;
         let instruction = decoder(self, s_iter)?;
 
         Ok(instruction)
