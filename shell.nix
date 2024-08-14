@@ -7,5 +7,6 @@ in
 pkgs.mkShell {
   buildInputs = [
     rust
+    pkgs.cargo-edit
   ];
 }
