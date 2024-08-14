@@ -15,7 +15,7 @@ impl Processor {
         Ok(())
     }
 
-    /// The underlying value to be set is confirmed applicable when decoded.
+    /// The underlying value to be set is confirmed applicable to the given size operation when decoded.
     ///
     /// Therefore the execute phase of setting a register is identical for each size variant.
     fn execute_set(&mut self) -> Result<(), ExecuteError> {
