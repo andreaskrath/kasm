@@ -12,6 +12,7 @@ pub enum Instruction {
     SetWord,
     AddByte,
     AddQuarter,
+    AddHalf,
 }
 
 impl Index<Instruction> for ExecuteTable {
