@@ -181,7 +181,7 @@ mod decode_set_quarter {
     }
 
     #[test]
-    fn register_is_invalid() {
+    fn param1_register_is_invalid() {
         let mut p = Processor::new().unwrap();
         let input = "rx 0".split_whitespace();
         let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
@@ -195,7 +195,7 @@ mod decode_set_half {
     use crate::{error::DecodeError, instruction::Instruction, Processor};
 
     #[test]
-    fn register_is_valid_and_immediate_value_is_max() {
+    fn param1_register_is_valid_and_param2_immediate_value_is_max() {
         let mut p = Processor::new().unwrap();
         let input = "ra 4294967295".split_whitespace();
         let expected = Ok(Instruction::SetHalf);
@@ -204,7 +204,7 @@ mod decode_set_half {
     }
 
     #[test]
-    fn register_is_valid_and_immediate_value_is_min() {
+    fn param1_register_is_valid_and_param2_immediate_value_is_min() {
         let mut p = Processor::new().unwrap();
         let input = "ra 0".split_whitespace();
         let expected = Ok(Instruction::SetHalf);
@@ -213,7 +213,7 @@ mod decode_set_half {
     }
 
     #[test]
-    fn immediate_value_is_above_max_half() {
+    fn param2_immediate_value_is_above_max_half() {
         let mut p = Processor::new().unwrap();
         let input = "ra 4294967296".split_whitespace();
         let expected = Err(DecodeError::InvalidOperand("4294967296".to_string()));
@@ -222,7 +222,7 @@ mod decode_set_half {
     }
 
     #[test]
-    fn immediate_value_is_negative() {
+    fn param2_immediate_value_is_negative() {
         let mut p = Processor::new().unwrap();
         let input = "ra -1".split_whitespace();
         let expected = Err(DecodeError::InvalidOperand("-1".to_string()));
