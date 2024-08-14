@@ -1,5 +1,4 @@
-use crate::error::ExecuteError;
-
+use crate::{constant::Registers, error::ExecuteError};
 use super::{
     constant::Word,
     error::DecodeError,
