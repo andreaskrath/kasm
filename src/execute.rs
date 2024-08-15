@@ -14,6 +14,7 @@ pub const EXECUTE_TABLE: ExecuteTable = [
     Processor::execute_sub_quarter,
     Processor::execute_sub_half,
     Processor::execute_sub_word,
+    Processor::execute_mul_byte,
 ];
 
 impl Processor {
@@ -141,7 +142,17 @@ impl Processor {
 
         let (result, overflow) = a.overflowing_sub(b);
         self.flags.set_from_word(result, overflow);
+    fn execute_mul_byte(&mut self) -> Result<(), ExecuteError> {
+        let register = Register::try_from(self.registers[Register::P1])?;
+        let a = self.registers.get_reg_val_as_byte(register);
+        let b = self.registers.get_reg_val_as_byte(Register::P2);
+
+        let (result, overflow) = a.overflowing_mul(b);
+        self.flags.set_from_byte(result, overflow);
         self.registers[register] = result as Word;
+        
+        Ok(())
+    }
 
         Ok(())
     }
