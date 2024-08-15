@@ -16,6 +16,7 @@ pub const EXECUTE_TABLE: ExecuteTable = [
     Processor::execute_sub_word,
     Processor::execute_mul_byte,
     Processor::execute_mul_quarter,
+    Processor::execute_mul_half,
 ];
 
 impl Processor {
@@ -167,6 +168,17 @@ impl Processor {
         Ok(())
     }
 
+    fn execute_mul_half(&mut self) -> Result<(), ExecuteError> {
+        let register = Register::try_from(self.registers[Register::P1])?;
+        let a = self.registers.get_reg_val_as_half(register);
+        let b = self.registers.get_reg_val_as_half(Register::P2);
+
+        let (result, overflow) = a.overflowing_mul(b);
+        self.flags.set_from_half(result, overflow);
+        self.registers[register] = result as Word;
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]

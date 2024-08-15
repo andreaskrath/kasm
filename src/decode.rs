@@ -25,6 +25,7 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "subw" => Processor::decode_sub_word,
     "mulb" => Processor::decode_mul_byte,
     "mulq" => Processor::decode_mul_quarter,
+    "mulh" => Processor::decode_mul_half,
 };
 
 fn get_register_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
@@ -178,6 +179,12 @@ impl Processor {
         self.decode_register_and_quarter_operand(iter)?;
 
         Ok(Instruction::MulQuarter)
+    }
+
+    fn decode_mul_half(&mut self, iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        self.decode_register_and_half_operand(iter)?;
+
+        Ok(Instruction::MulHalf)
     }
 }
 
