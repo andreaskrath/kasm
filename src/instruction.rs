@@ -4,8 +4,8 @@ use crate::{
     operand::Operand,
     register::Register,
 };
-use std::str::SplitWhitespace;
 use phf::phf_map;
+use std::str::SplitWhitespace;
 use variant_count::VariantCount;
 
 const _: () = assert!(DECODE_TABLE.len() == Instruction::VARIANT_COUNT);

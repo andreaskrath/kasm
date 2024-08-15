@@ -1,4 +1,7 @@
-use crate::{constant::{Byte, Half, Quarter, Word, REGISTER_AMOUNT}, register::Register};
+use crate::{
+    constant::{Byte, Half, Quarter, Word, REGISTER_AMOUNT},
+    register::Register,
+};
 
 pub trait RegisterOperations {
     fn get_reg_val_as_byte(&self, register: Register) -> Byte;

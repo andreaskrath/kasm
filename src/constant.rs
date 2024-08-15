@@ -1,9 +1,9 @@
 //! Defines the constants, type aliases and central types to the virtual processor.
 
-use std::str::SplitWhitespace;
-use phf::Map;
-use crate::{error::DecodeError, instruction::Instruction};
 use super::register::Register;
+use crate::{error::DecodeError, instruction::Instruction};
+use phf::Map;
+use std::str::SplitWhitespace;
 
 pub type Byte = u8;
 pub type Quarter = u16;

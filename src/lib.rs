@@ -1,18 +1,18 @@
-use std::io::{stdout, Write};
 use constant::{Word, REGISTER_AMOUNT, STACK_SIZE};
 use error::{DecodeError, ProcessorError};
 use flags::Flags;
 use instruction::{Instruction, DECODE_TABLE};
 use registers::Registers;
+use std::io::{stdout, Write};
 
 mod constant;
 mod error;
+mod execute;
 mod flags;
+mod instruction;
 mod operand;
 mod register;
-mod execute;
 mod registers;
-mod instruction;
 
 pub struct Processor {
     registers: Registers,
@@ -61,13 +61,16 @@ impl Processor {
         let program: Vec<&str> = program.lines().collect();
 
         while self.running {
-            let code = program.get(self.pc()).ok_or(InvalidProgramCounter(self.pc()))?;
+            let code = program
+                .get(self.pc())
+                .ok_or(InvalidProgramCounter(self.pc()))?;
 
             let instruction = self.decode(code).map_err(|e| Decode(self.pc(), e))?;
 
             self.program_counter += 1;
 
-            self.execute(instruction).map_err(|e| Execute(self.pc(), e))?;
+            self.execute(instruction)
+                .map_err(|e| Execute(self.pc(), e))?;
         }
 
         Ok(())
@@ -78,7 +81,9 @@ impl Processor {
 
         let mut s_iter = s.split_whitespace();
         let instruction = s_iter.next().ok_or(EmptyLine)?;
-        let decoder = DECODE_TABLE.get(instruction).ok_or(UnknownInstruction(instruction.to_string()))?;
+        let decoder = DECODE_TABLE
+            .get(instruction)
+            .ok_or(UnknownInstruction(instruction.to_string()))?;
         let instruction = decoder(s_iter)?;
 
         Ok(instruction)

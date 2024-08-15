@@ -130,21 +130,30 @@ mod set_from_word_sign_flag {
     #[test]
     fn min_value_not_set() {
         let mut f = Flags::new();
-        f.set_from_word(0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000, false);
+        f.set_from_word(
+            0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000,
+            false,
+        );
         assert!(!f.sign);
     }
 
     #[test]
     fn min_value_that_sets() {
         let mut f = Flags::new();
-        f.set_from_word(0b10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000, false);
+        f.set_from_word(
+            0b10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000,
+            false,
+        );
         assert!(f.sign);
     }
 
     #[test]
     fn max_value_that_sets() {
         let mut f = Flags::new();
-        f.set_from_word(0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111, false);
+        f.set_from_word(
+            0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111,
+            false,
+        );
         assert!(f.sign);
     }
 }

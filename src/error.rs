@@ -1,5 +1,5 @@
-use thiserror::Error;
 use crate::constant::Word;
+use thiserror::Error;
 
 #[derive(Debug, Error, PartialEq)]
 pub enum ProcessorError {
@@ -38,4 +38,3 @@ pub enum ExecuteError {
     #[error("internal processor error: could not cast '{0}' to a valid register")]
     InvalidRegisterCast(Word),
 }
-

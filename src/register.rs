@@ -1,4 +1,8 @@
-use crate::{constant::Word, error::{DecodeError, ExecuteError}, registers::Registers};
+use crate::{
+    constant::Word,
+    error::{DecodeError, ExecuteError},
+    registers::Registers,
+};
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
 
@@ -77,7 +81,7 @@ impl TryFrom<Word> for Register {
             5 => Ok(F),
             6 => Ok(G),
             7 => Ok(H),
-            unknown => Err(ExecuteError::InvalidRegisterCast(unknown))
+            unknown => Err(ExecuteError::InvalidRegisterCast(unknown)),
         }
     }
 }
