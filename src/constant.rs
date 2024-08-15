@@ -2,7 +2,7 @@
 
 use std::str::SplitWhitespace;
 use phf::Map;
-use crate::{error::{DecodeError, ExecuteError}, instruction::Instruction, Processor};
+use crate::{error::DecodeError, instruction::Instruction};
 use super::register::Register;
 
 pub type Byte = u8;
@@ -24,8 +24,5 @@ const MEGA_BYTE: usize = 1_048_576;
 /// The value is in bytes.
 pub const STACK_SIZE: usize = MEGA_BYTE * 4;
 
-pub type ExecuteFn = fn(&mut Processor) -> Result<(), ExecuteError>;
-pub type ExecuteTable = [ExecuteFn; Instruction::VARIANT_COUNT];
-
-type DecodeFn = fn(&mut Processor, SplitWhitespace) -> Result<Instruction, DecodeError>;
+type DecodeFn = fn(SplitWhitespace) -> Result<Instruction, DecodeError>;
 pub type DecodeTable = Map<&'static str, DecodeFn>;

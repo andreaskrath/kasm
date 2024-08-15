@@ -1,491 +1,195 @@
-use crate::{constant::{ExecuteTable, Word}, error::ExecuteError, register::Register, registers::RegisterOperations, Processor};
-
-pub const EXECUTE_TABLE: ExecuteTable = [
-    Processor::execute_stop,
-    Processor::execute_set_byte,
-    Processor::execute_set_quarter,
-    Processor::execute_set_half,
-    Processor::execute_set_word,
-    Processor::execute_add_byte,
-    Processor::execute_add_quarter,
-    Processor::execute_add_half,
-    Processor::execute_add_word,
-    Processor::execute_sub_byte,
-    Processor::execute_sub_quarter,
-    Processor::execute_sub_half,
-    Processor::execute_sub_word,
-    Processor::execute_mul_byte,
-    Processor::execute_mul_quarter,
-    Processor::execute_mul_half,
-    Processor::execute_mul_word,
-];
+use crate::{
+    constant::{Byte, Half, Quarter, Word},
+    error::ExecuteError,
+    instruction::Instruction,
+    operand::Operand,
+    register::Register,
+    registers::RegisterOperations,
+    Processor,
+};
 
 impl Processor {
-    fn execute_stop(&mut self) -> Result<(), ExecuteError> {
+    fn get_byte_operand_val(&self, operand: Operand<Byte>) -> Byte {
+        match operand {
+            Operand::Register(register) => self.registers.get_reg_val_as_byte(register),
+            Operand::Immediate(immediate) => immediate,
+        }
+    }
+
+    fn get_quarter_operand_val(&self, operand: Operand<Quarter>) -> Quarter {
+        match operand {
+            Operand::Register(register) => self.registers.get_reg_val_as_quarter(register),
+            Operand::Immediate(immediate) => immediate,
+        }
+    }
+
+    fn get_half_operand_val(&self, operand: Operand<Half>) -> Half {
+        match operand {
+            Operand::Register(register) => self.registers.get_reg_val_as_half(register),
+            Operand::Immediate(immediate) => immediate,
+        }
+    }
+
+    fn get_word_operand_val(&self, operand: Operand<Word>) -> Word {
+        match operand {
+            Operand::Register(register) => self.registers.get_reg_val(register),
+            Operand::Immediate(immediate) => immediate,
+        }
+    }
+
+    pub fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
+        match instruction {
+            Instruction::Stop => self.execute_stop(),
+            Instruction::SetByte(r, o) => self.execute_set_byte(r, o),
+            Instruction::SetQuarter(r, o) => self.execute_set_quarter(r, o),
+            Instruction::SetHalf(r, o) => self.execute_set_half(r, o),
+            Instruction::SetWord(r, o) => self.execute_set_word(r, o),
+            Instruction::AddByte(r, o) => self.execute_add_byte(r, o),
+            Instruction::AddQuarter(r, o) => self.execute_add_quarter(r, o),
+            Instruction::AddHalf(r, o) => self.execute_add_half(r, o),
+            Instruction::AddWord(r, o) => self.execute_add_word(r, o),
+            Instruction::SubByte(r, o) => self.execute_sub_byte(r, o),
+            Instruction::SubQuarter(r, o) => self.execute_sub_quarter(r, o),
+            Instruction::SubHalf(r, o) => self.execute_sub_half(r, o),
+            Instruction::SubWord(r, o) => self.execute_sub_word(r, o),
+            Instruction::MulByte(r, o) => self.execute_mul_byte(r, o),
+            Instruction::MulQuarter(r, o) => self.execute_mul_quarter(r, o),
+            Instruction::MulHalf(r, o) => self.execute_mul_half(r, o),
+            Instruction::MulWord(r, o) => self.execute_mul_word(r, o),
+        }
+
+        Ok(())
+    }
+
+    fn execute_stop(&mut self) {
         self.running = false;
-
-        Ok(())
     }
 
-    /// The underlying value to be set is confirmed applicable to the given size operation when decoded.
-    ///
-    /// Therefore the execute phase of setting a register is identical for each size variant.
-    fn execute_set(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
-        let value = self.registers[Register::P2];
+    fn execute_set_byte(&mut self, register: Register, operand: Operand<Byte>) {
+        let value = self.get_byte_operand_val(operand);
+        self.registers[register] = value as Word;
+    }
+
+    fn execute_set_quarter(&mut self, register: Register, operand: Operand<Quarter>) {
+        let value = self.get_quarter_operand_val(operand);
+        self.registers[register] = value as Word;
+    }
+
+    fn execute_set_half(&mut self, register: Register, operand: Operand<Half>) {
+        let value = self.get_half_operand_val(operand);
+        self.registers[register] = value as Word;
+    }
+
+    fn execute_set_word(&mut self, register: Register, operand: Operand<Word>) {
+        let value = self.get_word_operand_val(operand);
         self.registers[register] = value;
-
-        Ok(())
     }
 
-    fn execute_set_byte(&mut self) -> Result<(), ExecuteError> {
-        self.execute_set()
-    }
-
-    fn execute_set_quarter(&mut self) -> Result<(), ExecuteError> {
-        self.execute_set()
-    }
-
-    fn execute_set_half(&mut self) -> Result<(), ExecuteError> {
-        self.execute_set()
-    }
-
-    fn execute_set_word(&mut self) -> Result<(), ExecuteError> {
-        self.execute_set()
-    }
-
-    fn execute_add_byte(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_add_byte(&mut self, register: Register, operand: Operand<Byte>) {
         let a = self.registers.get_reg_val_as_byte(register);
-        let b = self.registers.get_reg_val_as_byte(Register::P2);
-        
+        let b = self.get_byte_operand_val(operand);
+
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_byte(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_add_quarter(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_add_quarter(&mut self, register: Register, operand: Operand<Quarter>) {
         let a = self.registers.get_reg_val_as_quarter(register);
-        let b = self.registers.get_reg_val_as_quarter(Register::P2);
-        
+        let b = self.get_quarter_operand_val(operand);
+
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_quarter(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_add_half(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_add_half(&mut self, register: Register, operand: Operand<Half>) {
         let a = self.registers.get_reg_val_as_half(register);
-        let b = self.registers.get_reg_val_as_half(Register::P2);
-        
+        let b = self.get_half_operand_val(operand);
+
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_half(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_add_word(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_add_word(&mut self, register: Register, operand: Operand<Word>) {
         let a = self.registers.get_reg_val(register);
-        let b = self.registers.get_reg_val(Register::P2);
-        
+        let b = self.get_word_operand_val(operand);
+
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set_from_word(result, overflow);
         self.registers[register] = result;
-
-        Ok(())
     }
 
-    fn execute_sub_byte(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_sub_byte(&mut self, register: Register, operand: Operand<Byte>) {
         let a = self.registers.get_reg_val_as_byte(register);
-        let b = self.registers.get_reg_val_as_byte(Register::P2);
+        let b = self.get_byte_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
         self.flags.set_from_byte(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_sub_quarter(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_sub_quarter(&mut self, register: Register, operand: Operand<Quarter>) {
         let a = self.registers.get_reg_val_as_quarter(register);
-        let b = self.registers.get_reg_val_as_quarter(Register::P2);
+        let b = self.get_quarter_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
         self.flags.set_from_quarter(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_sub_half(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_sub_half(&mut self, register: Register, operand: Operand<Half>) {
         let a = self.registers.get_reg_val_as_half(register);
-        let b = self.registers.get_reg_val_as_half(Register::P2);
+        let b = self.get_half_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
         self.flags.set_from_half(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_sub_word(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_sub_word(&mut self, register: Register, operand: Operand<Word>) {
         let a = self.registers.get_reg_val(register);
-        let b = self.registers.get_reg_val(Register::P2);
+        let b = self.get_word_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
         self.flags.set_from_word(result, overflow);
         self.registers[register] = result;
-
-        Ok(())
     }
 
-    fn execute_mul_byte(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_mul_byte(&mut self, register: Register, operand: Operand<Byte>) {
         let a = self.registers.get_reg_val_as_byte(register);
-        let b = self.registers.get_reg_val_as_byte(Register::P2);
+        let b = self.get_byte_operand_val(operand);
 
         let (result, overflow) = a.overflowing_mul(b);
         self.flags.set_from_byte(result, overflow);
         self.registers[register] = result as Word;
-        
-        Ok(())
     }
 
-    fn execute_mul_quarter(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_mul_quarter(&mut self, register: Register, operand: Operand<Quarter>) {
         let a = self.registers.get_reg_val_as_quarter(register);
-        let b = self.registers.get_reg_val_as_quarter(Register::P2);
+        let b = self.get_quarter_operand_val(operand);
 
         let (result, overflow) = a.overflowing_mul(b);
         self.flags.set_from_quarter(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_mul_half(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_mul_half(&mut self, register: Register, operand: Operand<Half>) {
         let a = self.registers.get_reg_val_as_half(register);
-        let b = self.registers.get_reg_val_as_half(Register::P2);
+        let b = self.get_half_operand_val(operand);
 
         let (result, overflow) = a.overflowing_mul(b);
         self.flags.set_from_half(result, overflow);
         self.registers[register] = result as Word;
-
-        Ok(())
     }
 
-    fn execute_mul_word(&mut self) -> Result<(), ExecuteError> {
-        let register = Register::try_from(self.registers[Register::P1])?;
+    fn execute_mul_word(&mut self, register: Register, operand: Operand<Word>) {
         let a = self.registers.get_reg_val(register);
-        let b = self.registers.get_reg_val(Register::P2);
+        let b = self.get_word_operand_val(operand);
 
         let (result, overflow) = a.overflowing_mul(b);
         self.flags.set_from_word(result, overflow);
         self.registers[register] = result;
-
-        Ok(())
     }
 }
-
-#[cfg(test)]
-mod execute_set {
-    use crate::{error::ExecuteError, register::Register, Processor};
-
-    #[test]
-    fn destination_is_valid_register() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 100;
-        p.execute_set().unwrap();
-        let expected = 100;
-        let actual = p.registers[Register::A];
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn destination_is_invalid_register() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::P1] = Register::P1.as_word();
-        p.registers[Register::P2] = 100;
-        let expected = Err(ExecuteError::InvalidRegisterCast(Register::P1.as_word()));
-        let actual = p.execute_set();
-        assert_eq!(actual, expected);
-    }
-}
-
-#[cfg(test)]
-mod execute_add_byte {
-    use crate::{constant::{Byte, Word}, register::Register, Processor};
-
-    #[test]
-    fn add_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Byte::MAX as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_byte().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-
-    #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Byte::MAX as Word - 1;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_byte().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Byte::MAX as Word);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-}
-
-#[cfg(test)]
-mod execute_add_quarter {
-    use crate::{constant::{Quarter, Word}, register::Register, Processor};
-
-    #[test]
-    fn add_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Quarter::MAX as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_quarter().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-
-    #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Quarter::MAX as Word - 1;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_quarter().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Quarter::MAX as Word);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-}
-
-#[cfg(test)]
-mod execute_add_half {
-    use crate::{constant::{Half, Word}, register::Register, Processor};
-
-    #[test]
-    fn add_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Half::MAX as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_half().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-
-    #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Half::MAX as Word - 1;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_half().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Half::MAX as Word);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-}
-
-#[cfg(test)]
-mod execute_add_word {
-    use crate::{constant::Word, register::Register, Processor};
-
-    #[test]
-    fn add_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Word::MAX;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_word().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-
-    #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Word::MAX - 1;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_add_word().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Word::MAX);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-}
-
-#[cfg(test)]
-mod execute_sub_byte {
-    use crate::{constant::{Byte, Word}, register::Register, Processor};
-
-    #[test]
-    fn sub_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Byte::MIN as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_sub_byte().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Byte::MAX as Word);
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-
-    #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Byte::MAX as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = Byte::MAX as Word;
-        p.execute_sub_byte().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-}
-
-#[cfg(test)]
-mod execute_sub_quarter {
-    use crate::{constant::{Quarter, Word}, register::Register, Processor};
-
-    #[test]
-    fn sub_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Quarter::MIN as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_sub_quarter().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Quarter::MAX as Word);
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-
-    #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Quarter::MAX as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = Quarter::MAX as Word;
-        p.execute_sub_quarter().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-}
-
-#[cfg(test)]
-mod execute_sub_half {
-    use crate::{constant::{Half, Word}, register::Register, Processor};
-
-    #[test]
-    fn sub_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Half::MIN as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_sub_half().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Half::MAX as Word);
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-
-    #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Half::MAX as Word;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = Half::MAX as Word;
-        p.execute_sub_half().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-}
-
-#[cfg(test)]
-mod execute_sub_word {
-    use crate::{constant::Word, register::Register, Processor};
-
-    #[test]
-    fn sub_causes_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Word::MIN;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = 1;
-        p.execute_sub_word().unwrap();
-        
-        assert_eq!(p.registers[Register::A], Word::MAX);
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
-    }
-
-    #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Word::MAX;
-        p.registers[Register::P1] = Register::A.as_word();
-        p.registers[Register::P2] = Word::MAX;
-        p.execute_sub_word().unwrap();
-        
-        assert_eq!(p.registers[Register::A], 0);
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
-    }
-}
-

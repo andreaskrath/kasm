@@ -2,9 +2,6 @@ use crate::{constant::Word, error::{DecodeError, ExecuteError}, registers::Regis
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
 
-/// The P1 and P2 registers are private registers for interal use in the processor.
-///
-/// They are inaccessible through assembly.
 #[derive(Clone, Copy, Debug, PartialEq, VariantCount)]
 pub enum Register {
     A,
@@ -15,10 +12,6 @@ pub enum Register {
     F,
     G,
     H,
-    /// This register stores the first parameter of an instruction.
-    P1,
-    /// This register stores the second parameter of an instruction.
-    P2,
 }
 
 impl Register {
@@ -30,8 +23,6 @@ impl Register {
     const REG_F: &'static str = "rf";
     const REG_G: &'static str = "rg";
     const REG_H: &'static str = "rh";
-    const REG_P1: &'static str = "rp1";
-    const REG_P2: &'static str = "rp2";
 
     pub fn as_str(self) -> &'static str {
         match self {
@@ -43,8 +34,6 @@ impl Register {
             Register::F => Register::REG_F,
             Register::G => Register::REG_G,
             Register::H => Register::REG_H,
-            Register::P1 => Register::REG_P1,
-            Register::P2 => Register::REG_P2,
         }
     }
 

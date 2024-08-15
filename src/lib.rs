@@ -1,21 +1,18 @@
 use std::io::{stdout, Write};
 use constant::{Word, REGISTER_AMOUNT, STACK_SIZE};
-use decode::DECODE_TABLE;
-use error::{ExecuteError, DecodeError, ProcessorError};
-use execute::EXECUTE_TABLE;
+use error::{DecodeError, ProcessorError};
 use flags::Flags;
-use instruction::Instruction;
+use instruction::{Instruction, DECODE_TABLE};
 use registers::Registers;
 
 mod constant;
 mod error;
 mod flags;
-mod instruction;
 mod operand;
 mod register;
-mod decode;
 mod execute;
 mod registers;
+mod instruction;
 
 pub struct Processor {
     registers: Registers,
@@ -49,6 +46,16 @@ impl Processor {
         Ok(p)
     }
 
+    /// Gets the program counter as a usize.
+    fn pc(&self) -> usize {
+        self.program_counter as usize
+    }
+
+    /// Gets the stack pointer as a usize.
+    fn sp(&self) -> usize {
+        self.stack_pointer as usize
+    }
+
     pub fn run(&mut self, program: &str) -> Result<(), ProcessorError> {
         use ProcessorError::*;
         let program: Vec<&str> = program.lines().collect();
@@ -72,24 +79,8 @@ impl Processor {
         let mut s_iter = s.split_whitespace();
         let instruction = s_iter.next().ok_or(EmptyLine)?;
         let decoder = DECODE_TABLE.get(instruction).ok_or(UnknownInstruction(instruction.to_string()))?;
-        let instruction = decoder(self, s_iter)?;
+        let instruction = decoder(s_iter)?;
 
         Ok(instruction)
-    }
-
-    /// Gets the program counter as a usize.
-    fn pc(&self) -> usize {
-        self.program_counter as usize
-    }
-
-    /// Gets the stack pointer as a usize.
-    fn sp(&self) -> usize {
-        self.stack_pointer as usize
-    }
-
-    fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
-        let executor = EXECUTE_TABLE[instruction];
-        executor(self)?;
-        Ok(())
     }
 }
