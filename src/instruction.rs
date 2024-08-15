@@ -21,6 +21,7 @@ pub enum Instruction {
     MulByte,
     MulQuarter,
     MulHalf,
+    MulWord,
 }
 
 impl Index<Instruction> for ExecuteTable {
