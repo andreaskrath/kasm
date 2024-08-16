@@ -193,3 +193,741 @@ impl Processor {
         self.registers[register] = result;
     }
 }
+
+#[cfg(test)]
+mod add {
+    mod byte {
+        use crate::{
+            constant::{Byte, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn add_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Byte::MAX as Word;
+
+            p.execute_add_byte(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn add_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Byte::MAX as Word - 1;
+
+            p.execute_add_byte(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn add_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_add_byte(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn add_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_add_byte(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod quarter {
+        use crate::{
+            constant::{Quarter, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn add_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Quarter::MAX as Word;
+
+            p.execute_add_quarter(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn add_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Quarter::MAX as Word - 1;
+
+            p.execute_add_quarter(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn add_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_add_quarter(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn add_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_add_quarter(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod half {
+        use crate::{
+            constant::{Half, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn add_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Half::MAX as Word;
+
+            p.execute_add_half(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn add_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Half::MAX as Word - 1;
+
+            p.execute_add_half(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn add_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_add_half(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn add_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_add_half(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod word {
+        use crate::{constant::Word, operand::Operand, register::Register, Processor};
+
+        #[test]
+        fn add_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Word::MAX;
+
+            p.execute_add_word(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn add_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Word::MAX - 1;
+
+            p.execute_add_word(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn add_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_add_word(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn add_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_add_word(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+}
+
+#[cfg(test)]
+mod sub {
+    mod byte {
+        use crate::{
+            constant::{Byte, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn sub_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Byte::MIN as Word;
+
+            p.execute_sub_byte(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Byte::MAX as Word;
+
+            p.execute_sub_byte(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 0;
+
+            p.execute_sub_byte(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn sub_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 0;
+
+            p.execute_sub_byte(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod quarter {
+        use crate::{
+            constant::{Quarter, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn sub_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Quarter::MIN as Word;
+
+            p.execute_sub_quarter(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Quarter::MAX as Word;
+
+            p.execute_sub_quarter(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 0;
+
+            p.execute_sub_quarter(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn sub_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 0;
+
+            p.execute_sub_quarter(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod half {
+        use crate::{
+            constant::{Half, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn sub_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Half::MIN as Word;
+
+            p.execute_sub_half(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Half::MAX as Word;
+
+            p.execute_sub_half(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 0;
+
+            p.execute_sub_half(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn sub_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 0;
+
+            p.execute_sub_half(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod word {
+        use crate::{constant::Word, operand::Operand, register::Register, Processor};
+
+        #[test]
+        fn sub_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Word::MIN;
+
+            p.execute_sub_word(Register::A, Operand::Immediate(1));
+
+            assert!(p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Word::MAX;
+
+            p.execute_sub_word(Register::A, Operand::Immediate(1));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn sub_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 0;
+
+            p.execute_sub_word(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn sub_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 0;
+
+            p.execute_sub_word(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+}
+
+#[cfg(test)]
+mod mul {
+    mod byte {
+        use crate::{
+            constant::{Byte, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn mul_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = (Byte::MAX as Word / 2) + 1;
+
+            p.execute_mul_byte(Register::A, Operand::Immediate(2));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn mul_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Byte::MAX as Word / 2;
+
+            p.execute_mul_byte(Register::A, Operand::Immediate(2));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn mul_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_mul_byte(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn mul_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_mul_byte(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod quarter {
+        use crate::{
+            constant::{Quarter, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn mul_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = (Quarter::MAX as Word / 2) + 1;
+
+            p.execute_mul_quarter(Register::A, Operand::Immediate(2));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn mul_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Quarter::MAX as Word / 2;
+
+            p.execute_mul_quarter(Register::A, Operand::Immediate(2));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn mul_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_mul_quarter(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn mul_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_mul_quarter(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod half {
+        use crate::{
+            constant::{Half, Word},
+            operand::Operand,
+            register::Register,
+            Processor,
+        };
+
+        #[test]
+        fn mul_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = (Half::MAX as Word / 2) + 1;
+
+            p.execute_mul_half(Register::A, Operand::Immediate(2));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn mul_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Half::MAX as Word / 2;
+
+            p.execute_mul_half(Register::A, Operand::Immediate(2));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn mul_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_mul_half(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn mul_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_mul_half(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+
+    mod word {
+        use crate::{constant::Word, operand::Operand, register::Register, Processor};
+
+        #[test]
+        fn mul_causes_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = (Word::MAX / 2) + 1;
+
+            p.execute_mul_word(Register::A, Operand::Immediate(2));
+
+            assert!(p.flags.overflow);
+            assert!(p.flags.zero);
+            assert!(!p.flags.sign);
+        }
+
+        #[test]
+        fn mul_does_not_cause_overflow() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = Word::MAX / 2;
+
+            p.execute_mul_word(Register::A, Operand::Immediate(2));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(p.flags.sign);
+        }
+
+        #[test]
+        fn mul_two_registers_together() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            p.registers[Register::B] = 2;
+            let expected = 4;
+
+            p.execute_mul_word(Register::A, Operand::Register(Register::B));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+
+        #[test]
+        fn mul_the_register_to_itself() {
+            let mut p = Processor::new().unwrap();
+            p.registers[Register::A] = 2;
+            let expected = 4;
+
+            p.execute_mul_word(Register::A, Operand::Register(Register::A));
+
+            assert!(!p.flags.overflow);
+            assert!(!p.flags.zero);
+            assert!(!p.flags.sign);
+            assert_eq!(p.registers[Register::A], expected);
+        }
+    }
+}
