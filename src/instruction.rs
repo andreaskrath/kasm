@@ -28,6 +28,7 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "mulq" => Instruction::decode_mul_quarter,
     "mulh" => Instruction::decode_mul_half,
     "mulw" => Instruction::decode_mul_word,
+    "divb" => Instruction::decode_div_byte,
 };
 
 #[derive(Debug, PartialEq, VariantCount)]
@@ -49,6 +50,7 @@ pub enum Instruction {
     MulQuarter(Register, Operand<Quarter>),
     MulHalf(Register, Operand<Half>),
     MulWord(Register, Operand<Word>),
+    DivByte(Register, Operand<Byte>),
 }
 
 fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
@@ -190,5 +192,13 @@ impl Instruction {
         let operand = Operand::try_from(s_operand)?;
 
         Ok(Instruction::MulWord(register, operand))
+    }
+
+    pub fn decode_div_byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
+        let register = Register::try_from(s_register)?;
+        let operand = Operand::try_from(s_operand)?;
+
+        Ok(Instruction::DivByte(register, operand))
     }
 }
