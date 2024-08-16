@@ -59,6 +59,7 @@ impl Processor {
             Instruction::DivByte(r, o) => self.execute_div_byte(r, o),
             Instruction::DivQuarter(r, o) => self.execute_div_quarter(r, o),
             Instruction::DivHalf(r, o) => self.execute_div_half(r, o),
+            Instruction::DivWord(r, o) => self.execute_div_word(r, o),
         }
 
         Ok(())
@@ -224,6 +225,16 @@ impl Processor {
         // I am pretty certain divsion can only cause an overflow if the integers are signed.
         self.flags.set_from_half(result, overflow);
         self.registers[register] = result as Word;
+    }
+
+    fn execute_div_word(&mut self, register: Register, operand: Operand<Word>) {
+        let a = self.registers.get_reg_val(register);
+        let b = self.get_word_operand_val(operand);
+
+        let (result, overflow) = a.overflowing_div(b);
+        // I am pretty certain divsion can only cause an overflow if the integers are signed.
+        self.flags.set_from_word(result, overflow);
+        self.registers[register] = result;
     }
 }
 
