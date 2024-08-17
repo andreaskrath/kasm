@@ -1,7 +1,8 @@
-use constant::{Word, REGISTER_AMOUNT, STACK_SIZE};
+use constant::{Word, STACK_SIZE};
 use error::{DecodeError, ProcessorError};
 use flags::Flags;
 use instruction::{Instruction, DECODE_TABLE};
+use register::Register;
 use registers::Registers;
 use std::io::{stdout, Write};
 
@@ -35,7 +36,7 @@ impl Processor {
         let output = Box::new(stdout());
 
         let p = Self {
-            registers: [0; REGISTER_AMOUNT],
+            registers: [0; Register::VARIANT_COUNT],
             stack_pointer: 0,
             program_counter: 0,
             flags: Flags::new(),

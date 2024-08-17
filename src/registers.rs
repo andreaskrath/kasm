@@ -1,5 +1,5 @@
 use crate::{
-    constant::{Byte, Half, Quarter, Word, REGISTER_AMOUNT},
+    constant::{Byte, Half, Quarter, Word},
     register::Register,
 };
 
@@ -13,7 +13,7 @@ pub trait RegisterOperations {
     fn get_reg_half_val_as_word(&self, register: Register) -> Word;
 }
 
-pub type Registers = [Word; REGISTER_AMOUNT];
+pub type Registers = [Word; Register::VARIANT_COUNT];
 
 impl RegisterOperations for Registers {
     fn get_reg_val_as_byte(&self, register: Register) -> Byte {
