@@ -232,3 +232,34 @@ impl Instruction {
         Ok(Instruction::DivWord(register, operand))
     }
 }
+
+#[cfg(test)]
+mod get_reg_and_operand_str {
+    use crate::error::DecodeError;
+
+    use super::get_reg_and_operand_str;
+
+    #[test]
+    fn empty_parameters() {
+        let iter = "".split_whitespace();
+        let expected = Err(DecodeError::IncompleteInstruction);
+        let actual = get_reg_and_operand_str(iter);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn missing_second_parameter() {
+        let iter = "ra".split_whitespace();
+        let expected = Err(DecodeError::IncompleteInstruction);
+        let actual = get_reg_and_operand_str(iter);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn both_parameters_defined() {
+        let iter = "ra 0".split_whitespace();
+        let expected = Ok(("ra", "0"));
+        let actual = get_reg_and_operand_str(iter);
+        assert_eq!(actual, expected);
+    }
+}
