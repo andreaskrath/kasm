@@ -1,8 +1,4 @@
-use crate::{
-    constant::Word,
-    error::{DecodeError, ExecuteError},
-    registers::Registers,
-};
+use crate::{constant::Word, error::DecodeError, registers::Registers};
 use std::ops::{Index, IndexMut};
 use variant_count::VariantCount;
 
@@ -40,10 +36,6 @@ impl Register {
             Register::H => Register::REG_H,
         }
     }
-
-    pub fn as_word(self) -> Word {
-        self as Word
-    }
 }
 
 impl TryFrom<&str> for Register {
@@ -62,26 +54,6 @@ impl TryFrom<&str> for Register {
             Register::REG_G => Ok(G),
             Register::REG_H => Ok(H),
             unknown => Err(DecodeError::InvalidRegister(unknown.to_string())),
-        }
-    }
-}
-
-impl TryFrom<Word> for Register {
-    type Error = ExecuteError;
-
-    fn try_from(w: Word) -> Result<Self, Self::Error> {
-        use Register::*;
-
-        match w {
-            0 => Ok(A),
-            1 => Ok(B),
-            2 => Ok(C),
-            3 => Ok(D),
-            4 => Ok(E),
-            5 => Ok(F),
-            6 => Ok(G),
-            7 => Ok(H),
-            unknown => Err(ExecuteError::InvalidRegisterCast(unknown)),
         }
     }
 }
