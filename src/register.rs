@@ -74,8 +74,7 @@ impl IndexMut<Register> for Registers {
 
 #[cfg(test)]
 mod try_from {
-    use super::Register;
-    use crate::error::DecodeError;
+    use crate::{error::DecodeError, register::Register};
 
     #[test]
     fn register_is_invalid() {
