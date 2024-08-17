@@ -1,7 +1,3 @@
-//! It does not make sense to test `overflow` flag and `zero` flag as they are trivially set.
-//!
-//! As such, only the `sign` flag has test cases.
-
 use crate::constant::{Byte, Half, Quarter, Word};
 
 #[derive(Debug, PartialEq)]
@@ -44,6 +40,10 @@ impl Flags {
         self.sign = (result >> (Word::BITS - 1)) == 1;
     }
 }
+
+// It does not make sense to test `overflow` flag and `zero` flag as they are trivially set.
+//
+// As such, only the `sign` flag has test cases.
 
 #[cfg(test)]
 mod set_from_byte_sign_flag {
