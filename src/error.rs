@@ -37,4 +37,6 @@ pub enum ExecuteError {
     IO(String),
     #[error("internal processor error: could not cast '{0}' to a valid register")]
     InvalidRegisterCast(Word),
+    #[error("attempted to divide by zero")]
+    DivideByZero,
 }
