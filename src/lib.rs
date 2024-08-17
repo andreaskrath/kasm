@@ -1,12 +1,14 @@
 use constant::{Word, STACK_SIZE};
+use decode::DECODE_TABLE;
 use error::{DecodeError, ProcessorError};
 use flags::Flags;
-use instruction::{Instruction, DECODE_TABLE};
+use instruction::Instruction;
 use register::Register;
 use registers::Registers;
 use std::io::{stdout, Write};
 
 mod constant;
+mod decode;
 mod error;
 mod execute;
 mod flags;
