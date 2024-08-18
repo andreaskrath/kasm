@@ -36,3 +36,59 @@ impl Processor {
         self.registers[register] = value;
     }
 }
+
+#[cfg(test)]
+mod byte {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn set_byte() {
+        let mut p = Processor::new().unwrap();
+
+        p.set_byte(Register::A, Operand::Immediate(1));
+
+        assert_eq!(p.registers[Register::A], 1);
+    }
+}
+
+#[cfg(test)]
+mod quarter {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn set_quarter() {
+        let mut p = Processor::new().unwrap();
+
+        p.set_quarter(Register::A, Operand::Immediate(1));
+
+        assert_eq!(p.registers[Register::A], 1);
+    }
+}
+
+#[cfg(test)]
+mod half {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn set_half() {
+        let mut p = Processor::new().unwrap();
+
+        p.set_half(Register::A, Operand::Immediate(1));
+
+        assert_eq!(p.registers[Register::A], 1);
+    }
+}
+
+#[cfg(test)]
+mod word {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn set_word() {
+        let mut p = Processor::new().unwrap();
+
+        p.set_word(Register::A, Operand::Immediate(1));
+
+        assert_eq!(p.registers[Register::A], 1);
+    }
+}
