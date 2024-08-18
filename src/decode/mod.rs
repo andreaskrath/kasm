@@ -59,44 +59,48 @@ fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), De
     Ok((s_register, s_operand))
 }
 
-fn decode_reg_and_byte_operand(
-    iter: SplitWhitespace,
-) -> Result<(Register, Operand<Byte>), DecodeError> {
-    let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
-    let register = Register::try_from(s_register)?;
-    let operand = Operand::try_from(s_operand)?;
+struct DecoderHelper;
 
-    Ok((register, operand))
-}
+impl DecoderHelper {
+    fn try_reg_and_byte_operand(
+        iter: SplitWhitespace,
+    ) -> Result<(Register, Operand<Byte>), DecodeError> {
+        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
+        let register = Register::try_from(s_register)?;
+        let operand = Operand::try_from(s_operand)?;
 
-fn decode_reg_and_quarter_operand(
-    iter: SplitWhitespace,
-) -> Result<(Register, Operand<Quarter>), DecodeError> {
-    let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
-    let register = Register::try_from(s_register)?;
-    let operand = Operand::try_from(s_operand)?;
+        Ok((register, operand))
+    }
 
-    Ok((register, operand))
-}
+    fn try_reg_and_quarter_operand(
+        iter: SplitWhitespace,
+    ) -> Result<(Register, Operand<Quarter>), DecodeError> {
+        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
+        let register = Register::try_from(s_register)?;
+        let operand = Operand::try_from(s_operand)?;
 
-fn decode_reg_and_half_operand(
-    iter: SplitWhitespace,
-) -> Result<(Register, Operand<Half>), DecodeError> {
-    let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
-    let register = Register::try_from(s_register)?;
-    let operand = Operand::try_from(s_operand)?;
+        Ok((register, operand))
+    }
 
-    Ok((register, operand))
-}
+    fn try_reg_and_half_operand(
+        iter: SplitWhitespace,
+    ) -> Result<(Register, Operand<Half>), DecodeError> {
+        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
+        let register = Register::try_from(s_register)?;
+        let operand = Operand::try_from(s_operand)?;
 
-fn decode_reg_and_word_operand(
-    iter: SplitWhitespace,
-) -> Result<(Register, Operand<Word>), DecodeError> {
-    let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
-    let register = Register::try_from(s_register)?;
-    let operand = Operand::try_from(s_operand)?;
+        Ok((register, operand))
+    }
 
-    Ok((register, operand))
+    fn try_reg_and_word_operand(
+        iter: SplitWhitespace,
+    ) -> Result<(Register, Operand<Word>), DecodeError> {
+        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
+        let register = Register::try_from(s_register)?;
+        let operand = Operand::try_from(s_operand)?;
+
+        Ok((register, operand))
+    }
 }
 
 impl Instruction {
@@ -107,9 +111,8 @@ impl Instruction {
 
 #[cfg(test)]
 mod get_reg_and_operand_str {
-    use crate::error::DecodeError;
-
     use super::get_reg_and_operand_str;
+    use crate::error::DecodeError;
 
     #[test]
     fn empty_parameters() {
