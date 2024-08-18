@@ -1,7 +1,7 @@
 use crate::{
     constant::{Byte, Half, Quarter, Word},
     error::ExecuteError,
-    instruction::DivInstruction,
+    instruction::Division,
     operand::Operand,
     register::Register,
     registers::RegisterOperations,
@@ -9,12 +9,12 @@ use crate::{
 };
 
 impl Processor {
-    pub fn div(&mut self, instruction: DivInstruction) -> Result<(), ExecuteError> {
+    pub fn div(&mut self, instruction: Division) -> Result<(), ExecuteError> {
         match instruction {
-            DivInstruction::Byte(r, o) => self.div_byte(r, o),
-            DivInstruction::Quarter(r, o) => self.div_quarter(r, o),
-            DivInstruction::Half(r, o) => self.div_half(r, o),
-            DivInstruction::Word(r, o) => self.div_word(r, o),
+            Division::Byte(r, o) => self.div_byte(r, o),
+            Division::Quarter(r, o) => self.div_quarter(r, o),
+            Division::Half(r, o) => self.div_half(r, o),
+            Division::Word(r, o) => self.div_word(r, o),
         }
     }
 

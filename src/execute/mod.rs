@@ -7,11 +7,11 @@ use crate::{
     Processor,
 };
 
-mod add;
-mod div;
-mod mul;
+mod addition;
+mod division;
+mod multiplication;
 mod set;
-mod sub;
+mod subtraction;
 
 impl Processor {
     fn get_byte_operand_val(&self, operand: Operand<Byte>) -> Byte {
@@ -43,19 +43,21 @@ impl Processor {
     }
 
     pub fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
+        use Instruction::*;
+
         match instruction {
-            Instruction::Stop => self.execute_stop(),
-            Instruction::Set(instruction) => self.set(instruction),
-            Instruction::Add(instruction) => self.add(instruction),
-            Instruction::Sub(instruction) => self.sub(instruction),
-            Instruction::Mul(instruction) => self.mul(instruction),
-            Instruction::Div(instruction) => self.div(instruction)?,
+            Stop => self.stop(),
+            Set(instruction) => self.set(instruction),
+            Addition(instruction) => self.add(instruction),
+            Subtraction(instruction) => self.sub(instruction),
+            Multiplication(instruction) => self.mul(instruction),
+            Division(instruction) => self.div(instruction)?,
         }
 
         Ok(())
     }
 
-    fn execute_stop(&mut self) {
+    fn stop(&mut self) {
         self.running = false;
     }
 }

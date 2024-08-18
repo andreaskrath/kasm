@@ -1,18 +1,18 @@
 use crate::{
     constant::{Byte, Half, Quarter, Word},
-    instruction::SetInstruction,
+    instruction::Set,
     operand::Operand,
     register::Register,
     Processor,
 };
 
 impl Processor {
-    pub fn set(&mut self, instruction: SetInstruction) {
+    pub fn set(&mut self, instruction: Set) {
         match instruction {
-            SetInstruction::Byte(r, o) => self.set_byte(r, o),
-            SetInstruction::Quarter(r, o) => self.set_quarter(r, o),
-            SetInstruction::Half(r, o) => self.set_half(r, o),
-            SetInstruction::Word(r, o) => self.set_word(r, o),
+            Set::Byte(r, o) => self.set_byte(r, o),
+            Set::Quarter(r, o) => self.set_quarter(r, o),
+            Set::Half(r, o) => self.set_half(r, o),
+            Set::Word(r, o) => self.set_word(r, o),
         }
     }
 

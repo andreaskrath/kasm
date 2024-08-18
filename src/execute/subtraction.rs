@@ -1,6 +1,6 @@
 use crate::{
     constant::{Byte, Half, Quarter, Word},
-    instruction::SubInstruction,
+    instruction::Subtraction,
     operand::Operand,
     register::Register,
     registers::RegisterOperations,
@@ -8,12 +8,12 @@ use crate::{
 };
 
 impl Processor {
-    pub fn sub(&mut self, instruction: SubInstruction) {
+    pub fn sub(&mut self, instruction: Subtraction) {
         match instruction {
-            SubInstruction::Byte(r, o) => self.sub_byte(r, o),
-            SubInstruction::Quarter(r, o) => self.sub_quarter(r, o),
-            SubInstruction::Half(r, o) => self.sub_half(r, o),
-            SubInstruction::Word(r, o) => self.sub_word(r, o),
+            Subtraction::Byte(r, o) => self.sub_byte(r, o),
+            Subtraction::Quarter(r, o) => self.sub_quarter(r, o),
+            Subtraction::Half(r, o) => self.sub_half(r, o),
+            Subtraction::Word(r, o) => self.sub_word(r, o),
         }
     }
 

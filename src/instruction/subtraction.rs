@@ -5,7 +5,7 @@ use crate::{
 };
 
 #[derive(Debug, PartialEq)]
-pub enum DivInstruction {
+pub enum Subtraction {
     Byte(Register, Operand<Byte>),
     Quarter(Register, Operand<Quarter>),
     Half(Register, Operand<Half>),

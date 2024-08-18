@@ -5,44 +5,44 @@ use crate::{
     operand::Operand,
     register::Register,
 };
-use add::AddDecoder;
-use div::DivDecoder;
-use mul::MulDecoder;
+use addition::AddDecoder;
+use division::DivDecoder;
+use multiplication::MulDecoder;
 use phf::phf_map;
 use set::SetDecoder;
 use std::str::SplitWhitespace;
-use sub::SubDecoder;
+use subtraction::SubDecoder;
 
-mod add;
-mod div;
-mod mul;
+mod addition;
+mod division;
+mod multiplication;
 mod set;
-mod sub;
+mod subtraction;
 
 // const _: () = assert!(DECODE_TABLE.len() == Instruction::VARIANT_COUNT);
 
 pub const DECODE_TABLE: DecodeTable = phf_map! {
-    "stop" => Instruction::decode_stop,
-    "setb" => SetDecoder::decode_set_byte,
-    "setq" => SetDecoder::decode_set_quarter,
-    "seth" => SetDecoder::decode_set_half,
-    "setw" => SetDecoder::decode_set_word,
-    "addb" => AddDecoder::decode_add_byte,
-    "addq" => AddDecoder::decode_add_quarter,
-    "addh" => AddDecoder::decode_add_half,
-    "addw" => AddDecoder::decode_add_word,
-    "subb" => SubDecoder::decode_sub_byte,
-    "subq" => SubDecoder::decode_sub_quarter,
-    "subh" => SubDecoder::decode_sub_half,
-    "subw" => SubDecoder::decode_sub_word,
-    "mulb" => MulDecoder::decode_mul_byte,
-    "mulq" => MulDecoder::decode_mul_quarter,
-    "mulh" => MulDecoder::decode_mul_half,
-    "mulw" => MulDecoder::decode_mul_word,
-    "divb" => DivDecoder::decode_div_byte,
-    "divq" => DivDecoder::decode_div_quarter,
-    "divh" => DivDecoder::decode_div_half,
-    "divw" => DivDecoder::decode_div_word,
+    "stop" => Instruction::stop,
+    "setb" => SetDecoder::set_byte,
+    "setq" => SetDecoder::set_quarter,
+    "seth" => SetDecoder::set_half,
+    "setw" => SetDecoder::set_word,
+    "addb" => AddDecoder::add_byte,
+    "addq" => AddDecoder::add_quarter,
+    "addh" => AddDecoder::add_half,
+    "addw" => AddDecoder::add_word,
+    "subb" => SubDecoder::sub_byte,
+    "subq" => SubDecoder::sub_quarter,
+    "subh" => SubDecoder::sub_half,
+    "subw" => SubDecoder::sub_word,
+    "mulb" => MulDecoder::mul_byte,
+    "mulq" => MulDecoder::mul_quarter,
+    "mulh" => MulDecoder::mul_half,
+    "mulw" => MulDecoder::mul_word,
+    "divb" => DivDecoder::div_byte,
+    "divq" => DivDecoder::div_quarter,
+    "divh" => DivDecoder::div_half,
+    "divw" => DivDecoder::div_word,
 };
 
 fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
@@ -94,7 +94,7 @@ fn decode_reg_and_word_operand(
 }
 
 impl Instruction {
-    pub fn decode_stop(_iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+    pub fn stop(_iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
         Ok(Instruction::Stop)
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     constant::{Byte, Half, Quarter, Word},
-    instruction::AddInstruction,
+    instruction::Addition,
     operand::Operand,
     register::Register,
     registers::RegisterOperations,
@@ -8,12 +8,12 @@ use crate::{
 };
 
 impl Processor {
-    pub fn add(&mut self, instruction: AddInstruction) {
+    pub fn add(&mut self, instruction: Addition) {
         match instruction {
-            AddInstruction::Byte(r, o) => self.add_byte(r, o),
-            AddInstruction::Quarter(r, o) => self.add_quarter(r, o),
-            AddInstruction::Half(r, o) => self.add_half(r, o),
-            AddInstruction::Word(r, o) => self.add_word(r, o),
+            Addition::Byte(r, o) => self.add_byte(r, o),
+            Addition::Quarter(r, o) => self.add_quarter(r, o),
+            Addition::Half(r, o) => self.add_half(r, o),
+            Addition::Word(r, o) => self.add_word(r, o),
         }
     }
 

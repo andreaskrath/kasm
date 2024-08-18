@@ -5,7 +5,7 @@ use crate::{
 };
 
 #[derive(Debug, PartialEq)]
-pub enum SetInstruction {
+pub enum Set {
     Byte(Register, Operand<Byte>),
     Quarter(Register, Operand<Quarter>),
     Half(Register, Operand<Half>),

@@ -1,6 +1,6 @@
 use crate::{
     constant::{Byte, Half, Quarter, Word},
-    instruction::MulInstruction,
+    instruction::Multiplication,
     operand::Operand,
     register::Register,
     registers::RegisterOperations,
@@ -8,12 +8,12 @@ use crate::{
 };
 
 impl Processor {
-    pub fn mul(&mut self, instruction: MulInstruction) {
+    pub fn mul(&mut self, instruction: Multiplication) {
         match instruction {
-            MulInstruction::Byte(r, o) => self.mul_byte(r, o),
-            MulInstruction::Quarter(r, o) => self.mul_quarter(r, o),
-            MulInstruction::Half(r, o) => self.mul_half(r, o),
-            MulInstruction::Word(r, o) => self.mul_word(r, o),
+            Multiplication::Byte(r, o) => self.mul_byte(r, o),
+            Multiplication::Quarter(r, o) => self.mul_quarter(r, o),
+            Multiplication::Half(r, o) => self.mul_half(r, o),
+            Multiplication::Word(r, o) => self.mul_word(r, o),
         }
     }
 
