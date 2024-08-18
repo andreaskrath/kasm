@@ -82,3 +82,254 @@ impl Processor {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod byte {
+    use crate::{
+        constant::Byte, error::ExecuteError, operand::Operand, register::Register, Processor,
+    };
+
+    #[test]
+    fn divide_by_zero_error() {
+        let mut p = Processor::new().unwrap();
+        let expected = Err(ExecuteError::DivideByZero);
+
+        let actual = p.div_byte(Register::A, Operand::Immediate(0));
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn dividend_is_zero() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+
+        p.div_byte(Register::A, Operand::Immediate(Byte::MAX))?;
+
+        assert_eq!(p.registers[Register::A], 0);
+        assert!(!p.flags.overflow);
+        assert!(p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn dividing_two_registers() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 4;
+
+        p.div_byte(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 5);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn uneven_division() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 6;
+
+        p.div_byte(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 3);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod quarter {
+    use crate::{
+        constant::Quarter, error::ExecuteError, operand::Operand, register::Register, Processor,
+    };
+
+    #[test]
+    fn divide_by_zero_error() {
+        let mut p = Processor::new().unwrap();
+        let expected = Err(ExecuteError::DivideByZero);
+
+        let actual = p.div_quarter(Register::A, Operand::Immediate(0));
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn dividend_is_zero() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+
+        p.div_quarter(Register::A, Operand::Immediate(Quarter::MAX))?;
+
+        assert_eq!(p.registers[Register::A], 0);
+        assert!(!p.flags.overflow);
+        assert!(p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn dividing_two_registers() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 4;
+
+        p.div_quarter(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 5);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn uneven_division() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 6;
+
+        p.div_byte(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 3);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod half {
+    use crate::{
+        constant::Half, error::ExecuteError, operand::Operand, register::Register, Processor,
+    };
+
+    #[test]
+    fn divide_by_zero_error() {
+        let mut p = Processor::new().unwrap();
+        let expected = Err(ExecuteError::DivideByZero);
+
+        let actual = p.div_half(Register::A, Operand::Immediate(0));
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn dividend_is_zero() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+
+        p.div_half(Register::A, Operand::Immediate(Half::MAX))?;
+
+        assert_eq!(p.registers[Register::A], 0);
+        assert!(!p.flags.overflow);
+        assert!(p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn dividing_two_registers() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 4;
+
+        p.div_half(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 5);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn uneven_division() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 6;
+
+        p.div_byte(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 3);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+}
+#[cfg(test)]
+mod word {
+    use crate::{
+        constant::Word, error::ExecuteError, operand::Operand, register::Register, Processor,
+    };
+
+    #[test]
+    fn divide_by_zero_error() {
+        let mut p = Processor::new().unwrap();
+        let expected = Err(ExecuteError::DivideByZero);
+
+        let actual = p.div_word(Register::A, Operand::Immediate(0));
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn dividend_is_zero() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+
+        p.div_word(Register::A, Operand::Immediate(Word::MAX))?;
+
+        assert_eq!(p.registers[Register::A], 0);
+        assert!(!p.flags.overflow);
+        assert!(p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn dividing_two_registers() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 4;
+
+        p.div_word(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 5);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+
+    #[test]
+    fn uneven_division() -> Result<(), ExecuteError> {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 20;
+        p.registers[Register::B] = 6;
+
+        p.div_byte(Register::A, Operand::Register(Register::B))?;
+
+        assert_eq!(p.registers[Register::A], 3);
+        assert!(!p.flags.overflow);
+        assert!(!p.flags.zero);
+        assert!(!p.flags.sign);
+
+        Ok(())
+    }
+}
