@@ -3,12 +3,14 @@ use variant_count::VariantCount;
 pub use addition::Addition;
 pub use division::Division;
 pub use multiplication::Multiplication;
+pub use remainder::Remainder;
 pub use set::Set;
 pub use subtraction::Subtraction;
 
 mod addition;
 mod division;
 mod multiplication;
+mod remainder;
 mod set;
 mod subtraction;
 
@@ -20,4 +22,5 @@ pub enum Instruction {
     Subtraction(Subtraction),
     Multiplication(Multiplication),
     Division(Division),
+    Remainder(Remainder),
 }

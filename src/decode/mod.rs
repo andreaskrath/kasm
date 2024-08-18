@@ -9,6 +9,7 @@ use addition::AddDecoder;
 use division::DivDecoder;
 use multiplication::MulDecoder;
 use phf::phf_map;
+use remainder::RemDecoder;
 use set::SetDecoder;
 use std::str::SplitWhitespace;
 use subtraction::SubDecoder;
@@ -16,6 +17,7 @@ use subtraction::SubDecoder;
 mod addition;
 mod division;
 mod multiplication;
+mod remainder;
 mod set;
 mod subtraction;
 
@@ -43,6 +45,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "divq" => DivDecoder::div_quarter,
     "divh" => DivDecoder::div_half,
     "divw" => DivDecoder::div_word,
+    "remb" => RemDecoder::rem_byte,
+    "remq" => RemDecoder::rem_quarter,
+    "remh" => RemDecoder::rem_half,
+    "remw" => RemDecoder::rem_word,
 };
 
 fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
