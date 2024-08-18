@@ -27,7 +27,6 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        // I am pretty certain divsion can only cause an overflow if the integers are signed.
         self.flags.set_from_byte(result, overflow);
         self.registers[register] = result as Word;
 
@@ -47,7 +46,6 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        // I am pretty certain divsion can only cause an overflow if the integers are signed.
         self.flags.set_from_quarter(result, overflow);
         self.registers[register] = result as Word;
 
@@ -63,7 +61,6 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        // I am pretty certain divsion can only cause an overflow if the integers are signed.
         self.flags.set_from_half(result, overflow);
         self.registers[register] = result as Word;
 
@@ -79,7 +76,6 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        // I am pretty certain divsion can only cause an overflow if the integers are signed.
         self.flags.set_from_word(result, overflow);
         self.registers[register] = result;
 
