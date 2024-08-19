@@ -39,56 +39,75 @@ impl Processor {
 
 #[cfg(test)]
 mod byte {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{
+        constant::{Byte, Word},
+        operand::Operand,
+        register::Register,
+        Processor,
+    };
 
     #[test]
     fn set_byte() {
         let mut p = Processor::new().unwrap();
+        let expected = Byte::MAX;
 
-        p.set_byte(Register::A, Operand::Immediate(1));
+        p.set_byte(Register::A, Operand::Immediate(Byte::MAX));
 
-        assert_eq!(p.registers[Register::A], 1);
+        assert_eq!(p.registers[Register::A], expected as Word);
     }
 }
 
 #[cfg(test)]
 mod quarter {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{
+        constant::{Quarter, Word},
+        operand::Operand,
+        register::Register,
+        Processor,
+    };
 
     #[test]
     fn set_quarter() {
         let mut p = Processor::new().unwrap();
+        let expected = Quarter::MAX;
 
-        p.set_quarter(Register::A, Operand::Immediate(1));
+        p.set_quarter(Register::A, Operand::Immediate(Quarter::MAX));
 
-        assert_eq!(p.registers[Register::A], 1);
+        assert_eq!(p.registers[Register::A], expected as Word);
     }
 }
 
 #[cfg(test)]
 mod half {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{
+        constant::{Half, Word},
+        operand::Operand,
+        register::Register,
+        Processor,
+    };
 
     #[test]
     fn set_half() {
         let mut p = Processor::new().unwrap();
+        let expected = Half::MAX;
 
-        p.set_half(Register::A, Operand::Immediate(1));
+        p.set_half(Register::A, Operand::Immediate(Half::MAX));
 
-        assert_eq!(p.registers[Register::A], 1);
+        assert_eq!(p.registers[Register::A], expected as Word);
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{constant::Word, operand::Operand, register::Register, Processor};
 
     #[test]
     fn set_word() {
         let mut p = Processor::new().unwrap();
+        let expected = Word::MAX;
 
-        p.set_word(Register::A, Operand::Immediate(1));
+        p.set_word(Register::A, Operand::Immediate(Word::MAX));
 
-        assert_eq!(p.registers[Register::A], 1);
+        assert_eq!(p.registers[Register::A], expected);
     }
 }

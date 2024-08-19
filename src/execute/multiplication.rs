@@ -67,9 +67,11 @@ mod byte {
     fn mul_causes_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = (Byte::MAX as Word / 2) + 1;
+        let expected = 0;
 
         p.mul_byte(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -79,9 +81,11 @@ mod byte {
     fn mul_does_not_cause_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = Byte::MAX as Word / 2;
+        let expected = Byte::MAX as Word - 1;
 
         p.mul_byte(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(p.flags.sign);
@@ -96,10 +100,10 @@ mod byte {
 
         p.mul_byte(Register::A, Operand::Register(Register::B));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 
     #[test]
@@ -110,10 +114,10 @@ mod byte {
 
         p.mul_byte(Register::A, Operand::Register(Register::A));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 }
 
@@ -130,9 +134,11 @@ mod quarter {
     fn mul_causes_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = (Quarter::MAX as Word / 2) + 1;
+        let expected = 0;
 
         p.mul_quarter(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -142,9 +148,11 @@ mod quarter {
     fn mul_does_not_cause_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = Quarter::MAX as Word / 2;
+        let expected = Quarter::MAX as Word - 1;
 
         p.mul_quarter(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(p.flags.sign);
@@ -159,10 +167,10 @@ mod quarter {
 
         p.mul_quarter(Register::A, Operand::Register(Register::B));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 
     #[test]
@@ -173,10 +181,10 @@ mod quarter {
 
         p.mul_quarter(Register::A, Operand::Register(Register::A));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 }
 
@@ -193,9 +201,11 @@ mod half {
     fn mul_causes_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = (Half::MAX as Word / 2) + 1;
+        let expected = 0;
 
         p.mul_half(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -205,9 +215,11 @@ mod half {
     fn mul_does_not_cause_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = Half::MAX as Word / 2;
+        let expected = Half::MAX as Word - 1;
 
         p.mul_half(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(p.flags.sign);
@@ -222,10 +234,10 @@ mod half {
 
         p.mul_half(Register::A, Operand::Register(Register::B));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 
     #[test]
@@ -236,10 +248,10 @@ mod half {
 
         p.mul_half(Register::A, Operand::Register(Register::A));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 }
 
@@ -251,9 +263,11 @@ mod word {
     fn mul_causes_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = (Word::MAX / 2) + 1;
+        let expected = 0;
 
         p.mul_word(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -263,9 +277,11 @@ mod word {
     fn mul_does_not_cause_overflow() {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = Word::MAX / 2;
+        let expected = Word::MAX - 1;
 
         p.mul_word(Register::A, Operand::Immediate(2));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(p.flags.sign);
@@ -280,10 +296,10 @@ mod word {
 
         p.mul_word(Register::A, Operand::Register(Register::B));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 
     #[test]
@@ -294,9 +310,9 @@ mod word {
 
         p.mul_word(Register::A, Operand::Register(Register::A));
 
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
-        assert_eq!(p.registers[Register::A], expected);
     }
 }

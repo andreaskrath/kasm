@@ -102,10 +102,11 @@ mod byte {
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
         let mut p = Processor::new().unwrap();
+        let expected = 0;
 
         p.div_byte(Register::A, Operand::Immediate(Byte::MAX))?;
 
-        assert_eq!(p.registers[Register::A], 0);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -118,10 +119,11 @@ mod byte {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
+        let expected = 5;
 
         p.div_byte(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 5);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
@@ -134,10 +136,11 @@ mod byte {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
+        let expected = 3;
 
         p.div_byte(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 3);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
@@ -165,10 +168,11 @@ mod quarter {
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
         let mut p = Processor::new().unwrap();
+        let expected = 0;
 
         p.div_quarter(Register::A, Operand::Immediate(Quarter::MAX))?;
 
-        assert_eq!(p.registers[Register::A], 0);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -181,10 +185,11 @@ mod quarter {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
+        let expected = 5;
 
         p.div_quarter(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 5);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
@@ -197,10 +202,11 @@ mod quarter {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
+        let expected = 3;
 
         p.div_byte(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 3);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
@@ -228,10 +234,11 @@ mod half {
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
         let mut p = Processor::new().unwrap();
+        let expected = 0;
 
         p.div_half(Register::A, Operand::Immediate(Half::MAX))?;
 
-        assert_eq!(p.registers[Register::A], 0);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -244,10 +251,11 @@ mod half {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
+        let expected = 5;
 
         p.div_half(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 5);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
@@ -260,10 +268,11 @@ mod half {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
+        let expected = 3;
 
         p.div_byte(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 3);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
@@ -271,6 +280,7 @@ mod half {
         Ok(())
     }
 }
+
 #[cfg(test)]
 mod word {
     use crate::{
@@ -290,10 +300,11 @@ mod word {
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
         let mut p = Processor::new().unwrap();
+        let expected = 0;
 
         p.div_word(Register::A, Operand::Immediate(Word::MAX))?;
 
-        assert_eq!(p.registers[Register::A], 0);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(p.flags.zero);
         assert!(!p.flags.sign);
@@ -306,10 +317,11 @@ mod word {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
+        let expected = 5;
 
         p.div_word(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 5);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
@@ -322,10 +334,11 @@ mod word {
         let mut p = Processor::new().unwrap();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
+        let expected = 3;
 
         p.div_byte(Register::A, Operand::Register(Register::B))?;
 
-        assert_eq!(p.registers[Register::A], 3);
+        assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
         assert!(!p.flags.zero);
         assert!(!p.flags.sign);
