@@ -1,22 +1,21 @@
 use crate::{
-    constant::{Byte, DecodeTable, Half, Quarter, Word},
-    error::DecodeError,
-    instruction::Instruction,
-    operand::Operand,
+    constant::DecodeTable, error::DecodeError, instruction::Instruction, operand::Operand,
     register::Register,
 };
 use addition::AddDecoder;
 use division::DivDecoder;
 use multiplication::MulDecoder;
 use phf::phf_map;
+use push::PushDecoder;
 use remainder::RemDecoder;
 use set::SetDecoder;
-use std::str::SplitWhitespace;
+use std::str::{FromStr, SplitWhitespace};
 use subtraction::SubDecoder;
 
 mod addition;
 mod division;
 mod multiplication;
+mod push;
 mod remainder;
 mod set;
 mod subtraction;
@@ -49,6 +48,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "remq" => RemDecoder::rem_quarter,
     "remh" => RemDecoder::rem_half,
     "remw" => RemDecoder::rem_word,
+    "pshb" => PushDecoder::push_byte,
+    "pshq" => PushDecoder::push_quarter,
+    "pshh" => PushDecoder::push_half,
+    "pshw" => PushDecoder::push_word,
 };
 
 fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
@@ -59,12 +62,22 @@ fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), De
     Ok((s_register, s_operand))
 }
 
+fn get_operand_str(mut iter: SplitWhitespace) -> Result<&str, DecodeError> {
+    match iter.next() {
+        Some(s_operand) => Ok(s_operand),
+        None => Err(DecodeError::IncompleteInstruction),
+    }
+}
+
 struct DecoderHelper;
 
 impl DecoderHelper {
-    fn try_reg_and_byte_operand(
+    fn try_register_and_operand<T>(
         iter: SplitWhitespace,
-    ) -> Result<(Register, Operand<Byte>), DecodeError> {
+    ) -> Result<(Register, Operand<T>), DecodeError>
+    where
+        T: FromStr,
+    {
         let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
         let register = Register::try_from(s_register)?;
         let operand = Operand::try_from(s_operand)?;
@@ -72,34 +85,14 @@ impl DecoderHelper {
         Ok((register, operand))
     }
 
-    fn try_reg_and_quarter_operand(
-        iter: SplitWhitespace,
-    ) -> Result<(Register, Operand<Quarter>), DecodeError> {
-        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
-        let register = Register::try_from(s_register)?;
+    fn try_operand<T>(iter: SplitWhitespace) -> Result<Operand<T>, DecodeError>
+    where
+        T: FromStr,
+    {
+        let s_operand = get_operand_str(iter)?;
         let operand = Operand::try_from(s_operand)?;
 
-        Ok((register, operand))
-    }
-
-    fn try_reg_and_half_operand(
-        iter: SplitWhitespace,
-    ) -> Result<(Register, Operand<Half>), DecodeError> {
-        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
-        let register = Register::try_from(s_register)?;
-        let operand = Operand::try_from(s_operand)?;
-
-        Ok((register, operand))
-    }
-
-    fn try_reg_and_word_operand(
-        iter: SplitWhitespace,
-    ) -> Result<(Register, Operand<Word>), DecodeError> {
-        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
-        let register = Register::try_from(s_register)?;
-        let operand = Operand::try_from(s_operand)?;
-
-        Ok((register, operand))
+        Ok(operand)
     }
 }
 
