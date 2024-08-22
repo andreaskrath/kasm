@@ -17,6 +17,8 @@ pub enum ProcessorError {
 pub enum DecodeError {
     #[error("invalid register '{0}'")]
     InvalidRegister(String),
+    #[error("invalid immediate value '{0}'")]
+    InvalidImmediateValue(String),
     #[error("invalid operand '{0}'")]
     InvalidOperand(String),
     #[error("unknown instruction '{0}'")]
