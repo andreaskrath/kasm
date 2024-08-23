@@ -19,3 +19,8 @@ pub const STACK_SIZE: usize = MEGA_BYTE * 4;
 
 type DecodeFn = fn(SplitWhitespace) -> Result<Instruction, DecodeError>;
 pub type DecodeTable = Map<&'static str, DecodeFn>;
+
+pub const BYTE: usize = 1;
+pub const BYTES_IN_QUARTER: usize = 2;
+pub const BYTES_IN_HALF: usize = 4;
+pub const BYTES_IN_WORD: usize = 8;
