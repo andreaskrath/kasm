@@ -16,6 +16,7 @@ mod instruction;
 mod operand;
 mod register;
 mod registers;
+mod utils;
 
 pub struct Processor {
     registers: Registers,

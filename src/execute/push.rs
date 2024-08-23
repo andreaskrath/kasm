@@ -1,76 +1,190 @@
 use crate::{
-    constant::{
-        Byte, Half, Quarter, Word, BYTE, BYTES_IN_HALF, BYTES_IN_QUARTER, BYTES_IN_WORD, STACK_SIZE,
-    },
+    constant::{Word, STACK_SIZE},
     error::ExecuteError,
     instruction::Push,
-    operand::Operand,
+    utils::ToLeBytes,
     Processor,
 };
 
 impl Processor {
     pub fn push(&mut self, instruction: Push) -> Result<(), ExecuteError> {
         match instruction {
-            Push::Byte(operand) => self.push_byte(operand)?,
-            Push::Quarter(operand) => self.push_quarter(operand)?,
-            Push::Half(operand) => self.push_half(operand)?,
-            Push::Word(operand) => self.push_word(operand)?,
+            Push::Byte(operand) => {
+                let value = self.get_byte_operand_val(operand);
+                self.push_value(value)?
+            }
+            Push::Quarter(operand) => {
+                let value = self.get_quarter_operand_val(operand);
+                self.push_value(value)?
+            }
+            Push::Half(operand) => {
+                let value = self.get_half_operand_val(operand);
+                self.push_value(value)?
+            }
+            Push::Word(operand) => {
+                let value = self.get_word_operand_val(operand);
+                self.push_value(value)?
+            }
         }
 
         Ok(())
     }
 
-    fn push_byte(&mut self, operand: Operand<Byte>) -> Result<(), ExecuteError> {
-        if self.sp() + BYTE > STACK_SIZE {
+    fn push_value<T: ToLeBytes>(&mut self, value: T) -> Result<(), ExecuteError> {
+        if self.sp() + size_of::<T>() > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
         }
 
-        let value = self.get_byte_operand_val(operand);
-        self.stack[self.sp()] = value;
-        self.stack_pointer += BYTE as Word;
+        for (index, byte) in value.to_le_bytes().iter().enumerate() {
+            self.stack[self.sp() + index] = *byte;
+        }
+
+        self.stack_pointer += size_of::<T>() as Word;
 
         Ok(())
     }
+}
 
-    fn push_quarter(&mut self, operand: Operand<Quarter>) -> Result<(), ExecuteError> {
-        if self.sp() + BYTES_IN_QUARTER > STACK_SIZE {
-            return Err(ExecuteError::StackOverflow);
-        }
+#[cfg(test)]
+mod byte {
+    use crate::{
+        constant::{Byte, Word, STACK_SIZE},
+        error::ExecuteError,
+        instruction::Push,
+        operand::Operand,
+        Processor,
+    };
 
-        let value = self.get_quarter_operand_val(operand);
-        for (index, byte) in value.to_be_bytes().into_iter().enumerate() {
-            self.stack[self.sp() + index] = byte;
-        }
-        self.stack_pointer += BYTES_IN_QUARTER as Word;
+    #[test]
+    fn stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = STACK_SIZE as Word;
+        let instruction = Push::Byte(Operand::Immediate(10));
+        let expected = Err(ExecuteError::StackOverflow);
 
-        Ok(())
+        let actual = p.push(instruction);
+
+        assert_eq!(actual, expected);
     }
 
-    fn push_half(&mut self, operand: Operand<Half>) -> Result<(), ExecuteError> {
-        if self.sp() + BYTES_IN_HALF > STACK_SIZE {
-            return Err(ExecuteError::StackOverflow);
-        }
+    #[test]
+    fn no_stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = (STACK_SIZE - size_of::<Byte>()) as Word;
+        let instruction = Push::Byte(Operand::Immediate(10));
+        let expected = 10;
 
-        let value = self.get_half_operand_val(operand);
-        for (index, byte) in value.to_be_bytes().into_iter().enumerate() {
-            self.stack[self.sp() + index] = byte;
-        }
-        self.stack_pointer += BYTES_IN_HALF as Word;
+        p.push(instruction).unwrap();
+        let actual = p.stack[STACK_SIZE - size_of::<Byte>()];
 
-        Ok(())
+        assert_eq!(actual, expected);
+    }
+}
+
+#[cfg(test)]
+mod quarter {
+    use crate::{
+        constant::{Quarter, Word, STACK_SIZE},
+        error::ExecuteError,
+        instruction::Push,
+        operand::Operand,
+        Processor,
+    };
+
+    #[test]
+    fn stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = STACK_SIZE as Word;
+        let instruction = Push::Quarter(Operand::Immediate(10));
+        let expected = Err(ExecuteError::StackOverflow);
+
+        let actual = p.push(instruction);
+
+        assert_eq!(actual, expected);
     }
 
-    fn push_word(&mut self, operand: Operand<Word>) -> Result<(), ExecuteError> {
-        if self.sp() + BYTES_IN_WORD > STACK_SIZE {
-            return Err(ExecuteError::StackOverflow);
-        }
+    #[test]
+    fn no_stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = (STACK_SIZE - size_of::<Quarter>()) as Word;
+        let instruction = Push::Byte(Operand::Immediate(10));
+        let expected = 10;
 
-        let value = self.get_word_operand_val(operand);
-        for (index, byte) in value.to_be_bytes().into_iter().enumerate() {
-            self.stack[self.sp() + index] = byte;
-        }
-        self.stack_pointer += BYTES_IN_WORD as Word;
+        p.push(instruction).unwrap();
+        let actual = p.stack[STACK_SIZE - size_of::<Quarter>()];
 
-        Ok(())
+        assert_eq!(actual, expected);
+    }
+}
+
+#[cfg(test)]
+mod half {
+    use crate::{
+        constant::{Half, Word, STACK_SIZE},
+        error::ExecuteError,
+        instruction::Push,
+        operand::Operand,
+        Processor,
+    };
+
+    #[test]
+    fn stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = STACK_SIZE as Word;
+        let instruction = Push::Half(Operand::Immediate(10));
+        let expected = Err(ExecuteError::StackOverflow);
+
+        let actual = p.push(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn no_stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = (STACK_SIZE - size_of::<Half>()) as Word;
+        let instruction = Push::Byte(Operand::Immediate(10));
+        let expected = 10;
+
+        p.push(instruction).unwrap();
+        let actual = p.stack[STACK_SIZE - size_of::<Half>()];
+
+        assert_eq!(actual, expected);
+    }
+}
+
+#[cfg(test)]
+mod word {
+    use crate::{
+        constant::{Word, STACK_SIZE},
+        error::ExecuteError,
+        instruction::Push,
+        operand::Operand,
+        Processor,
+    };
+
+    #[test]
+    fn stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = STACK_SIZE as Word;
+        let instruction = Push::Quarter(Operand::Immediate(10));
+        let expected = Err(ExecuteError::StackOverflow);
+
+        let actual = p.push(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn no_stack_overflow() {
+        let mut p = Processor::new().unwrap();
+        p.stack_pointer = (STACK_SIZE - size_of::<Word>()) as Word;
+        let instruction = Push::Byte(Operand::Immediate(10));
+        let expected = 10;
+
+        p.push(instruction).unwrap();
+        let actual = p.stack[STACK_SIZE - size_of::<Word>()];
+
+        assert_eq!(actual, expected);
     }
 }
