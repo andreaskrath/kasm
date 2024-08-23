@@ -3,6 +3,7 @@ use variant_count::VariantCount;
 pub use addition::Addition;
 pub use division::Division;
 pub use multiplication::Multiplication;
+pub use pop::Pop;
 pub use push::Push;
 pub use remainder::Remainder;
 pub use set::Set;
@@ -11,6 +12,7 @@ pub use subtraction::Subtraction;
 mod addition;
 mod division;
 mod multiplication;
+mod pop;
 mod push;
 mod remainder;
 mod set;
@@ -26,4 +28,5 @@ pub enum Instruction {
     Division(Division),
     Remainder(Remainder),
     Push(Push),
+    Pop(Pop),
 }

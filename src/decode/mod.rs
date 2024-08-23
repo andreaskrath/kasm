@@ -6,6 +6,7 @@ use addition::AddDecoder;
 use division::DivDecoder;
 use multiplication::MulDecoder;
 use phf::phf_map;
+use pop::PopDecoder;
 use push::PushDecoder;
 use remainder::RemDecoder;
 use set::SetDecoder;
@@ -15,6 +16,7 @@ use subtraction::SubDecoder;
 mod addition;
 mod division;
 mod multiplication;
+mod pop;
 mod push;
 mod remainder;
 mod set;
@@ -52,9 +54,13 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "pshq" => PushDecoder::push_quarter,
     "pshh" => PushDecoder::push_half,
     "pshw" => PushDecoder::push_word,
+    "popb" => PopDecoder::pop_byte,
+    "popq" => PopDecoder::pop_quarter,
+    "poph" => PopDecoder::pop_half,
+    "popw" => PopDecoder::pop_word,
 };
 
-fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
+fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
     let (Some(s_register), Some(s_operand)) = (iter.next(), iter.next()) else {
         return Err(DecodeError::IncompleteInstruction);
     };
@@ -62,7 +68,7 @@ fn get_reg_and_operand_str(mut iter: SplitWhitespace) -> Result<(&str, &str), De
     Ok((s_register, s_operand))
 }
 
-fn get_operand_str(mut iter: SplitWhitespace) -> Result<&str, DecodeError> {
+fn get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, DecodeError> {
     match iter.next() {
         Some(s_operand) => Ok(s_operand),
         None => Err(DecodeError::IncompleteInstruction),
@@ -78,7 +84,7 @@ impl DecoderHelper {
     where
         T: FromStr,
     {
-        let (s_register, s_operand) = get_reg_and_operand_str(iter)?;
+        let (s_register, s_operand) = get_both_parameters_str(iter)?;
         let register = Register::try_from(s_register)?;
         let operand = Operand::try_from(s_operand)?;
 
@@ -89,10 +95,17 @@ impl DecoderHelper {
     where
         T: FromStr,
     {
-        let s_operand = get_operand_str(iter)?;
+        let s_operand = get_first_parameter_str(iter)?;
         let operand = Operand::try_from(s_operand)?;
 
         Ok(operand)
+    }
+
+    fn try_register(iter: SplitWhitespace) -> Result<Register, DecodeError> {
+        let s_register = get_first_parameter_str(iter)?;
+        let register = Register::try_from(s_register)?;
+
+        Ok(register)
     }
 }
 
@@ -104,14 +117,14 @@ impl Instruction {
 
 #[cfg(test)]
 mod get_reg_and_operand_str {
-    use super::get_reg_and_operand_str;
+    use super::get_both_parameters_str;
     use crate::error::DecodeError;
 
     #[test]
     fn empty_parameters() {
         let iter = "".split_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
-        let actual = get_reg_and_operand_str(iter);
+        let actual = get_both_parameters_str(iter);
         assert_eq!(actual, expected);
     }
 
@@ -119,7 +132,7 @@ mod get_reg_and_operand_str {
     fn missing_second_parameter() {
         let iter = "ra".split_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
-        let actual = get_reg_and_operand_str(iter);
+        let actual = get_both_parameters_str(iter);
         assert_eq!(actual, expected);
     }
 
@@ -127,7 +140,7 @@ mod get_reg_and_operand_str {
     fn both_parameters_defined() {
         let iter = "ra 0".split_whitespace();
         let expected = Ok(("ra", "0"));
-        let actual = get_reg_and_operand_str(iter);
+        let actual = get_both_parameters_str(iter);
         assert_eq!(actual, expected);
     }
 }

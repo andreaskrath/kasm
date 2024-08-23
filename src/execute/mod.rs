@@ -56,6 +56,7 @@ impl Processor {
             Division(instruction) => self.div(instruction)?,
             Remainder(instruction) => self.rem(instruction)?,
             Push(instruction) => self.push(instruction)?,
+            Pop(instruction) => todo!(),
         }
 
         Ok(())
