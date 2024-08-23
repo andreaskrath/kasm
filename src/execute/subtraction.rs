@@ -22,7 +22,7 @@ impl Processor {
         let b = self.get_byte_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
-        self.flags.set_from_byte(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result as Word;
     }
 
@@ -31,7 +31,7 @@ impl Processor {
         let b = self.get_quarter_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
-        self.flags.set_from_quarter(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result as Word;
     }
 
@@ -40,7 +40,7 @@ impl Processor {
         let b = self.get_half_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
-        self.flags.set_from_half(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result as Word;
     }
 
@@ -49,7 +49,7 @@ impl Processor {
         let b = self.get_word_operand_val(operand);
 
         let (result, overflow) = a.overflowing_sub(b);
-        self.flags.set_from_word(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result;
     }
 }

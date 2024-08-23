@@ -27,7 +27,7 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        self.flags.set_from_byte(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result as Word;
 
         Ok(())
@@ -46,7 +46,7 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        self.flags.set_from_quarter(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result as Word;
 
         Ok(())
@@ -61,7 +61,7 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        self.flags.set_from_half(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result as Word;
 
         Ok(())
@@ -76,7 +76,7 @@ impl Processor {
         }
 
         let (result, overflow) = a.overflowing_div(b);
-        self.flags.set_from_word(result, overflow);
+        self.flags.set(result, overflow);
         self.registers[register] = result;
 
         Ok(())
