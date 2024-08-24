@@ -43,7 +43,6 @@ mod byte {
     use crate::{
         constant::{Byte, Word, STACK_SIZE},
         error::ExecuteError,
-        instruction::Push,
         operand::Operand,
         Processor,
     };
@@ -52,10 +51,9 @@ mod byte {
     fn stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = STACK_SIZE as Word;
-        let instruction = Push::Byte(Operand::Immediate(10));
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push(instruction);
+        let actual = p.push_value(Operand::Immediate(Byte::MAX));
 
         assert_eq!(actual, expected);
     }
@@ -64,10 +62,9 @@ mod byte {
     fn no_stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = (STACK_SIZE - size_of::<Byte>()) as Word;
-        let instruction = Push::Byte(Operand::Immediate(10));
-        let expected = 10;
+        let expected = Byte::MAX;
 
-        p.push(instruction).unwrap();
+        p.push_value(Operand::Immediate(Byte::MAX)).unwrap();
         let actual = p.stack[STACK_SIZE - size_of::<Byte>()];
 
         assert_eq!(actual, expected);
@@ -79,7 +76,6 @@ mod quarter {
     use crate::{
         constant::{Quarter, Word, STACK_SIZE},
         error::ExecuteError,
-        instruction::Push,
         operand::Operand,
         Processor,
     };
@@ -88,10 +84,9 @@ mod quarter {
     fn stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = STACK_SIZE as Word;
-        let instruction = Push::Quarter(Operand::Immediate(10));
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push(instruction);
+        let actual = p.push_value(Operand::Immediate(Quarter::MAX));
 
         assert_eq!(actual, expected);
     }
@@ -100,11 +95,10 @@ mod quarter {
     fn no_stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = (STACK_SIZE - size_of::<Quarter>()) as Word;
-        let instruction = Push::Byte(Operand::Immediate(10));
-        let expected = 10;
+        let expected = Quarter::MAX.to_le_bytes();
 
-        p.push(instruction).unwrap();
-        let actual = p.stack[STACK_SIZE - size_of::<Quarter>()];
+        p.push_value(Operand::Immediate(Quarter::MAX)).unwrap();
+        let actual = &p.stack[STACK_SIZE - size_of::<Quarter>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
     }
@@ -115,7 +109,6 @@ mod half {
     use crate::{
         constant::{Half, Word, STACK_SIZE},
         error::ExecuteError,
-        instruction::Push,
         operand::Operand,
         Processor,
     };
@@ -124,10 +117,9 @@ mod half {
     fn stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = STACK_SIZE as Word;
-        let instruction = Push::Half(Operand::Immediate(10));
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push(instruction);
+        let actual = p.push_value(Operand::Immediate(Half::MAX));
 
         assert_eq!(actual, expected);
     }
@@ -136,11 +128,10 @@ mod half {
     fn no_stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = (STACK_SIZE - size_of::<Half>()) as Word;
-        let instruction = Push::Byte(Operand::Immediate(10));
-        let expected = 10;
+        let expected = Half::MAX.to_le_bytes();
 
-        p.push(instruction).unwrap();
-        let actual = p.stack[STACK_SIZE - size_of::<Half>()];
+        p.push_value(Operand::Immediate(Half::MAX)).unwrap();
+        let actual = &p.stack[STACK_SIZE - size_of::<Half>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
     }
@@ -151,7 +142,6 @@ mod word {
     use crate::{
         constant::{Word, STACK_SIZE},
         error::ExecuteError,
-        instruction::Push,
         operand::Operand,
         Processor,
     };
@@ -160,10 +150,9 @@ mod word {
     fn stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = STACK_SIZE as Word;
-        let instruction = Push::Quarter(Operand::Immediate(10));
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push(instruction);
+        let actual = p.push_value(Operand::Immediate(Word::MAX));
 
         assert_eq!(actual, expected);
     }
@@ -172,11 +161,10 @@ mod word {
     fn no_stack_overflow() {
         let mut p = Processor::new().unwrap();
         p.stack_pointer = (STACK_SIZE - size_of::<Word>()) as Word;
-        let instruction = Push::Byte(Operand::Immediate(10));
-        let expected = 10;
+        let expected = Word::MAX.to_le_bytes();
 
-        p.push(instruction).unwrap();
-        let actual = p.stack[STACK_SIZE - size_of::<Word>()];
+        p.push_value(Operand::Immediate(Word::MAX)).unwrap();
+        let actual = &p.stack[STACK_SIZE - size_of::<Word>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
     }
