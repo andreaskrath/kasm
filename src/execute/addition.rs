@@ -70,7 +70,7 @@ mod byte {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Byte>::Register(Register::B));
+        p.add_value::<Byte>(Register::A, Operand::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -84,7 +84,7 @@ mod byte {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Byte>::Register(Register::A));
+        p.add_value::<Byte>(Register::A, Operand::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -137,7 +137,7 @@ mod quarter {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Quarter>::Register(Register::B));
+        p.add_value::<Quarter>(Register::A, Operand::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -151,7 +151,7 @@ mod quarter {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Quarter>::Register(Register::A));
+        p.add_value::<Quarter>(Register::A, Operand::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -204,7 +204,7 @@ mod half {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Half>::Register(Register::B));
+        p.add_value::<Half>(Register::A, Operand::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -218,7 +218,7 @@ mod half {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Half>::Register(Register::A));
+        p.add_value::<Half>(Register::A, Operand::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -266,7 +266,7 @@ mod word {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Word>::Register(Register::B));
+        p.add_value::<Word>(Register::A, Operand::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -280,7 +280,7 @@ mod word {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value(Register::A, Operand::<Word>::Register(Register::A));
+        p.add_value::<Word>(Register::A, Operand::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
