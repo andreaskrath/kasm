@@ -13,7 +13,10 @@ mod set;
 mod subtraction;
 
 impl Processor {
-    fn get_operand_value<T: FromBytes>(&self, operand: Operand<T>) -> T {
+    fn get_operand_value<T>(&self, operand: Operand<T>) -> T
+    where
+        T: FromBytes,
+    {
         match operand {
             Operand::Register(register) => self.registers.get::<T>(register),
             Operand::Immediate(value) => value,

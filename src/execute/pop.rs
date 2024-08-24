@@ -18,7 +18,10 @@ impl Processor {
         Ok(())
     }
 
-    fn pop_value<T: FromBytes>(&mut self, register: Register) -> Result<(), ExecuteError> {
+    fn pop_value<T>(&mut self, register: Register) -> Result<(), ExecuteError>
+    where
+        T: FromBytes,
+    {
         if self.sp().checked_sub(size_of::<T>()).is_none() {
             return Err(ExecuteError::StackUnderflow);
         }
