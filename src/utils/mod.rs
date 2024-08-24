@@ -1,7 +1,7 @@
 pub use from_bytes::FromBytes;
 pub use setable::Setable;
-pub use to_le_bytes::ToLeBytes;
+pub use to_bytes::ToBytes;
 
 mod from_bytes;
 mod setable;
-mod to_le_bytes;
+mod to_bytes;

@@ -2,7 +2,7 @@ use crate::{
     constant::{Word, STACK_SIZE},
     error::ExecuteError,
     instruction::Push,
-    utils::ToLeBytes,
+    utils::ToBytes,
     Processor,
 };
 
@@ -30,12 +30,12 @@ impl Processor {
         Ok(())
     }
 
-    fn push_value<T: ToLeBytes>(&mut self, value: T) -> Result<(), ExecuteError> {
+    fn push_value<T: ToBytes>(&mut self, value: T) -> Result<(), ExecuteError> {
         if self.sp() + size_of::<T>() > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
         }
 
-        for (index, byte) in value.to_le_bytes().iter().enumerate() {
+        for (index, byte) in value.to_bytes().iter().enumerate() {
             self.stack[self.sp() + index] = *byte;
         }
 
