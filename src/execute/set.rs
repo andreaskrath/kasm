@@ -1,39 +1,21 @@
-use crate::{
-    constant::{Byte, Half, Quarter, Word},
-    instruction::Set,
-    operand::Operand,
-    register::Register,
-    Processor,
-};
+use crate::{instruction::Set, operand::Operand, register::Register, utils::FromBytes, Processor};
 
 impl Processor {
     pub fn set(&mut self, instruction: Set) {
         match instruction {
-            Set::Byte(r, o) => self.set_byte(r, o),
-            Set::Quarter(r, o) => self.set_quarter(r, o),
-            Set::Half(r, o) => self.set_half(r, o),
-            Set::Word(r, o) => self.set_word(r, o),
+            Set::Byte(r, o) => self.set_value(r, o),
+            Set::Quarter(r, o) => self.set_value(r, o),
+            Set::Half(r, o) => self.set_value(r, o),
+            Set::Word(r, o) => self.set_value(r, o),
         }
     }
 
-    fn set_byte(&mut self, register: Register, operand: Operand<Byte>) {
+    fn set_value<T>(&mut self, register: Register, operand: Operand<T>)
+    where
+        T: FromBytes,
+    {
         let value = self.get_operand_value(operand);
-        self.registers[register] = value as Word;
-    }
-
-    fn set_quarter(&mut self, register: Register, operand: Operand<Quarter>) {
-        let value = self.get_operand_value(operand);
-        self.registers[register] = value as Word;
-    }
-
-    fn set_half(&mut self, register: Register, operand: Operand<Half>) {
-        let value = self.get_operand_value(operand);
-        self.registers[register] = value as Word;
-    }
-
-    fn set_word(&mut self, register: Register, operand: Operand<Word>) {
-        let value = self.get_operand_value(operand);
-        self.registers[register] = value;
+        self.registers[register] = value.to_word();
     }
 }
 
@@ -51,7 +33,7 @@ mod byte {
         let mut p = Processor::new().unwrap();
         let expected = Byte::MAX;
 
-        p.set_byte(Register::A, Operand::Immediate(Byte::MAX));
+        p.set_value(Register::A, Operand::Immediate(Byte::MAX));
 
         assert_eq!(p.registers[Register::A], expected as Word);
     }
@@ -71,7 +53,7 @@ mod quarter {
         let mut p = Processor::new().unwrap();
         let expected = Quarter::MAX;
 
-        p.set_quarter(Register::A, Operand::Immediate(Quarter::MAX));
+        p.set_value(Register::A, Operand::Immediate(Quarter::MAX));
 
         assert_eq!(p.registers[Register::A], expected as Word);
     }
@@ -91,7 +73,7 @@ mod half {
         let mut p = Processor::new().unwrap();
         let expected = Half::MAX;
 
-        p.set_half(Register::A, Operand::Immediate(Half::MAX));
+        p.set_value(Register::A, Operand::Immediate(Half::MAX));
 
         assert_eq!(p.registers[Register::A], expected as Word);
     }
@@ -106,7 +88,7 @@ mod word {
         let mut p = Processor::new().unwrap();
         let expected = Word::MAX;
 
-        p.set_word(Register::A, Operand::Immediate(Word::MAX));
+        p.set_value(Register::A, Operand::Immediate(Word::MAX));
 
         assert_eq!(p.registers[Register::A], expected);
     }
