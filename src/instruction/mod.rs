@@ -31,4 +31,5 @@ pub enum Instruction {
     Push(Push),
     Pop(Pop),
     Call(Operand<Word>),
+    Return,
 }

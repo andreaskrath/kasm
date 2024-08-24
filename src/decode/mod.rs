@@ -59,6 +59,7 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "poph" => PopDecoder::pop_half,
     "popw" => PopDecoder::pop_word,
     "call" => Instruction::call,
+    "ret" => Instruction::ret,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
@@ -119,6 +120,10 @@ impl Instruction {
         let operand = DecoderHelper::try_operand(iter)?;
 
         Ok(Instruction::Call(operand))
+    }
+
+    pub fn ret(_iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        Ok(Instruction::Return)
     }
 }
 

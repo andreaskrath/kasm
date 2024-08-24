@@ -37,6 +37,7 @@ impl Processor {
             Push(instruction) => self.push(instruction)?,
             Pop(instruction) => self.pop(instruction)?,
             Call(operand) => self.call(operand)?,
+            Return => self.ret()?,
         }
 
         Ok(())
@@ -49,6 +50,13 @@ impl Processor {
     fn call(&mut self, operand: Operand<Word>) -> Result<(), ExecuteError> {
         let destination = self.get_operand_value(operand);
         self.push_value(destination)?;
+
+        Ok(())
+    }
+
+    fn ret(&mut self) -> Result<(), ExecuteError> {
+        let destination = self.pop_value::<Word>()?;
+        self.program_counter = destination;
 
         Ok(())
     }
