@@ -29,13 +29,24 @@ mod byte {
     };
 
     #[test]
-    fn set_byte() {
+    fn set_from_immediate() {
         let mut p = Processor::new().unwrap();
-        let expected = Byte::MAX;
+        let expected = Byte::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Byte::MAX));
 
-        assert_eq!(p.registers[Register::A], expected as Word);
+        assert_eq!(p.registers[Register::A], expected);
+    }
+
+    #[test]
+    fn set_from_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::B] = Byte::MAX as Word;
+        let expected = Byte::MAX as Word;
+
+        p.set_value::<Byte>(Register::A, Operand::Register(Register::B));
+
+        assert_eq!(p.registers[Register::A], expected);
     }
 }
 
@@ -49,13 +60,24 @@ mod quarter {
     };
 
     #[test]
-    fn set_quarter() {
+    fn set_from_immediate() {
         let mut p = Processor::new().unwrap();
-        let expected = Quarter::MAX;
+        let expected = Quarter::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Quarter::MAX));
 
-        assert_eq!(p.registers[Register::A], expected as Word);
+        assert_eq!(p.registers[Register::A], expected);
+    }
+
+    #[test]
+    fn set_from_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::B] = Quarter::MAX as Word;
+        let expected = Quarter::MAX as Word;
+
+        p.set_value::<Quarter>(Register::A, Operand::Register(Register::B));
+
+        assert_eq!(p.registers[Register::A], expected);
     }
 }
 
@@ -69,13 +91,24 @@ mod half {
     };
 
     #[test]
-    fn set_half() {
+    fn set_from_immediate() {
         let mut p = Processor::new().unwrap();
-        let expected = Half::MAX;
+        let expected = Half::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Half::MAX));
 
-        assert_eq!(p.registers[Register::A], expected as Word);
+        assert_eq!(p.registers[Register::A], expected);
+    }
+
+    #[test]
+    fn set_from_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::B] = Half::MAX as Word;
+        let expected = Half::MAX as Word;
+
+        p.set_value::<Half>(Register::A, Operand::Register(Register::B));
+
+        assert_eq!(p.registers[Register::A], expected);
     }
 }
 
@@ -84,11 +117,22 @@ mod word {
     use crate::{constant::Word, operand::Operand, register::Register, Processor};
 
     #[test]
-    fn set_word() {
+    fn set_from_immediate() {
         let mut p = Processor::new().unwrap();
         let expected = Word::MAX;
 
         p.set_value(Register::A, Operand::Immediate(Word::MAX));
+
+        assert_eq!(p.registers[Register::A], expected);
+    }
+
+    #[test]
+    fn set_from_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::B] = Word::MAX;
+        let expected = Word::MAX;
+
+        p.set_value::<Word>(Register::A, Operand::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
     }
