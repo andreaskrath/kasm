@@ -1,4 +1,10 @@
-use crate::{instruction::Set, operand::Operand, register::Register, utils::FromBytes, Processor};
+use crate::{
+    instruction::Set,
+    operand::Operand,
+    register::Register,
+    utils::{FromBytes, ToWord},
+    Processor,
+};
 
 impl Processor {
     pub fn set(&mut self, instruction: Set) {
@@ -12,7 +18,7 @@ impl Processor {
 
     fn set_value<T>(&mut self, register: Register, operand: Operand<T>)
     where
-        T: FromBytes,
+        T: FromBytes + ToWord,
     {
         let value = self.get_operand_value(operand);
         self.registers[register] = value.to_word();

@@ -2,6 +2,7 @@ use crate::{constant::Word, operand::Operand};
 use variant_count::VariantCount;
 
 pub use addition::Addition;
+pub use and::And;
 pub use division::Division;
 pub use multiplication::Multiplication;
 pub use pop::Pop;
@@ -11,6 +12,7 @@ pub use set::Set;
 pub use subtraction::Subtraction;
 
 mod addition;
+mod and;
 mod division;
 mod multiplication;
 mod pop;
@@ -32,4 +34,5 @@ pub enum Instruction {
     Pop(Pop),
     Call(Operand<Word>),
     Return,
+    And(And),
 }

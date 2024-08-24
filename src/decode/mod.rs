@@ -3,6 +3,7 @@ use crate::{
     register::Register,
 };
 use addition::AddDecoder;
+use and::AndDecoder;
 use division::DivDecoder;
 use multiplication::MulDecoder;
 use phf::phf_map;
@@ -14,6 +15,7 @@ use std::str::{FromStr, SplitWhitespace};
 use subtraction::SubDecoder;
 
 mod addition;
+mod and;
 mod division;
 mod multiplication;
 mod pop;
@@ -60,6 +62,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "popw" => PopDecoder::pop_word,
     "call" => Instruction::call,
     "ret" => Instruction::ret,
+    "andb" => AndDecoder::and_byte,
+    "andq" => AndDecoder::and_quarter,
+    "andh" => AndDecoder::and_half,
+    "andw" => AndDecoder::and_word,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {

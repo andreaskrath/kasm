@@ -4,6 +4,7 @@ use crate::{
 };
 
 mod addition;
+mod and;
 mod division;
 mod multiplication;
 mod pop;
@@ -28,16 +29,17 @@ impl Processor {
 
         match instruction {
             Stop => self.stop(),
-            Set(instruction) => self.set(instruction),
-            Addition(instruction) => self.add(instruction),
-            Subtraction(instruction) => self.sub(instruction),
-            Multiplication(instruction) => self.mul(instruction),
-            Division(instruction) => self.div(instruction)?,
-            Remainder(instruction) => self.rem(instruction)?,
-            Push(instruction) => self.push(instruction)?,
-            Pop(instruction) => self.pop(instruction)?,
+            Set(set_ins) => self.set(set_ins),
+            Addition(add_ins) => self.add(add_ins),
+            Subtraction(sub_ins) => self.sub(sub_ins),
+            Multiplication(mul_ins) => self.mul(mul_ins),
+            Division(div_ins) => self.div(div_ins)?,
+            Remainder(rem_ins) => self.rem(rem_ins)?,
+            Push(push_ins) => self.push(push_ins)?,
+            Pop(pop_ins) => self.pop(pop_ins)?,
             Call(operand) => self.call(operand)?,
             Return => self.ret()?,
+            And(and_ins) => self.and(and_ins),
         }
 
         Ok(())
