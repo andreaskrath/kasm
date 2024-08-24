@@ -1,56 +1,32 @@
 use crate::{
-    constant::{Byte, Half, Quarter, Word},
     instruction::Addition,
     operand::Operand,
     register::Register,
     registers::RegisterOperations,
+    utils::{FromBytes, Overflow, Setable},
     Processor,
 };
 
 impl Processor {
     pub fn add(&mut self, instruction: Addition) {
         match instruction {
-            Addition::Byte(r, o) => self.add_byte(r, o),
-            Addition::Quarter(r, o) => self.add_quarter(r, o),
-            Addition::Half(r, o) => self.add_half(r, o),
-            Addition::Word(r, o) => self.add_word(r, o),
+            Addition::Byte(r, o) => self.add_value(r, o),
+            Addition::Quarter(r, o) => self.add_value(r, o),
+            Addition::Half(r, o) => self.add_value(r, o),
+            Addition::Word(r, o) => self.add_value(r, o),
         }
     }
 
-    fn add_byte(&mut self, register: Register, operand: Operand<Byte>) {
-        let a = self.registers.get::<Byte>(register);
+    fn add_value<T>(&mut self, register: Register, operand: Operand<T>)
+    where
+        T: Overflow + Setable + FromBytes + Copy,
+    {
+        let a = self.registers.get::<T>(register);
         let b = self.get_operand_value(operand);
 
-        let (result, overflow) = a.overflowing_add(b);
+        let (result, overflow) = a.overflow_add(b);
         self.flags.set(result, overflow);
-        self.registers[register] = result as Word;
-    }
-
-    fn add_quarter(&mut self, register: Register, operand: Operand<Quarter>) {
-        let a = self.registers.get::<Quarter>(register);
-        let b = self.get_operand_value(operand);
-
-        let (result, overflow) = a.overflowing_add(b);
-        self.flags.set(result, overflow);
-        self.registers[register] = result as Word;
-    }
-
-    fn add_half(&mut self, register: Register, operand: Operand<Half>) {
-        let a = self.registers.get::<Half>(register);
-        let b = self.get_operand_value(operand);
-
-        let (result, overflow) = a.overflowing_add(b);
-        self.flags.set(result, overflow);
-        self.registers[register] = result as Word;
-    }
-
-    fn add_word(&mut self, register: Register, operand: Operand<Word>) {
-        let a = self.registers.get::<Word>(register);
-        let b = self.get_operand_value(operand);
-
-        let (result, overflow) = a.overflowing_add(b);
-        self.flags.set(result, overflow);
-        self.registers[register] = result;
+        self.registers[register] = result.to_word();
     }
 }
 
@@ -69,7 +45,7 @@ mod byte {
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = 0;
 
-        p.add_byte(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u8));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
@@ -83,7 +59,7 @@ mod byte {
         p.registers[Register::A] = Byte::MAX as Word - 1;
         let expected = Byte::MAX as Word;
 
-        p.add_byte(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u8));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -98,7 +74,7 @@ mod byte {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_byte(Register::A, Operand::Register(Register::B));
+        p.add_value(Register::A, Operand::<Byte>::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -112,7 +88,7 @@ mod byte {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_byte(Register::A, Operand::Register(Register::A));
+        p.add_value(Register::A, Operand::<Byte>::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -136,7 +112,7 @@ mod quarter {
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = 0;
 
-        p.add_quarter(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u16));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
@@ -150,7 +126,7 @@ mod quarter {
         p.registers[Register::A] = Quarter::MAX as Word - 1;
         let expected = Quarter::MAX as Word;
 
-        p.add_quarter(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u16));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -165,7 +141,7 @@ mod quarter {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_quarter(Register::A, Operand::Register(Register::B));
+        p.add_value(Register::A, Operand::<Quarter>::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -179,7 +155,7 @@ mod quarter {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_quarter(Register::A, Operand::Register(Register::A));
+        p.add_value(Register::A, Operand::<Quarter>::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -203,7 +179,7 @@ mod half {
         p.registers[Register::A] = Half::MAX as Word;
         let expected = 0;
 
-        p.add_half(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u32));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
@@ -217,7 +193,7 @@ mod half {
         p.registers[Register::A] = Half::MAX as Word - 1;
         let expected = Half::MAX as Word;
 
-        p.add_half(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u32));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -232,7 +208,7 @@ mod half {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_half(Register::A, Operand::Register(Register::B));
+        p.add_value(Register::A, Operand::<Half>::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -246,7 +222,7 @@ mod half {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_half(Register::A, Operand::Register(Register::A));
+        p.add_value(Register::A, Operand::<Half>::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -265,7 +241,7 @@ mod word {
         p.registers[Register::A] = Word::MAX;
         let expected = 0;
 
-        p.add_word(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u64));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(p.flags.overflow);
@@ -279,7 +255,7 @@ mod word {
         p.registers[Register::A] = Word::MAX - 1;
         let expected = Word::MAX;
 
-        p.add_word(Register::A, Operand::Immediate(1));
+        p.add_value(Register::A, Operand::Immediate(1u64));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -294,7 +270,7 @@ mod word {
         p.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_word(Register::A, Operand::Register(Register::B));
+        p.add_value(Register::A, Operand::<Word>::Register(Register::B));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -308,7 +284,7 @@ mod word {
         p.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_word(Register::A, Operand::Register(Register::A));
+        p.add_value(Register::A, Operand::<Word>::Register(Register::A));
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
