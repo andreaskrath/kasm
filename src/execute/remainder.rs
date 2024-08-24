@@ -20,7 +20,7 @@ impl Processor {
 
     fn rem_byte(&mut self, register: Register, operand: Operand<Byte>) -> Result<(), ExecuteError> {
         let a = self.registers.get::<Byte>(register);
-        let b = self.get_byte_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         if b == 0 {
             return Err(ExecuteError::DivideByZero);
@@ -39,7 +39,7 @@ impl Processor {
         operand: Operand<Quarter>,
     ) -> Result<(), ExecuteError> {
         let a = self.registers.get::<Quarter>(register);
-        let b = self.get_quarter_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         if b == 0 {
             return Err(ExecuteError::DivideByZero);
@@ -54,7 +54,7 @@ impl Processor {
 
     fn rem_half(&mut self, register: Register, operand: Operand<Half>) -> Result<(), ExecuteError> {
         let a = self.registers.get::<Half>(register);
-        let b = self.get_half_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         if b == 0 {
             return Err(ExecuteError::DivideByZero);
@@ -69,7 +69,7 @@ impl Processor {
 
     fn rem_word(&mut self, register: Register, operand: Operand<Word>) -> Result<(), ExecuteError> {
         let a = self.registers.get::<Word>(register);
-        let b = self.get_word_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         if b == 0 {
             return Err(ExecuteError::DivideByZero);

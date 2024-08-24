@@ -19,7 +19,7 @@ impl Processor {
 
     fn add_byte(&mut self, register: Register, operand: Operand<Byte>) {
         let a = self.registers.get::<Byte>(register);
-        let b = self.get_byte_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set(result, overflow);
@@ -28,7 +28,7 @@ impl Processor {
 
     fn add_quarter(&mut self, register: Register, operand: Operand<Quarter>) {
         let a = self.registers.get::<Quarter>(register);
-        let b = self.get_quarter_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set(result, overflow);
@@ -37,7 +37,7 @@ impl Processor {
 
     fn add_half(&mut self, register: Register, operand: Operand<Half>) {
         let a = self.registers.get::<Half>(register);
-        let b = self.get_half_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set(result, overflow);
@@ -46,7 +46,7 @@ impl Processor {
 
     fn add_word(&mut self, register: Register, operand: Operand<Word>) {
         let a = self.registers.get::<Word>(register);
-        let b = self.get_word_operand_val(operand);
+        let b = self.get_operand_value(operand);
 
         let (result, overflow) = a.overflowing_add(b);
         self.flags.set(result, overflow);

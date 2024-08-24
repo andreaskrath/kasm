@@ -2,39 +2,32 @@ use crate::{
     constant::{Word, STACK_SIZE},
     error::ExecuteError,
     instruction::Push,
-    utils::ToBytes,
+    operand::Operand,
+    utils::{FromBytes, ToBytes},
     Processor,
 };
 
 impl Processor {
     pub fn push(&mut self, instruction: Push) -> Result<(), ExecuteError> {
         match instruction {
-            Push::Byte(operand) => {
-                let value = self.get_byte_operand_val(operand);
-                self.push_value(value)?
-            }
-            Push::Quarter(operand) => {
-                let value = self.get_quarter_operand_val(operand);
-                self.push_value(value)?
-            }
-            Push::Half(operand) => {
-                let value = self.get_half_operand_val(operand);
-                self.push_value(value)?
-            }
-            Push::Word(operand) => {
-                let value = self.get_word_operand_val(operand);
-                self.push_value(value)?
-            }
+            Push::Byte(operand) => self.push_value(operand)?,
+            Push::Quarter(operand) => self.push_value(operand)?,
+            Push::Half(operand) => self.push_value(operand)?,
+            Push::Word(operand) => self.push_value(operand)?,
         }
 
         Ok(())
     }
 
-    fn push_value<T: ToBytes>(&mut self, value: T) -> Result<(), ExecuteError> {
+    fn push_value<T>(&mut self, operand: Operand<T>) -> Result<(), ExecuteError>
+    where
+        T: ToBytes + FromBytes,
+    {
         if self.sp() + size_of::<T>() > STACK_SIZE {
             return Err(ExecuteError::StackOverflow);
         }
 
+        let value = self.get_operand_value(operand);
         for (index, byte) in value.to_bytes().iter().enumerate() {
             self.stack[self.sp() + index] = *byte;
         }
