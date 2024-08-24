@@ -10,6 +10,7 @@ use crate::{
 mod addition;
 mod division;
 mod multiplication;
+mod pop;
 mod push;
 mod remainder;
 mod set;
@@ -56,7 +57,7 @@ impl Processor {
             Division(instruction) => self.div(instruction)?,
             Remainder(instruction) => self.rem(instruction)?,
             Push(instruction) => self.push(instruction)?,
-            Pop(instruction) => todo!(),
+            Pop(instruction) => self.pop(instruction)?,
         }
 
         Ok(())
