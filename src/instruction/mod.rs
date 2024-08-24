@@ -1,3 +1,4 @@
+use crate::{constant::Word, operand::Operand};
 use variant_count::VariantCount;
 
 pub use addition::Addition;
@@ -29,4 +30,5 @@ pub enum Instruction {
     Remainder(Remainder),
     Push(Push),
     Pop(Pop),
+    Call(Operand<Word>),
 }

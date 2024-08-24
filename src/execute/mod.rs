@@ -1,6 +1,6 @@
 use crate::{
-    error::ExecuteError, instruction::Instruction, operand::Operand, registers::RegisterOperations,
-    utils::FromBytes, Processor,
+    constant::Word, error::ExecuteError, instruction::Instruction, operand::Operand,
+    registers::RegisterOperations, utils::FromBytes, Processor,
 };
 
 mod addition;
@@ -36,6 +36,7 @@ impl Processor {
             Remainder(instruction) => self.rem(instruction)?,
             Push(instruction) => self.push(instruction)?,
             Pop(instruction) => self.pop(instruction)?,
+            Call(operand) => self.call(operand)?,
         }
 
         Ok(())
@@ -43,5 +44,12 @@ impl Processor {
 
     fn stop(&mut self) {
         self.running = false;
+    }
+
+    fn call(&mut self, operand: Operand<Word>) -> Result<(), ExecuteError> {
+        let destination = self.get_operand_value(operand);
+        self.push_value(destination)?;
+
+        Ok(())
     }
 }
