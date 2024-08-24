@@ -12,6 +12,10 @@ pub trait Overflow {
     fn overflow_mul(self, rhs: Self) -> (Self, bool)
     where
         Self: Sized;
+
+    fn overflow_div(self, rhs: Self) -> (Self, bool)
+    where
+        Self: Sized;
 }
 
 impl Overflow for Byte {
@@ -25,6 +29,10 @@ impl Overflow for Byte {
 
     fn overflow_mul(self, rhs: Self) -> (Self, bool) {
         self.overflowing_mul(rhs)
+    }
+
+    fn overflow_div(self, rhs: Self) -> (Self, bool) {
+        self.overflowing_div(rhs)
     }
 }
 
@@ -40,6 +48,10 @@ impl Overflow for Quarter {
     fn overflow_mul(self, rhs: Self) -> (Self, bool) {
         self.overflowing_mul(rhs)
     }
+
+    fn overflow_div(self, rhs: Self) -> (Self, bool) {
+        self.overflowing_div(rhs)
+    }
 }
 
 impl Overflow for Half {
@@ -54,6 +66,10 @@ impl Overflow for Half {
     fn overflow_mul(self, rhs: Self) -> (Self, bool) {
         self.overflowing_mul(rhs)
     }
+
+    fn overflow_div(self, rhs: Self) -> (Self, bool) {
+        self.overflowing_div(rhs)
+    }
 }
 
 impl Overflow for Word {
@@ -67,5 +83,9 @@ impl Overflow for Word {
 
     fn overflow_mul(self, rhs: Self) -> (Self, bool) {
         self.overflowing_mul(rhs)
+    }
+
+    fn overflow_div(self, rhs: Self) -> (Self, bool) {
+        self.overflowing_div(rhs)
     }
 }
