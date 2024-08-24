@@ -1,83 +1,32 @@
 use crate::{
-    constant::{Byte, Half, Quarter, Word},
-    error::ExecuteError,
-    instruction::Remainder,
-    operand::Operand,
-    register::Register,
-    registers::RegisterOperations,
-    Processor,
+    error::ExecuteError, instruction::Remainder, operand::Operand, register::Register,
+    registers::RegisterOperations, utils::Arithmetic, Processor,
 };
 
 impl Processor {
     pub fn rem(&mut self, instruction: Remainder) -> Result<(), ExecuteError> {
         match instruction {
-            Remainder::Byte(r, o) => self.rem_byte(r, o),
-            Remainder::Quarter(r, o) => self.rem_quarter(r, o),
-            Remainder::Half(r, o) => self.rem_half(r, o),
-            Remainder::Word(r, o) => self.rem_word(r, o),
+            Remainder::Byte(r, o) => self.rem_value(r, o),
+            Remainder::Quarter(r, o) => self.rem_value(r, o),
+            Remainder::Half(r, o) => self.rem_value(r, o),
+            Remainder::Word(r, o) => self.rem_value(r, o),
         }
     }
 
-    fn rem_byte(&mut self, register: Register, operand: Operand<Byte>) -> Result<(), ExecuteError> {
-        let a = self.registers.get::<Byte>(register);
+    fn rem_value<T>(&mut self, register: Register, operand: Operand<T>) -> Result<(), ExecuteError>
+    where
+        T: Arithmetic,
+    {
+        let a = self.registers.get::<T>(register);
         let b = self.get_operand_value(operand);
 
-        if b == 0 {
+        if b.is_zero() {
             return Err(ExecuteError::DivideByZero);
         }
 
-        let (result, overflow) = a.overflowing_rem(b);
+        let (result, overflow) = a.overflow_rem(b);
         self.flags.set(result, overflow);
-        self.registers[register] = result as Word;
-
-        Ok(())
-    }
-
-    fn rem_quarter(
-        &mut self,
-        register: Register,
-        operand: Operand<Quarter>,
-    ) -> Result<(), ExecuteError> {
-        let a = self.registers.get::<Quarter>(register);
-        let b = self.get_operand_value(operand);
-
-        if b == 0 {
-            return Err(ExecuteError::DivideByZero);
-        }
-
-        let (result, overflow) = a.overflowing_rem(b);
-        self.flags.set(result, overflow);
-        self.registers[register] = result as Word;
-
-        Ok(())
-    }
-
-    fn rem_half(&mut self, register: Register, operand: Operand<Half>) -> Result<(), ExecuteError> {
-        let a = self.registers.get::<Half>(register);
-        let b = self.get_operand_value(operand);
-
-        if b == 0 {
-            return Err(ExecuteError::DivideByZero);
-        }
-
-        let (result, overflow) = a.overflowing_rem(b);
-        self.flags.set(result, overflow);
-        self.registers[register] = result as Word;
-
-        Ok(())
-    }
-
-    fn rem_word(&mut self, register: Register, operand: Operand<Word>) -> Result<(), ExecuteError> {
-        let a = self.registers.get::<Word>(register);
-        let b = self.get_operand_value(operand);
-
-        if b == 0 {
-            return Err(ExecuteError::DivideByZero);
-        }
-
-        let (result, overflow) = a.overflowing_rem(b);
-        self.flags.set(result, overflow);
-        self.registers[register] = result;
+        self.registers[register] = result.to_word();
 
         Ok(())
     }
@@ -94,7 +43,7 @@ mod byte {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::DivideByZero);
 
-        let actual = p.rem_byte(Register::A, Operand::Immediate(0));
+        let actual = p.rem_value(Register::A, Operand::Immediate(0u8));
 
         assert_eq!(actual, expected);
     }
@@ -104,7 +53,7 @@ mod byte {
         let mut p = Processor::new().unwrap();
         let expected = 0;
 
-        p.rem_byte(Register::A, Operand::Immediate(Byte::MAX))?;
+        p.rem_value(Register::A, Operand::Immediate(Byte::MAX))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -121,7 +70,7 @@ mod byte {
         p.registers[Register::B] = 4;
         let expected = 0;
 
-        p.rem_byte(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Byte>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -138,7 +87,7 @@ mod byte {
         p.registers[Register::B] = 6;
         let expected = 2;
 
-        p.rem_byte(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Byte>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -160,7 +109,7 @@ mod quarter {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::DivideByZero);
 
-        let actual = p.rem_quarter(Register::A, Operand::Immediate(0));
+        let actual = p.rem_value(Register::A, Operand::Immediate(0u16));
 
         assert_eq!(actual, expected);
     }
@@ -170,7 +119,7 @@ mod quarter {
         let mut p = Processor::new().unwrap();
         let expected = 0;
 
-        p.rem_quarter(Register::A, Operand::Immediate(Quarter::MAX))?;
+        p.rem_value(Register::A, Operand::Immediate(Quarter::MAX))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -187,7 +136,7 @@ mod quarter {
         p.registers[Register::B] = 4;
         let expected = 0;
 
-        p.rem_quarter(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Quarter>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -204,7 +153,7 @@ mod quarter {
         p.registers[Register::B] = 6;
         let expected = 2;
 
-        p.rem_byte(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Quarter>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -226,7 +175,7 @@ mod half {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::DivideByZero);
 
-        let actual = p.rem_half(Register::A, Operand::Immediate(0));
+        let actual = p.rem_value(Register::A, Operand::Immediate(0u32));
 
         assert_eq!(actual, expected);
     }
@@ -236,7 +185,7 @@ mod half {
         let mut p = Processor::new().unwrap();
         let expected = 0;
 
-        p.rem_half(Register::A, Operand::Immediate(Half::MAX))?;
+        p.rem_value(Register::A, Operand::Immediate(Half::MAX))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -253,7 +202,7 @@ mod half {
         p.registers[Register::B] = 4;
         let expected = 0;
 
-        p.rem_half(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Half>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -270,7 +219,7 @@ mod half {
         p.registers[Register::B] = 6;
         let expected = 2;
 
-        p.rem_byte(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Half>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -292,7 +241,7 @@ mod word {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::DivideByZero);
 
-        let actual = p.rem_word(Register::A, Operand::Immediate(0));
+        let actual = p.rem_value(Register::A, Operand::Immediate(0u64));
 
         assert_eq!(actual, expected);
     }
@@ -302,7 +251,7 @@ mod word {
         let mut p = Processor::new().unwrap();
         let expected = 0;
 
-        p.rem_word(Register::A, Operand::Immediate(Word::MAX))?;
+        p.rem_value(Register::A, Operand::Immediate(Word::MAX))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -319,7 +268,7 @@ mod word {
         p.registers[Register::B] = 4;
         let expected = 0;
 
-        p.rem_word(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Word>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
@@ -336,7 +285,7 @@ mod word {
         p.registers[Register::B] = 6;
         let expected = 2;
 
-        p.rem_byte(Register::A, Operand::Register(Register::B))?;
+        p.rem_value::<Word>(Register::A, Operand::Register(Register::B))?;
 
         assert_eq!(p.registers[Register::A], expected);
         assert!(!p.flags.overflow);
