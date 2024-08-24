@@ -2,7 +2,6 @@ use crate::{
     constant::{Word, STACK_SIZE},
     error::ExecuteError,
     instruction::Push,
-    operand::Operand,
     utils::{FromBytes, ToBytes},
     Processor,
 };
@@ -10,16 +9,28 @@ use crate::{
 impl Processor {
     pub fn push(&mut self, instruction: Push) -> Result<(), ExecuteError> {
         match instruction {
-            Push::Byte(operand) => self.push_value(operand)?,
-            Push::Quarter(operand) => self.push_value(operand)?,
-            Push::Half(operand) => self.push_value(operand)?,
-            Push::Word(operand) => self.push_value(operand)?,
+            Push::Byte(operand) => {
+                let value = self.get_operand_value(operand);
+                self.push_value(value)?
+            }
+            Push::Quarter(operand) => {
+                let value = self.get_operand_value(operand);
+                self.push_value(value)?
+            }
+            Push::Half(operand) => {
+                let value = self.get_operand_value(operand);
+                self.push_value(value)?
+            }
+            Push::Word(operand) => {
+                let value = self.get_operand_value(operand);
+                self.push_value(value)?
+            }
         }
 
         Ok(())
     }
 
-    fn push_value<T>(&mut self, operand: Operand<T>) -> Result<(), ExecuteError>
+    pub fn push_value<T>(&mut self, value: T) -> Result<(), ExecuteError>
     where
         T: ToBytes + FromBytes,
     {
@@ -27,7 +38,6 @@ impl Processor {
             return Err(ExecuteError::StackOverflow);
         }
 
-        let value = self.get_operand_value(operand);
         for (index, byte) in value.to_bytes().iter().enumerate() {
             self.stack[self.sp() + index] = *byte;
         }
@@ -43,7 +53,6 @@ mod byte {
     use crate::{
         constant::{Byte, Word, STACK_SIZE},
         error::ExecuteError,
-        operand::Operand,
         Processor,
     };
 
@@ -53,7 +62,7 @@ mod byte {
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Operand::Immediate(Byte::MAX));
+        let actual = p.push_value(Byte::MAX);
 
         assert_eq!(actual, expected);
     }
@@ -64,7 +73,7 @@ mod byte {
         p.stack_pointer = (STACK_SIZE - size_of::<Byte>()) as Word;
         let expected = Byte::MAX;
 
-        p.push_value(Operand::Immediate(Byte::MAX)).unwrap();
+        p.push_value(Byte::MAX).unwrap();
         let actual = p.stack[STACK_SIZE - size_of::<Byte>()];
 
         assert_eq!(actual, expected);
@@ -76,7 +85,6 @@ mod quarter {
     use crate::{
         constant::{Quarter, Word, STACK_SIZE},
         error::ExecuteError,
-        operand::Operand,
         Processor,
     };
 
@@ -86,7 +94,7 @@ mod quarter {
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Operand::Immediate(Quarter::MAX));
+        let actual = p.push_value(Quarter::MAX);
 
         assert_eq!(actual, expected);
     }
@@ -97,7 +105,7 @@ mod quarter {
         p.stack_pointer = (STACK_SIZE - size_of::<Quarter>()) as Word;
         let expected = Quarter::MAX.to_le_bytes();
 
-        p.push_value(Operand::Immediate(Quarter::MAX)).unwrap();
+        p.push_value(Quarter::MAX).unwrap();
         let actual = &p.stack[STACK_SIZE - size_of::<Quarter>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
@@ -109,7 +117,6 @@ mod half {
     use crate::{
         constant::{Half, Word, STACK_SIZE},
         error::ExecuteError,
-        operand::Operand,
         Processor,
     };
 
@@ -119,7 +126,7 @@ mod half {
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Operand::Immediate(Half::MAX));
+        let actual = p.push_value(Half::MAX);
 
         assert_eq!(actual, expected);
     }
@@ -130,7 +137,7 @@ mod half {
         p.stack_pointer = (STACK_SIZE - size_of::<Half>()) as Word;
         let expected = Half::MAX.to_le_bytes();
 
-        p.push_value(Operand::Immediate(Half::MAX)).unwrap();
+        p.push_value(Half::MAX).unwrap();
         let actual = &p.stack[STACK_SIZE - size_of::<Half>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
@@ -142,7 +149,6 @@ mod word {
     use crate::{
         constant::{Word, STACK_SIZE},
         error::ExecuteError,
-        operand::Operand,
         Processor,
     };
 
@@ -152,7 +158,7 @@ mod word {
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Operand::Immediate(Word::MAX));
+        let actual = p.push_value(Word::MAX);
 
         assert_eq!(actual, expected);
     }
@@ -163,7 +169,7 @@ mod word {
         p.stack_pointer = (STACK_SIZE - size_of::<Word>()) as Word;
         let expected = Word::MAX.to_le_bytes();
 
-        p.push_value(Operand::Immediate(Word::MAX)).unwrap();
+        p.push_value(Word::MAX).unwrap();
         let actual = &p.stack[STACK_SIZE - size_of::<Word>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
