@@ -17,8 +17,8 @@ impl FromBytes for Byte {
 
 impl FromBytes for Quarter {
     fn from_bytes(slice: &[Byte]) -> Self {
-        let mut bytes = [0; 2];
-        bytes.copy_from_slice(&slice[0..2]);
+        let mut bytes = [0; size_of::<Quarter>()];
+        bytes.copy_from_slice(&slice[0..size_of::<Quarter>()]);
         Quarter::from_le_bytes(bytes)
     }
 
@@ -29,8 +29,8 @@ impl FromBytes for Quarter {
 
 impl FromBytes for Half {
     fn from_bytes(slice: &[Byte]) -> Self {
-        let mut bytes = [0; 4];
-        bytes.copy_from_slice(&slice[0..4]);
+        let mut bytes = [0; size_of::<Half>()];
+        bytes.copy_from_slice(&slice[0..size_of::<Half>()]);
         Half::from_le_bytes(bytes)
     }
 
@@ -41,8 +41,8 @@ impl FromBytes for Half {
 
 impl FromBytes for Word {
     fn from_bytes(slice: &[Byte]) -> Self {
-        let mut bytes = [0; 8];
-        bytes.copy_from_slice(&slice[0..8]);
+        let mut bytes = [0; size_of::<Word>()];
+        bytes.copy_from_slice(&slice[0..size_of::<Word>()]);
         Word::from_le_bytes(bytes)
     }
 
