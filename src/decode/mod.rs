@@ -15,6 +15,7 @@ use remainder::RemDecoder;
 use set::SetDecoder;
 use std::str::{FromStr, SplitWhitespace};
 use subtraction::SubDecoder;
+use test::TestDecoder;
 use xor::XorDecoder;
 
 mod addition;
@@ -28,6 +29,7 @@ mod push;
 mod remainder;
 mod set;
 mod subtraction;
+mod test;
 mod xor;
 
 // const _: () = assert!(DECODE_TABLE.len() == Instruction::VARIANT_COUNT);
@@ -84,6 +86,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "notq" => NotDecoder::not_quarter,
     "noth" => NotDecoder::not_half,
     "notw" => NotDecoder::not_word,
+    "tstb" => TestDecoder::test_byte,
+    "tstq" => TestDecoder::test_quarter,
+    "tsth" => TestDecoder::test_half,
+    "tstw" => TestDecoder::test_word,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
@@ -104,6 +110,23 @@ fn get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, DecodeErro
 struct DecoderHelper;
 
 impl DecoderHelper {
+    fn try_register(iter: SplitWhitespace) -> Result<Register, DecodeError> {
+        let s_register = get_first_parameter_str(iter)?;
+        let register = Register::try_from(s_register)?;
+
+        Ok(register)
+    }
+
+    fn try_operand<T>(iter: SplitWhitespace) -> Result<Operand<T>, DecodeError>
+    where
+        T: FromStr,
+    {
+        let s_operand = get_first_parameter_str(iter)?;
+        let operand = Operand::try_from(s_operand)?;
+
+        Ok(operand)
+    }
+
     fn try_register_and_operand<T>(
         iter: SplitWhitespace,
     ) -> Result<(Register, Operand<T>), DecodeError>
@@ -117,21 +140,15 @@ impl DecoderHelper {
         Ok((register, operand))
     }
 
-    fn try_operand<T>(iter: SplitWhitespace) -> Result<Operand<T>, DecodeError>
+    fn try_double_operand<T>(iter: SplitWhitespace) -> Result<(Operand<T>, Operand<T>), DecodeError>
     where
         T: FromStr,
     {
-        let s_operand = get_first_parameter_str(iter)?;
-        let operand = Operand::try_from(s_operand)?;
+        let (s_operand1, s_operand2) = get_both_parameters_str(iter)?;
+        let operand1 = Operand::try_from(s_operand1)?;
+        let operand2 = Operand::try_from(s_operand2)?;
 
-        Ok(operand)
-    }
-
-    fn try_register(iter: SplitWhitespace) -> Result<Register, DecodeError> {
-        let s_register = get_first_parameter_str(iter)?;
-        let register = Register::try_from(s_register)?;
-
-        Ok(register)
+        Ok((operand1, operand2))
     }
 }
 

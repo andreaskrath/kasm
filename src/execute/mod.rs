@@ -14,6 +14,7 @@ mod push;
 mod remainder;
 mod set;
 mod subtraction;
+mod test;
 mod xor;
 
 impl Processor {
@@ -46,6 +47,7 @@ impl Processor {
             Or(or_ins) => self.or(or_ins),
             Xor(xor_ins) => self.xor(xor_ins),
             Not(not_ins) => self.not(not_ins),
+            Test(test_ins) => self.test(test_ins),
         }
 
         Ok(())
