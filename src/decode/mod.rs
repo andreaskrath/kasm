@@ -14,6 +14,7 @@ use remainder::RemDecoder;
 use set::SetDecoder;
 use std::str::{FromStr, SplitWhitespace};
 use subtraction::SubDecoder;
+use xor::XorDecoder;
 
 mod addition;
 mod and;
@@ -25,6 +26,7 @@ mod push;
 mod remainder;
 mod set;
 mod subtraction;
+mod xor;
 
 // const _: () = assert!(DECODE_TABLE.len() == Instruction::VARIANT_COUNT);
 
@@ -72,6 +74,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "orq" => OrDecoder::or_quarter,
     "orh" => OrDecoder::or_half,
     "orw" => OrDecoder::or_word,
+    "xorb" => XorDecoder::xor_byte,
+    "xorq" => XorDecoder::xor_quarter,
+    "xorh" => XorDecoder::xor_half,
+    "xorw" => XorDecoder::xor_word,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {

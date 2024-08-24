@@ -13,6 +13,7 @@ mod push;
 mod remainder;
 mod set;
 mod subtraction;
+mod xor;
 
 impl Processor {
     fn get_operand_value<T>(&self, operand: Operand<T>) -> T
@@ -42,6 +43,7 @@ impl Processor {
             Return => self.ret()?,
             And(and_ins) => self.and(and_ins),
             Or(or_ins) => self.or(or_ins),
+            Xor(xor_ins) => self.xor(xor_ins),
         }
 
         Ok(())

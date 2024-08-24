@@ -11,6 +11,7 @@ pub use push::Push;
 pub use remainder::Remainder;
 pub use set::Set;
 pub use subtraction::Subtraction;
+pub use xor::Xor;
 
 mod addition;
 mod and;
@@ -22,6 +23,7 @@ mod push;
 mod remainder;
 mod set;
 mod subtraction;
+mod xor;
 
 #[derive(Debug, PartialEq, VariantCount)]
 pub enum Instruction {
@@ -38,4 +40,5 @@ pub enum Instruction {
     Return,
     And(And),
     Or(Or),
+    Xor(Xor),
 }
