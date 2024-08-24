@@ -144,7 +144,7 @@ mod word {
     #[test]
     fn no_bits_in_common() {
         let mut p = Processor::new().unwrap();
-        let expected = Word::MAX as Word;
+        let expected = Word::MAX;
 
         p.xor_value(Register::A, Operand::Immediate(Word::MAX));
 
@@ -157,7 +157,7 @@ mod word {
     #[test]
     fn all_bits_in_common() {
         let mut p = Processor::new().unwrap();
-        p.registers[Register::A] = Word::MAX as Word;
+        p.registers[Register::A] = Word::MAX;
         let expected = 0;
 
         p.xor_value(Register::A, Operand::Immediate(Word::MAX));
