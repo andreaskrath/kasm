@@ -1,10 +1,6 @@
 use crate::{
-    instruction::Addition,
-    operand::Operand,
-    register::Register,
-    registers::RegisterOperations,
-    utils::{FromBytes, Overflow, Setable},
-    Processor,
+    instruction::Addition, operand::Operand, register::Register, registers::RegisterOperations,
+    utils::Arithmetic, Processor,
 };
 
 impl Processor {
@@ -19,7 +15,7 @@ impl Processor {
 
     fn add_value<T>(&mut self, register: Register, operand: Operand<T>)
     where
-        T: Overflow + Setable + FromBytes + Copy,
+        T: Arithmetic,
     {
         let a = self.registers.get::<T>(register);
         let b = self.get_operand_value(operand);
