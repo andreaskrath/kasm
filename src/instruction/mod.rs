@@ -5,6 +5,7 @@ pub use addition::Addition;
 pub use and::And;
 pub use division::Division;
 pub use multiplication::Multiplication;
+pub use or::Or;
 pub use pop::Pop;
 pub use push::Push;
 pub use remainder::Remainder;
@@ -15,6 +16,7 @@ mod addition;
 mod and;
 mod division;
 mod multiplication;
+mod or;
 mod pop;
 mod push;
 mod remainder;
@@ -35,4 +37,5 @@ pub enum Instruction {
     Call(Operand<Word>),
     Return,
     And(And),
+    Or(Or),
 }

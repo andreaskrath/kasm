@@ -6,6 +6,7 @@ use addition::AddDecoder;
 use and::AndDecoder;
 use division::DivDecoder;
 use multiplication::MulDecoder;
+use or::OrDecoder;
 use phf::phf_map;
 use pop::PopDecoder;
 use push::PushDecoder;
@@ -18,6 +19,7 @@ mod addition;
 mod and;
 mod division;
 mod multiplication;
+mod or;
 mod pop;
 mod push;
 mod remainder;
@@ -66,6 +68,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "andq" => AndDecoder::and_quarter,
     "andh" => AndDecoder::and_half,
     "andw" => AndDecoder::and_word,
+    "orb" => OrDecoder::or_byte,
+    "orq" => OrDecoder::or_quarter,
+    "orh" => OrDecoder::or_half,
+    "orw" => OrDecoder::or_word,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {

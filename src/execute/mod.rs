@@ -7,6 +7,7 @@ mod addition;
 mod and;
 mod division;
 mod multiplication;
+mod or;
 mod pop;
 mod push;
 mod remainder;
@@ -40,6 +41,7 @@ impl Processor {
             Call(operand) => self.call(operand)?,
             Return => self.ret()?,
             And(and_ins) => self.and(and_ins),
+            Or(or_ins) => self.or(or_ins),
         }
 
         Ok(())
