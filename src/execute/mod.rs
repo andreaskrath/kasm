@@ -19,28 +19,28 @@ mod subtraction;
 impl Processor {
     fn get_byte_operand_val(&self, operand: Operand<Byte>) -> Byte {
         match operand {
-            Operand::Register(register) => self.registers.get_reg_val_as_byte(register),
+            Operand::Register(register) => self.registers.get::<Byte>(register),
             Operand::Immediate(immediate) => immediate,
         }
     }
 
     fn get_quarter_operand_val(&self, operand: Operand<Quarter>) -> Quarter {
         match operand {
-            Operand::Register(register) => self.registers.get_reg_val_as_quarter(register),
+            Operand::Register(register) => self.registers.get::<Quarter>(register),
             Operand::Immediate(immediate) => immediate,
         }
     }
 
     fn get_half_operand_val(&self, operand: Operand<Half>) -> Half {
         match operand {
-            Operand::Register(register) => self.registers.get_reg_val_as_half(register),
+            Operand::Register(register) => self.registers.get::<Half>(register),
             Operand::Immediate(immediate) => immediate,
         }
     }
 
     fn get_word_operand_val(&self, operand: Operand<Word>) -> Word {
         match operand {
-            Operand::Register(register) => self.registers.get_reg_val(register),
+            Operand::Register(register) => self.registers.get::<Word>(register),
             Operand::Immediate(immediate) => immediate,
         }
     }
