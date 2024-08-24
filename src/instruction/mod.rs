@@ -5,6 +5,7 @@ pub use addition::Addition;
 pub use and::And;
 pub use division::Division;
 pub use multiplication::Multiplication;
+pub use not::Not;
 pub use or::Or;
 pub use pop::Pop;
 pub use push::Push;
@@ -17,6 +18,7 @@ mod addition;
 mod and;
 mod division;
 mod multiplication;
+mod not;
 mod or;
 mod pop;
 mod push;
@@ -41,4 +43,5 @@ pub enum Instruction {
     And(And),
     Or(Or),
     Xor(Xor),
+    Not(Not),
 }

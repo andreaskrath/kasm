@@ -7,6 +7,7 @@ mod addition;
 mod and;
 mod division;
 mod multiplication;
+mod not;
 mod or;
 mod pop;
 mod push;
@@ -44,6 +45,7 @@ impl Processor {
             And(and_ins) => self.and(and_ins),
             Or(or_ins) => self.or(or_ins),
             Xor(xor_ins) => self.xor(xor_ins),
+            Not(not_ins) => self.not(not_ins),
         }
 
         Ok(())
