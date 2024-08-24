@@ -2,7 +2,6 @@ use crate::{
     constant::{Byte, Half, Quarter, Word},
     error::ExecuteError,
     instruction::Pop,
-    register::Register,
     utils::FromBytes,
     Processor,
 };
@@ -10,15 +9,27 @@ use crate::{
 impl Processor {
     pub fn pop(&mut self, instruction: Pop) -> Result<(), ExecuteError> {
         match instruction {
-            Pop::Byte(register) => self.pop_value::<Byte>(register)?,
-            Pop::Quarter(register) => self.pop_value::<Quarter>(register)?,
-            Pop::Half(register) => self.pop_value::<Half>(register)?,
-            Pop::Word(register) => self.pop_value::<Word>(register)?,
+            Pop::Byte(register) => {
+                let value = self.pop_value::<Byte>()?;
+                self.registers[register] = value as Word;
+            }
+            Pop::Quarter(register) => {
+                let value = self.pop_value::<Quarter>()?;
+                self.registers[register] = value as Word;
+            }
+            Pop::Half(register) => {
+                let value = self.pop_value::<Half>()?;
+                self.registers[register] = value as Word;
+            }
+            Pop::Word(register) => {
+                let value = self.pop_value::<Word>()?;
+                self.registers[register] = value;
+            }
         }
         Ok(())
     }
 
-    fn pop_value<T>(&mut self, register: Register) -> Result<(), ExecuteError>
+    pub fn pop_value<T>(&mut self) -> Result<T, ExecuteError>
     where
         T: FromBytes,
     {
@@ -27,26 +38,21 @@ impl Processor {
         }
 
         let bytes = &self.stack[self.sp() - size_of::<T>()..self.sp()];
-        self.registers[register] = T::from_bytes(bytes).to_word();
+        let value = T::from_bytes(bytes);
 
-        Ok(())
+        Ok(value)
     }
 }
 
 #[cfg(test)]
 mod byte {
-    use crate::{
-        constant::{Byte, Word},
-        error::ExecuteError,
-        register::Register,
-        Processor,
-    };
+    use crate::{constant::Byte, error::ExecuteError, Processor};
 
     #[test]
     fn stack_underflow() {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Byte>(Register::A);
+        let actual = p.pop_value::<Byte>();
 
         assert_eq!(actual, expected);
     }
@@ -56,28 +62,23 @@ mod byte {
         let mut p = Processor::new().unwrap();
         p.stack[0] = Byte::MAX;
         p.stack_pointer += 1;
-        let expected = Byte::MAX as Word;
+        let expected = Byte::MAX;
 
-        p.pop_value::<Byte>(Register::A).unwrap();
+        let actual = p.pop_value::<Byte>().unwrap();
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(actual, expected);
     }
 }
 
 #[cfg(test)]
 mod quarter {
-    use crate::{
-        constant::{Quarter, Word},
-        error::ExecuteError,
-        register::Register,
-        Processor,
-    };
+    use crate::{constant::Quarter, error::ExecuteError, Processor};
 
     #[test]
     fn stack_underflow() {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Quarter>(Register::A);
+        let actual = p.pop_value::<Quarter>();
 
         assert_eq!(actual, expected);
     }
@@ -89,28 +90,23 @@ mod quarter {
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];
         p.stack_pointer += 2;
-        let expected = Quarter::MAX as Word;
+        let expected = Quarter::MAX;
 
-        p.pop_value::<Quarter>(Register::A).unwrap();
+        let actual = p.pop_value::<Quarter>().unwrap();
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(actual, expected);
     }
 }
 
 #[cfg(test)]
 mod half {
-    use crate::{
-        constant::{Half, Word},
-        error::ExecuteError,
-        register::Register,
-        Processor,
-    };
+    use crate::{constant::Half, error::ExecuteError, Processor};
 
     #[test]
     fn stack_underflow() {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Half>(Register::A);
+        let actual = p.pop_value::<Half>();
 
         assert_eq!(actual, expected);
     }
@@ -124,23 +120,23 @@ mod half {
         p.stack[2] = bytes[2];
         p.stack[3] = bytes[3];
         p.stack_pointer += 4;
-        let expected = Half::MAX as Word;
+        let expected = Half::MAX;
 
-        p.pop_value::<Half>(Register::A).unwrap();
+        let actual = p.pop_value::<Half>().unwrap();
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(actual, expected);
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, error::ExecuteError, register::Register, Processor};
+    use crate::{constant::Word, error::ExecuteError, Processor};
 
     #[test]
     fn stack_underflow() {
         let mut p = Processor::new().unwrap();
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Word>(Register::A);
+        let actual = p.pop_value::<Word>();
 
         assert_eq!(actual, expected);
     }
@@ -160,8 +156,8 @@ mod word {
         p.stack_pointer += 8;
         let expected = Word::MAX;
 
-        p.pop_value::<Word>(Register::A).unwrap();
+        let actual = p.pop_value::<Word>().unwrap();
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(actual, expected);
     }
 }
