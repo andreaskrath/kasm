@@ -81,3 +81,347 @@ impl Processor {
         }
     }
 }
+
+// The test cases below are really only to prevent regression at a future point.
+
+#[cfg(test)]
+mod unconditional {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        let expected = 5;
+
+        p.jump_unconditional(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_unconditional(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_zero {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        p.flags.zero = true;
+        let expected = 5;
+
+        p.jump_if_zero(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.flags.zero = true;
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_zero(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_not_zero {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        let expected = 5;
+
+        p.jump_if_not_zero(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_not_zero(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_sign {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        p.flags.sign = true;
+        let expected = 5;
+
+        p.jump_if_sign(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.flags.sign = true;
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_sign(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_not_sign {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        let expected = 5;
+
+        p.jump_if_not_sign(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_not_sign(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_overflow {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        p.flags.overflow = true;
+        let expected = 5;
+
+        p.jump_if_overflow(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.flags.overflow = true;
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_overflow(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_not_overflow {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        let expected = 5;
+
+        p.jump_if_not_overflow(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_not_overflow(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_greater {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        let expected = 5;
+
+        p.jump_if_greater(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_greater(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_lesser {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_immediate() {
+        let mut p = Processor::new().unwrap();
+        p.flags.overflow = true;
+        let expected = 5;
+
+        p.jump_if_lesser(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_register() {
+        let mut p = Processor::new().unwrap();
+        p.flags.overflow = true;
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_lesser(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_greater_or_equal {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_greater_immediate() {
+        let mut p = Processor::new().unwrap();
+        let expected = 5;
+
+        p.jump_if_greater_or_equal(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_greater_register() {
+        let mut p = Processor::new().unwrap();
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_greater_or_equal(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_equal_immediate() {
+        let mut p = Processor::new().unwrap();
+        p.flags.zero = true;
+        let expected = 5;
+
+        p.jump_if_greater_or_equal(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_equal_register() {
+        let mut p = Processor::new().unwrap();
+        p.flags.zero = true;
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_greater_or_equal(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
+
+#[cfg(test)]
+mod if_lesser_or_equal {
+    use crate::{operand::Operand, register::Register, Processor};
+
+    #[test]
+    fn jump_lesser_immediate() {
+        let mut p = Processor::new().unwrap();
+        p.flags.overflow = true;
+        let expected = 5;
+
+        p.jump_if_lesser_or_equal(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_lesser_register() {
+        let mut p = Processor::new().unwrap();
+        p.flags.overflow = true;
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_lesser_or_equal(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_equal_immediate() {
+        let mut p = Processor::new().unwrap();
+        p.flags.zero = true;
+        let expected = 5;
+
+        p.jump_if_lesser_or_equal(Operand::Immediate(5));
+
+        assert_eq!(p.program_counter, expected);
+    }
+
+    #[test]
+    fn jump_equal_register() {
+        let mut p = Processor::new().unwrap();
+        p.flags.zero = true;
+        p.registers[Register::A] = 5;
+        let expected = 5;
+
+        p.jump_if_lesser_or_equal(Operand::Register(Register::A));
+
+        assert_eq!(p.program_counter, expected);
+    }
+}
