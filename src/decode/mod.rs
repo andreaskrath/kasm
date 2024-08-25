@@ -12,6 +12,7 @@ use not::NotDecoder;
 use or::OrDecoder;
 use phf::phf_map;
 use pop::PopDecoder;
+use print_register::PrintRegisterDecoder;
 use push::PushDecoder;
 use remainder::RemDecoder;
 use set::SetDecoder;
@@ -29,6 +30,7 @@ mod multiplication;
 mod not;
 mod or;
 mod pop;
+mod print_register;
 mod push;
 mod remainder;
 mod set;
@@ -109,6 +111,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "jil" => JumpDecoder::jump_if_lesser,
     "jge" => JumpDecoder::jump_if_greater_or_equal,
     "jle" => JumpDecoder::jump_if_lesser_or_equal,
+    "prb" => PrintRegisterDecoder::print_register_byte,
+    "prq" => PrintRegisterDecoder::print_register_quarter,
+    "prh" => PrintRegisterDecoder::print_register_half,
+    "prw" => PrintRegisterDecoder::print_register_word,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {

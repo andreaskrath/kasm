@@ -12,6 +12,7 @@ mod multiplication;
 mod not;
 mod or;
 mod pop;
+mod print_register;
 mod push;
 mod remainder;
 mod set;
@@ -52,6 +53,7 @@ impl Processor {
             Test(test_ins) => self.test(test_ins),
             Compare(compare_ins) => self.compare(compare_ins),
             Jump(jump_ins) => self.jump(jump_ins),
+            PrintRegister(print_reg_ins) => self.print_register(print_reg_ins)?,
         }
 
         Ok(())

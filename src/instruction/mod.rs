@@ -10,6 +10,7 @@ pub use multiplication::Multiplication;
 pub use not::Not;
 pub use or::Or;
 pub use pop::Pop;
+pub use print_register::PrintRegister;
 pub use push::Push;
 pub use remainder::Remainder;
 pub use set::Set;
@@ -26,6 +27,7 @@ mod multiplication;
 mod not;
 mod or;
 mod pop;
+mod print_register;
 mod push;
 mod remainder;
 mod set;
@@ -53,4 +55,5 @@ pub enum Instruction {
     Test(Test),
     Compare(Compare),
     Jump(Jump),
+    PrintRegister(PrintRegister),
 }
