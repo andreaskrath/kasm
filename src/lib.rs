@@ -5,7 +5,8 @@ use flags::Flags;
 use instruction::Instruction;
 use register::Register;
 use registers::Registers;
-use std::io::{stdout, Write};
+use std::io::stdout;
+use utils::Writer;
 
 mod constant;
 mod decode;
@@ -24,7 +25,7 @@ pub struct Processor {
     program_counter: Word,
     flags: Flags,
     running: bool,
-    output: Box<dyn Write>,
+    output: Box<dyn Writer>,
     stack: Box<[u8; STACK_SIZE]>,
 }
 
