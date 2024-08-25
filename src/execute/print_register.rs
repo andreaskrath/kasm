@@ -30,3 +30,93 @@ impl Processor {
             .map_err(|err| ExecuteError::IO(err.to_string()))
     }
 }
+
+#[cfg(test)]
+mod byte {
+    use crate::{
+        constant::{Byte, Word},
+        error::ExecuteError,
+        register::Register,
+        Processor,
+    };
+
+    #[test]
+    fn print() -> Result<(), ExecuteError> {
+        let mut p = Processor::test_instance();
+        p.registers[Register::A] = Byte::MAX as Word;
+        let expected = format!("{}: {}\n", Register::A, Byte::MAX);
+        p.print_register_value::<Byte>(Register::A)?;
+
+        let actual = p.output.get_buffer().unwrap();
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod quarter {
+    use crate::{
+        constant::{Quarter, Word},
+        error::ExecuteError,
+        register::Register,
+        Processor,
+    };
+
+    #[test]
+    fn print() -> Result<(), ExecuteError> {
+        let mut p = Processor::test_instance();
+        p.registers[Register::A] = Quarter::MAX as Word;
+        let expected = format!("{}: {}\n", Register::A, Quarter::MAX);
+
+        p.print_register_value::<Quarter>(Register::A)?;
+
+        let actual = p.output.get_buffer().unwrap();
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod half {
+    use crate::{
+        constant::{Half, Word},
+        error::ExecuteError,
+        register::Register,
+        Processor,
+    };
+
+    #[test]
+    fn print() -> Result<(), ExecuteError> {
+        let mut p = Processor::test_instance();
+        p.registers[Register::A] = Half::MAX as Word;
+        let expected = format!("{}: {}\n", Register::A, Half::MAX);
+
+        p.print_register_value::<Half>(Register::A)?;
+
+        let actual = p.output.get_buffer().unwrap();
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod word {
+    use crate::{constant::Word, error::ExecuteError, register::Register, Processor};
+
+    #[test]
+    fn print() -> Result<(), ExecuteError> {
+        let mut p = Processor::test_instance();
+        p.registers[Register::A] = Word::MAX;
+        let expected = format!("{}: {}\n", Register::A, Word::MAX);
+
+        p.print_register_value::<Word>(Register::A)?;
+
+        let actual = p.output.get_buffer().unwrap();
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+}
