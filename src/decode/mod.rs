@@ -4,6 +4,7 @@ use crate::{
 };
 use addition::AddDecoder;
 use and::AndDecoder;
+use compare::CompareDecoder;
 use division::DivDecoder;
 use multiplication::MulDecoder;
 use not::NotDecoder;
@@ -20,6 +21,7 @@ use xor::XorDecoder;
 
 mod addition;
 mod and;
+mod compare;
 mod division;
 mod multiplication;
 mod not;
@@ -90,6 +92,10 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "tstq" => TestDecoder::test_quarter,
     "tsth" => TestDecoder::test_half,
     "tstw" => TestDecoder::test_word,
+    "cmpb" => CompareDecoder::compare_byte,
+    "cmpq" => CompareDecoder::compare_quarter,
+    "cmph" => CompareDecoder::compare_half,
+    "cmpw" => CompareDecoder::compare_word,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {

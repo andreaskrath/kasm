@@ -3,6 +3,7 @@ use variant_count::VariantCount;
 
 pub use addition::Addition;
 pub use and::And;
+pub use compare::Compare;
 pub use division::Division;
 pub use multiplication::Multiplication;
 pub use not::Not;
@@ -17,6 +18,7 @@ pub use xor::Xor;
 
 mod addition;
 mod and;
+mod compare;
 mod division;
 mod multiplication;
 mod not;
@@ -47,4 +49,5 @@ pub enum Instruction {
     Xor(Xor),
     Not(Not),
     Test(Test),
+    Compare(Compare),
 }

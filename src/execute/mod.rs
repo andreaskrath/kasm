@@ -5,6 +5,7 @@ use crate::{
 
 mod addition;
 mod and;
+mod compare;
 mod division;
 mod multiplication;
 mod not;
@@ -48,6 +49,7 @@ impl Processor {
             Xor(xor_ins) => self.xor(xor_ins),
             Not(not_ins) => self.not(not_ins),
             Test(test_ins) => self.test(test_ins),
+            Compare(compare_ins) => self.compare(compare_ins),
         }
 
         Ok(())
