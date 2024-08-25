@@ -37,7 +37,7 @@ mod byte {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Byte::MAX as Word;
 
         p.or_value(Register::A, Operand::Immediate(Byte::MAX));
@@ -50,7 +50,7 @@ mod byte {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = Byte::MAX as Word;
 
@@ -74,7 +74,7 @@ mod quarter {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Quarter::MAX as Word;
 
         p.or_value(Register::A, Operand::Immediate(Quarter::MAX));
@@ -87,7 +87,7 @@ mod quarter {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = Quarter::MAX as Word;
 
@@ -111,7 +111,7 @@ mod half {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Half::MAX as Word;
 
         p.or_value(Register::A, Operand::Immediate(Half::MAX));
@@ -124,7 +124,7 @@ mod half {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = Half::MAX as Word;
 
@@ -143,7 +143,7 @@ mod word {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Word::MAX;
 
         p.or_value(Register::A, Operand::Immediate(Word::MAX));
@@ -156,7 +156,7 @@ mod word {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Word::MAX;
         let expected = Word::MAX;
 

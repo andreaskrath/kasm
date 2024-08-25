@@ -38,7 +38,7 @@ mod byte {
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Byte::MAX as Word;
 
         p.not_value::<Byte>(Register::A);
@@ -51,7 +51,7 @@ mod byte {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = 0;
 
@@ -74,7 +74,7 @@ mod quarter {
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Quarter::MAX as Word;
 
         p.not_value::<Quarter>(Register::A);
@@ -87,7 +87,7 @@ mod quarter {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = 0;
 
@@ -110,7 +110,7 @@ mod half {
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Half::MAX as Word;
 
         p.not_value::<Half>(Register::A);
@@ -123,7 +123,7 @@ mod half {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = 0;
 
@@ -142,7 +142,7 @@ mod word {
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Word::MAX;
 
         p.not_value::<Word>(Register::A);
@@ -155,7 +155,7 @@ mod word {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Word::MAX;
         let expected = 0;
 

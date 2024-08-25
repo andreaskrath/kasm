@@ -50,6 +50,21 @@ impl Processor {
         Ok(p)
     }
 
+    #[cfg(test)]
+    pub fn test_instance() -> Self {
+        let stack = vec![0; STACK_SIZE].into_boxed_slice().try_into().unwrap();
+
+        Self {
+            registers: [0; Register::VARIANT_COUNT],
+            stack_pointer: 0,
+            program_counter: 0,
+            flags: Flags::new(),
+            running: true,
+            output: Box::new(Vec::new()),
+            stack,
+        }
+    }
+
     /// Gets the program counter as a usize.
     fn pc(&self) -> usize {
         self.program_counter as usize

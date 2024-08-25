@@ -58,7 +58,7 @@ mod byte {
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -69,7 +69,7 @@ mod byte {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = (STACK_SIZE - size_of::<Byte>()) as Word;
         let expected = Byte::MAX;
 
@@ -90,7 +90,7 @@ mod quarter {
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -101,7 +101,7 @@ mod quarter {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = (STACK_SIZE - size_of::<Quarter>()) as Word;
         let expected = Quarter::MAX.to_le_bytes();
 
@@ -122,7 +122,7 @@ mod half {
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -133,7 +133,7 @@ mod half {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = (STACK_SIZE - size_of::<Half>()) as Word;
         let expected = Half::MAX.to_le_bytes();
 
@@ -154,7 +154,7 @@ mod word {
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -165,7 +165,7 @@ mod word {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack_pointer = (STACK_SIZE - size_of::<Word>()) as Word;
         let expected = Word::MAX.to_le_bytes();
 

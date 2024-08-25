@@ -50,7 +50,7 @@ mod byte {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Byte>();
 
@@ -59,7 +59,7 @@ mod byte {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.stack[0] = Byte::MAX;
         p.stack_pointer += 1;
         let expected = Byte::MAX;
@@ -76,7 +76,7 @@ mod quarter {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Quarter>();
 
@@ -85,7 +85,7 @@ mod quarter {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let bytes = Quarter::MAX.to_le_bytes();
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];
@@ -104,7 +104,7 @@ mod half {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Half>();
 
@@ -113,7 +113,7 @@ mod half {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let bytes = Half::MAX.to_le_bytes();
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];
@@ -134,7 +134,7 @@ mod word {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Word>();
 
@@ -143,7 +143,7 @@ mod word {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         let bytes = Word::MAX.to_le_bytes();
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];

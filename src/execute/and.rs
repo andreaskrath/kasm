@@ -37,7 +37,7 @@ mod byte {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = 0;
 
@@ -51,7 +51,7 @@ mod byte {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = Byte::MAX as Word;
 
@@ -75,7 +75,7 @@ mod quarter {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = 0;
 
@@ -89,7 +89,7 @@ mod quarter {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = Quarter::MAX as Word;
 
@@ -113,7 +113,7 @@ mod half {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = 0;
 
@@ -127,7 +127,7 @@ mod half {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = Half::MAX as Word;
 
@@ -146,7 +146,7 @@ mod word {
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Word::MAX;
         let expected = 0;
 
@@ -160,7 +160,7 @@ mod word {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new().unwrap();
+        let mut p = Processor::test_instance();
         p.registers[Register::A] = Word::MAX;
         let expected = Word::MAX;
 
