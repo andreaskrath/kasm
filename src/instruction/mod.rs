@@ -5,6 +5,7 @@ pub use addition::Addition;
 pub use and::And;
 pub use compare::Compare;
 pub use division::Division;
+pub use jump::Jump;
 pub use multiplication::Multiplication;
 pub use not::Not;
 pub use or::Or;
@@ -20,6 +21,7 @@ mod addition;
 mod and;
 mod compare;
 mod division;
+mod jump;
 mod multiplication;
 mod not;
 mod or;
@@ -50,4 +52,5 @@ pub enum Instruction {
     Not(Not),
     Test(Test),
     Compare(Compare),
+    Jump(Jump),
 }

@@ -6,6 +6,7 @@ use addition::AddDecoder;
 use and::AndDecoder;
 use compare::CompareDecoder;
 use division::DivDecoder;
+use jump::JumpDecoder;
 use multiplication::MulDecoder;
 use not::NotDecoder;
 use or::OrDecoder;
@@ -23,6 +24,7 @@ mod addition;
 mod and;
 mod compare;
 mod division;
+mod jump;
 mod multiplication;
 mod not;
 mod or;
@@ -96,6 +98,17 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "cmpq" => CompareDecoder::compare_quarter,
     "cmph" => CompareDecoder::compare_half,
     "cmpw" => CompareDecoder::compare_word,
+    "jmp" => JumpDecoder::jump_unconditional,
+    "jiz" => JumpDecoder::jump_if_zero,
+    "jnz" => JumpDecoder::jump_if_not_zero,
+    "jis" => JumpDecoder::jump_if_sign,
+    "jns" => JumpDecoder::jump_if_not_sign,
+    "jio" => JumpDecoder::jump_if_overflow,
+    "jno" => JumpDecoder::jump_if_not_overflow,
+    "jig" => JumpDecoder::jump_if_greater,
+    "jil" => JumpDecoder::jump_if_lesser,
+    "jge" => JumpDecoder::jump_if_greater_or_equal,
+    "jle" => JumpDecoder::jump_if_lesser_or_equal,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {

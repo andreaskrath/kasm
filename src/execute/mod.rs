@@ -7,6 +7,7 @@ mod addition;
 mod and;
 mod compare;
 mod division;
+mod jump;
 mod multiplication;
 mod not;
 mod or;
@@ -50,6 +51,7 @@ impl Processor {
             Not(not_ins) => self.not(not_ins),
             Test(test_ins) => self.test(test_ins),
             Compare(compare_ins) => self.compare(compare_ins),
+            Jump(jump_ins) => self.jump(jump_ins),
         }
 
         Ok(())
