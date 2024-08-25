@@ -1,5 +1,8 @@
 use crate::{constant::Word, error::DecodeError, registers::Registers};
-use std::ops::{Index, IndexMut};
+use std::{
+    fmt::Display,
+    ops::{Index, IndexMut},
+};
 use variant_count::VariantCount;
 
 #[derive(Clone, Copy, Debug, PartialEq, VariantCount)]
@@ -23,9 +26,11 @@ impl Register {
     const REG_F: &'static str = "rf";
     const REG_G: &'static str = "rg";
     const REG_H: &'static str = "rh";
+}
 
-    pub fn as_str(self) -> &'static str {
-        match self {
+impl Display for Register {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
             Register::A => Register::REG_A,
             Register::B => Register::REG_B,
             Register::C => Register::REG_C,
@@ -34,7 +39,9 @@ impl Register {
             Register::F => Register::REG_F,
             Register::G => Register::REG_G,
             Register::H => Register::REG_H,
-        }
+        };
+
+        write!(f, "{}", s)
     }
 }
 

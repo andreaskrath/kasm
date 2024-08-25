@@ -42,11 +42,12 @@ impl<T: FromStr> TryFrom<&str> for Operand<T> {
 
 #[cfg(test)]
 mod is_possible_reg {
-    use crate::{operand::is_possible_reg, register::Register};
+    use crate::operand::is_possible_reg;
 
     #[test]
     fn actual_register() {
-        let input = Register::A.as_str();
+        let input = "ra";
+
         assert!(is_possible_reg(input));
     }
 
