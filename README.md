@@ -7,7 +7,7 @@ It is only intended to be utilized as a command line application, and as such I 
 
 # Goals
 The following list contains my goals for the project:
-- Implement all the features presented in the [feature roadmap](#Feature%20Roadmap) section.
+- Implement all the features presented in the Feature Roadmap section.
 - Have a hopefully bug-free and relatively performant implementation with good code practices.
 - To be able to execute relatively large or complex programs.
 - Developing a program in kasm should feel like any other assembly language.
