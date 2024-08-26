@@ -38,7 +38,7 @@ impl Processor {
             .map(|chunk| T::from_bytes(chunk))
             .collect();
 
-        writeln!(self.output, "stack: {:#?}", values.as_slice())
+        writeln!(self.output, "stack: {:?}", values.as_slice())
             .map_err(|err| ExecuteError::IO(err.to_string()))
     }
 
@@ -76,7 +76,7 @@ mod byte {
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack_pointer = 2;
-        let expected = format!("stack: {:#?}\n", [Byte::MAX, Byte::MAX]);
+        let expected = format!("stack: {:?}\n", [Byte::MAX, Byte::MAX]);
 
         p.print_stack_value::<Byte>(Operand::Immediate(2)).unwrap();
         let actual = p.output.get_buffer().unwrap();
@@ -112,7 +112,7 @@ mod quarter {
         p.stack[2] = Byte::MAX;
         p.stack[3] = Byte::MAX;
         p.stack_pointer = 4;
-        let expected = format!("stack: {:#?}\n", [Quarter::MAX, Quarter::MAX]);
+        let expected = format!("stack: {:?}\n", [Quarter::MAX, Quarter::MAX]);
 
         p.print_stack_value::<Quarter>(Operand::Immediate(2))
             .unwrap();
@@ -153,7 +153,7 @@ mod half {
         p.stack[6] = Byte::MAX;
         p.stack[7] = Byte::MAX;
         p.stack_pointer = 8;
-        let expected = format!("stack: {:#?}\n", [Half::MAX, Half::MAX]);
+        let expected = format!("stack: {:?}\n", [Half::MAX, Half::MAX]);
 
         p.print_stack_value::<Half>(Operand::Immediate(2)).unwrap();
         let actual = p.output.get_buffer().unwrap();
@@ -201,7 +201,7 @@ mod word {
         p.stack[14] = Byte::MAX;
         p.stack[15] = Byte::MAX;
         p.stack_pointer = 16;
-        let expected = format!("stack: {:#?}\n", [Word::MAX, Word::MAX]);
+        let expected = format!("stack: {:?}\n", [Word::MAX, Word::MAX]);
 
         p.print_stack_value::<Word>(Operand::Immediate(2)).unwrap();
         let actual = p.output.get_buffer().unwrap();
