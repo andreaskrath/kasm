@@ -1,0 +1,15 @@
+pshb 0
+pshb 1
+setb rd 2
+popb ra
+popb rb
+setb rc rb
+addb rb ra
+pshb rc
+pshb ra
+pshb rb
+addb rd 1
+cmpb rd 10
+jnz 3
+psb 10
+stop
