@@ -97,10 +97,10 @@ This is a generalized format for the set instruction.
 set* register operand
 ```
 
-Where `*` can be replaced by any of the size suffixes.
+Where `*` is replaced by any of the size suffixes.
 
 ### Example
-The following example will set register *a* to the value 200, and is a byte instruction.
+The following example is a byte instruction and will set register *a* to the value 200.
 
 ```
 setb ra 200
@@ -123,5 +123,4 @@ setb ra 200
 ## Print Register
 
 ## Print Stack
-
 
