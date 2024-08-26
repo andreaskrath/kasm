@@ -77,6 +77,7 @@ mod byte {
         let actual = p.stack[STACK_SIZE - size_of::<Byte>()];
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == STACK_SIZE as u64);
     }
 }
 
@@ -109,6 +110,7 @@ mod quarter {
         let actual = &p.stack[STACK_SIZE - size_of::<Quarter>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == STACK_SIZE as u64);
     }
 }
 
@@ -141,6 +143,7 @@ mod half {
         let actual = &p.stack[STACK_SIZE - size_of::<Half>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == STACK_SIZE as u64);
     }
 }
 
@@ -173,5 +176,6 @@ mod word {
         let actual = &p.stack[STACK_SIZE - size_of::<Word>()..STACK_SIZE];
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == STACK_SIZE as u64);
     }
 }
