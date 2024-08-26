@@ -13,6 +13,7 @@ use or::OrDecoder;
 use phf::phf_map;
 use pop::PopDecoder;
 use print_register::PrintRegisterDecoder;
+use print_stack::PrintStackDecoder;
 use push::PushDecoder;
 use remainder::RemDecoder;
 use set::SetDecoder;
@@ -31,6 +32,7 @@ mod not;
 mod or;
 mod pop;
 mod print_register;
+mod print_stack;
 mod push;
 mod remainder;
 mod set;
@@ -115,6 +117,11 @@ pub const DECODE_TABLE: DecodeTable = phf_map! {
     "prq" => PrintRegisterDecoder::print_register_quarter,
     "prh" => PrintRegisterDecoder::print_register_half,
     "prw" => PrintRegisterDecoder::print_register_word,
+    "psb" => PrintStackDecoder::print_stack_byte,
+    "psq" => PrintStackDecoder::print_stack_quarter,
+    "psh" => PrintStackDecoder::print_stack_half,
+    "psw" => PrintStackDecoder::print_stack_word,
+    "pss" => PrintStackDecoder::print_stack_str,
 };
 
 fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {

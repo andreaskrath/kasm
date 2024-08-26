@@ -11,6 +11,7 @@ pub use not::Not;
 pub use or::Or;
 pub use pop::Pop;
 pub use print_register::PrintRegister;
+pub use print_stack::PrintStack;
 pub use push::Push;
 pub use remainder::Remainder;
 pub use set::Set;
@@ -28,6 +29,7 @@ mod not;
 mod or;
 mod pop;
 mod print_register;
+mod print_stack;
 mod push;
 mod remainder;
 mod set;
@@ -56,4 +58,5 @@ pub enum Instruction {
     Compare(Compare),
     Jump(Jump),
     PrintRegister(PrintRegister),
+    PrintStack(PrintStack),
 }
