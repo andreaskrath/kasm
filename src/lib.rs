@@ -1,9 +1,7 @@
 use cli::Configuration;
 use constant::{Word, STACK_SIZE};
-use decode::DECODE_TABLE;
-use error::{DecodeError, InterpreterError};
+use error::InterpreterError;
 use flags::Flags;
-use instruction::Instruction;
 use register::Register;
 use registers::Registers;
 
@@ -96,16 +94,5 @@ impl Interpreter {
         }
 
         Ok(())
-    }
-
-    fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
-        let mut s_iter = s.split_whitespace();
-        let instruction = s_iter.next().ok_or(DecodeError::EmptyLine)?;
-        let decoder = DECODE_TABLE
-            .get(instruction)
-            .ok_or(DecodeError::UnknownInstruction(instruction.to_string()))?;
-        let instruction = decoder(s_iter)?;
-
-        Ok(instruction)
     }
 }

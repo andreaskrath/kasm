@@ -1,6 +1,6 @@
 use crate::{
     constant::DecodeTable, error::DecodeError, instruction::Instruction, operand::Operand,
-    register::Register,
+    register::Register, Interpreter,
 };
 use addition::AddDecoder;
 use and::AndDecoder;
@@ -40,9 +40,20 @@ mod subtraction;
 mod test;
 mod xor;
 
-// const _: () = assert!(DECODE_TABLE.len() == Instruction::VARIANT_COUNT);
+impl Interpreter {
+    pub fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
+        let mut s_iter = s.split_whitespace();
+        let instruction = s_iter.next().ok_or(DecodeError::EmptyLine)?;
+        let decoder = DECODE_TABLE
+            .get(instruction)
+            .ok_or(DecodeError::UnknownInstruction(instruction.to_string()))?;
+        let instruction = decoder(s_iter)?;
 
-pub const DECODE_TABLE: DecodeTable = phf_map! {
+        Ok(instruction)
+    }
+}
+
+const DECODE_TABLE: DecodeTable = phf_map! {
     "stop" => Instruction::stop,
     "setb" => SetDecoder::set_byte,
     "setq" => SetDecoder::set_quarter,
