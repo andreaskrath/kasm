@@ -6,8 +6,6 @@ use flags::Flags;
 use instruction::Instruction;
 use register::Register;
 use registers::Registers;
-use std::io::stdout;
-use utils::Writer;
 
 pub use cli::Arguments;
 
@@ -29,29 +27,26 @@ pub struct Interpreter {
     program_counter: Word,
     flags: Flags,
     running: bool,
-    output: Box<dyn Writer>,
     stack: Box<[u8]>,
     config: Configuration,
 }
 
 impl Interpreter {
-    pub fn new(args: Arguments) -> Self {
+    pub fn try_new(args: Arguments) -> Result<Self, ProcessorError> {
         // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
         // https://github.com/rust-lang/rust/issues/53827
         let stack = vec![0; STACK_SIZE].into_boxed_slice();
 
-        let output = Box::new(stdout());
-
-        Self {
+        let p = Self {
             registers: [0; Register::VARIANT_COUNT],
             stack_pointer: 0,
             program_counter: 0,
             flags: Flags::new(),
             running: true,
-            output,
             stack,
-            config: Configuration::from(args),
-        }
+            config: Configuration::try_from(args)?,
+        };
+        Ok(p)
     }
 
     #[cfg(test)]
@@ -66,7 +61,6 @@ impl Interpreter {
             program_counter: 0,
             flags: Flags::new(),
             running: true,
-            output: Box::new(Vec::new()),
             stack,
             config: Configuration::new_test(),
         }

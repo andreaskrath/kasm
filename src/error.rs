@@ -5,6 +5,8 @@ use thiserror::Error;
 pub enum ProcessorError {
     #[error("failed to allocated the stack")]
     FailedStackAllocation,
+    #[error("failed to create or open output file, underlying cause is: {0}")]
+    FailedOutputFileCreation(String),
     #[error("failed to decode line {0}: {1}")]
     Decode(usize, DecodeError),
     #[error("failed to execute line {0}: {1}")]

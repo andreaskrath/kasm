@@ -38,7 +38,7 @@ impl Interpreter {
             .map(|chunk| T::from_bytes(chunk))
             .collect();
 
-        writeln!(self.output, "stack: {:?}", values.as_slice())
+        writeln!(self.config.output, "stack: {:?}", values.as_slice())
             .map_err(|err| ExecuteError::IO(err.to_string()))
     }
 
@@ -52,7 +52,7 @@ impl Interpreter {
         let slice = &self.stack[lower_bound..self.sp()];
         let str: String = slice.iter().map(|b| *b as char).collect();
 
-        writeln!(self.output, "{str}").map_err(|err| ExecuteError::IO(err.to_string()))
+        writeln!(self.config.output, "{str}").map_err(|err| ExecuteError::IO(err.to_string()))
     }
 }
 
@@ -79,7 +79,7 @@ mod byte {
         let expected = format!("stack: {:?}\n", [Byte::MAX, Byte::MAX]);
 
         p.print_stack_value::<Byte>(Operand::Immediate(2)).unwrap();
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
 
         assert_eq!(actual, expected);
     }
@@ -116,7 +116,7 @@ mod quarter {
 
         p.print_stack_value::<Quarter>(Operand::Immediate(2))
             .unwrap();
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
 
         assert_eq!(actual, expected);
     }
@@ -156,7 +156,7 @@ mod half {
         let expected = format!("stack: {:?}\n", [Half::MAX, Half::MAX]);
 
         p.print_stack_value::<Half>(Operand::Immediate(2)).unwrap();
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
 
         assert_eq!(actual, expected);
     }
@@ -204,7 +204,7 @@ mod word {
         let expected = format!("stack: {:?}\n", [Word::MAX, Word::MAX]);
 
         p.print_stack_value::<Word>(Operand::Immediate(2)).unwrap();
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
 
         assert_eq!(actual, expected);
     }
@@ -244,7 +244,7 @@ mod print_stack_str {
         let expected = "Hello, world!\n";
 
         p.print_stack_str(Operand::Immediate(13)).unwrap();
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
 
         assert_eq!(actual, expected);
     }
@@ -260,7 +260,7 @@ mod print_stack_str {
         let expected = "\u{8}\n";
 
         p.print_stack_str(Operand::Immediate(1)).unwrap();
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
 
         assert_eq!(actual, expected);
     }

@@ -26,7 +26,7 @@ impl Interpreter {
         T: Display + FromBytes,
     {
         let value = self.registers.get::<T>(register);
-        writeln!(self.output, "{}: {}", register, value)
+        writeln!(self.config.output, "{}: {}", register, value)
             .map_err(|err| ExecuteError::IO(err.to_string()))
     }
 }
@@ -47,7 +47,7 @@ mod byte {
         let expected = format!("{}: {}\n", Register::A, Byte::MAX);
         p.print_register_value::<Byte>(Register::A)?;
 
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())
@@ -71,7 +71,7 @@ mod quarter {
 
         p.print_register_value::<Quarter>(Register::A)?;
 
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())
@@ -95,7 +95,7 @@ mod half {
 
         p.print_register_value::<Half>(Register::A)?;
 
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())
@@ -114,7 +114,7 @@ mod word {
 
         p.print_register_value::<Word>(Register::A)?;
 
-        let actual = p.output.get_buffer().unwrap();
+        let actual = p.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())

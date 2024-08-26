@@ -1,4 +1,7 @@
-use std::io::{Stdout, Write};
+use std::{
+    fs::File,
+    io::{Stdout, Write},
+};
 
 pub trait Writer: Write {
     #[cfg(test)]
@@ -16,5 +19,12 @@ impl Writer for Vec<u8> {
     #[cfg(test)]
     fn get_buffer(&self) -> Option<String> {
         Some(String::from_utf8(self.clone()).unwrap())
+    }
+}
+
+impl Writer for File {
+    #[cfg(test)]
+    fn get_buffer(&self) -> Option<String> {
+        None
     }
 }

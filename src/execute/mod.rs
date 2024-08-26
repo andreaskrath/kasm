@@ -66,7 +66,7 @@ impl Interpreter {
 
         if self.config.print_instructions_executed {
             writeln!(
-                self.output,
+                self.config.output,
                 "Instructions Executed: {}",
                 self.config.instructions_executed
             )
