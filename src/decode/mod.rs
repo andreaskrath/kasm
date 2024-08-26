@@ -240,3 +240,45 @@ mod get_reg_and_operand_str {
         assert_eq!(actual, expected);
     }
 }
+
+#[cfg(test)]
+mod ungrouped_regression {
+    use crate::{error::DecodeError, instruction::Instruction, Interpreter};
+
+    #[test]
+    fn unknown_instruction() {
+        let mut i = Interpreter::new_test();
+        let instruction = "hello";
+        let expected = Err(DecodeError::UnknownInstruction(instruction.to_string()));
+
+        let actual = i.decode(instruction);
+
+        assert_eq!(actual, expected)
+    }
+
+    #[test]
+    fn stop() -> Result<(), DecodeError> {
+        let mut i = Interpreter::new_test();
+        let instruction = "stop";
+        let expected = Instruction::Stop;
+
+        let actual = i.decode(instruction)?;
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn ret() -> Result<(), DecodeError> {
+        let mut i = Interpreter::new_test();
+        let instruction = "ret";
+        let expected = Instruction::Return;
+
+        let actual = i.decode(instruction)?;
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+}
