@@ -1,8 +1,7 @@
-use crate::constant::Word;
 use thiserror::Error;
 
 #[derive(Debug, Error, PartialEq)]
-pub enum ProcessorError {
+pub enum InterpreterError {
     #[error("failed to allocated the stack")]
     FailedStackAllocation,
     #[error("failed to create or open output file, underlying cause is: {0}")]

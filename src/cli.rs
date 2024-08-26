@@ -1,4 +1,4 @@
-use crate::{error::ProcessorError, utils::Writer};
+use crate::{error::InterpreterError, utils::Writer};
 use clap::Parser;
 use std::{fs::File, io::stdout, path::PathBuf};
 
@@ -20,7 +20,7 @@ impl Configuration {
 }
 
 impl TryFrom<Arguments> for Configuration {
-    type Error = ProcessorError;
+    type Error = InterpreterError;
 
     fn try_from(args: Arguments) -> Result<Self, Self::Error> {
         let output = match args.output {
@@ -30,7 +30,7 @@ impl TryFrom<Arguments> for Configuration {
                 .truncate(true)
                 .open(path)
                 .map(|f| Box::new(f) as Box<dyn Writer>)
-                .map_err(|err| ProcessorError::FailedOutputFileCreation(err.to_string()))?,
+                .map_err(|err| InterpreterError::FailedOutputFileCreation(err.to_string()))?,
             None => Box::new(stdout()),
         };
 
