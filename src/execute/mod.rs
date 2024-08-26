@@ -36,7 +36,7 @@ impl Interpreter {
         use Instruction::*;
 
         match instruction {
-            Stop => self.stop(),
+            Stop => self.stop()?,
             Set(set_ins) => self.set(set_ins),
             Addition(add_ins) => self.add(add_ins),
             Subtraction(sub_ins) => self.sub(sub_ins),
@@ -61,8 +61,19 @@ impl Interpreter {
         Ok(())
     }
 
-    fn stop(&mut self) {
+    fn stop(&mut self) -> Result<(), ExecuteError> {
         self.running = false;
+
+        if self.config.print_instructions_executed {
+            writeln!(
+                self.output,
+                "Instructions Executed: {}",
+                self.config.instructions_executed
+            )
+            .map_err(|err| ExecuteError::IO(err.to_string()))?;
+        }
+
+        Ok(())
     }
 
     fn call(&mut self, operand: Operand<Word>) -> Result<(), ExecuteError> {

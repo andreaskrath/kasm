@@ -1,3 +1,4 @@
+use cli::Configuration;
 use constant::{Word, STACK_SIZE};
 use decode::DECODE_TABLE;
 use error::{DecodeError, ProcessorError};
@@ -8,6 +9,9 @@ use registers::Registers;
 use std::io::stdout;
 use utils::Writer;
 
+pub use cli::Arguments;
+
+mod cli;
 mod constant;
 mod decode;
 mod error;
@@ -27,10 +31,11 @@ pub struct Interpreter {
     running: bool,
     output: Box<dyn Writer>,
     stack: Box<[u8]>,
+    config: Configuration,
 }
 
-impl Default for Interpreter {
-    fn default() -> Self {
+impl Interpreter {
+    pub fn new(args: Arguments) -> Self {
         // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
         // https://github.com/rust-lang/rust/issues/53827
         let stack = vec![0; STACK_SIZE].into_boxed_slice();
@@ -45,11 +50,10 @@ impl Default for Interpreter {
             running: true,
             output,
             stack,
+            config: Configuration::from(args),
         }
     }
-}
 
-impl Interpreter {
     #[cfg(test)]
     pub fn new_test() -> Self {
         use constant::TEST_STACK_SIZE;
@@ -64,6 +68,7 @@ impl Interpreter {
             running: true,
             output: Box::new(Vec::new()),
             stack,
+            config: Configuration::new_test(),
         }
     }
 
@@ -90,6 +95,7 @@ impl Interpreter {
                 .map_err(|e| ProcessorError::Decode(self.pc(), e))?;
 
             self.program_counter += 1;
+            self.config.instructions_executed += 1;
 
             self.execute(instruction)
                 .map_err(|e| ProcessorError::Execute(self.pc(), e))?;

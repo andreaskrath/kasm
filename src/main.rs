@@ -1,7 +1,9 @@
-use kasm::Interpreter;
+use clap::Parser;
+use kasm::{Arguments, Interpreter};
 
 fn main() {
-    let mut p = Interpreter::default();
+    let args = Arguments::parse();
+    let mut p = Interpreter::new(args);
     // this is just an example program for now
     let program = include_str!("../program.kasm");
 
