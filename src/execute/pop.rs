@@ -41,6 +41,8 @@ impl Processor {
         let bytes = &self.stack[lower_bound..self.sp()];
         let value = T::from_bytes(bytes);
 
+        self.stack_pointer -= size_of::<T>() as Word;
+
         Ok(value)
     }
 }
@@ -62,12 +64,13 @@ mod byte {
     fn no_stack_underflow() {
         let mut p = Processor::test_instance();
         p.stack[0] = Byte::MAX;
-        p.stack_pointer += 1;
+        p.stack_pointer = 1;
         let expected = Byte::MAX;
 
         let actual = p.pop_value::<Byte>().unwrap();
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == 0);
     }
 }
 
@@ -90,12 +93,13 @@ mod quarter {
         let bytes = Quarter::MAX.to_le_bytes();
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];
-        p.stack_pointer += 2;
+        p.stack_pointer = 2;
         let expected = Quarter::MAX;
 
         let actual = p.pop_value::<Quarter>().unwrap();
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == 0);
     }
 }
 
@@ -120,12 +124,13 @@ mod half {
         p.stack[1] = bytes[1];
         p.stack[2] = bytes[2];
         p.stack[3] = bytes[3];
-        p.stack_pointer += 4;
+        p.stack_pointer = 4;
         let expected = Half::MAX;
 
         let actual = p.pop_value::<Half>().unwrap();
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == 0);
     }
 }
 
@@ -154,11 +159,12 @@ mod word {
         p.stack[5] = bytes[5];
         p.stack[6] = bytes[6];
         p.stack[7] = bytes[7];
-        p.stack_pointer += 8;
+        p.stack_pointer = 8;
         let expected = Word::MAX;
 
         let actual = p.pop_value::<Word>().unwrap();
 
         assert_eq!(actual, expected);
+        assert!(p.stack_pointer == 0);
     }
 }
