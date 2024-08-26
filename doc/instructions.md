@@ -12,6 +12,16 @@ In essence, they can be thought of as private registers.
 
 ## Stack
 
+## Flags
+There are three flags: **overflow**, **zero**, and **sign**.
+
+The overflow flag is set when an instruction results in an arithmetic overflow.
+Also note that in the case of an overflow, the wrapped value is stored as the result, and the overflow flag is set.
+
+The zero flag is set when an instruction results in the value zero.
+
+The sign flag is set when an instruction results in the most significant bit of a value being 1.
+
 # Instructions
 Some instructions have size variants, where the variant is specified with a suffix character on the instruction.
 
