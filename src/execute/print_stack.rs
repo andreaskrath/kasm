@@ -62,7 +62,7 @@ mod byte {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Byte>(Operand::Immediate(1));
@@ -72,7 +72,7 @@ mod byte {
 
     #[test]
     fn print() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack_pointer = 2;
@@ -96,7 +96,7 @@ mod quarter {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Quarter>(Operand::Immediate(1));
@@ -106,7 +106,7 @@ mod quarter {
 
     #[test]
     fn print() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack[2] = Byte::MAX;
@@ -133,7 +133,7 @@ mod half {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Half>(Operand::Immediate(1));
@@ -143,7 +143,7 @@ mod half {
 
     #[test]
     fn print() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack[2] = Byte::MAX;
@@ -173,7 +173,7 @@ mod word {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Word>(Operand::Immediate(1));
@@ -183,7 +183,7 @@ mod word {
 
     #[test]
     fn print() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack[2] = Byte::MAX;
@@ -216,7 +216,7 @@ mod print_stack_str {
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_str(Operand::Immediate(1));
@@ -226,7 +226,7 @@ mod print_stack_str {
 
     #[test]
     fn hello_world() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.stack[0] = b'H';
         p.stack[1] = b'e';
         p.stack[2] = b'l';
@@ -251,7 +251,7 @@ mod print_stack_str {
 
     #[test]
     fn non_printable_ascii_character() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         // backspace character
         p.stack[0] = 8;
         p.stack_pointer = 1;

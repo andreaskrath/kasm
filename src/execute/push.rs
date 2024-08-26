@@ -1,5 +1,5 @@
 use crate::{
-    constant::{Word, STACK_SIZE},
+    constant::Word,
     error::ExecuteError,
     instruction::Push,
     utils::{FromBytes, ToBytes},
@@ -34,7 +34,7 @@ impl Processor {
     where
         T: ToBytes + FromBytes,
     {
-        if self.sp() + size_of::<T>() > STACK_SIZE {
+        if self.sp() + size_of::<T>() > self.stack.len() {
             return Err(ExecuteError::StackOverflow);
         }
 
@@ -51,15 +51,15 @@ impl Processor {
 #[cfg(test)]
 mod byte {
     use crate::{
-        constant::{Byte, Word, STACK_SIZE},
+        constant::{Byte, Word, TEST_STACK_SIZE},
         error::ExecuteError,
         Processor,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = STACK_SIZE as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
         let actual = p.push_value(Byte::MAX);
@@ -69,30 +69,30 @@ mod byte {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = (STACK_SIZE - size_of::<Byte>()) as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Byte>()) as Word;
         let expected = Byte::MAX;
 
         p.push_value(Byte::MAX).unwrap();
-        let actual = p.stack[STACK_SIZE - size_of::<Byte>()];
+        let actual = p.stack[TEST_STACK_SIZE - size_of::<Byte>()];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == STACK_SIZE as u64);
+        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
     }
 }
 
 #[cfg(test)]
 mod quarter {
     use crate::{
-        constant::{Quarter, Word, STACK_SIZE},
+        constant::{Quarter, Word, TEST_STACK_SIZE},
         error::ExecuteError,
         Processor,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = STACK_SIZE as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
         let actual = p.push_value(Quarter::MAX);
@@ -102,30 +102,30 @@ mod quarter {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = (STACK_SIZE - size_of::<Quarter>()) as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Quarter>()) as Word;
         let expected = Quarter::MAX.to_le_bytes();
 
         p.push_value(Quarter::MAX).unwrap();
-        let actual = &p.stack[STACK_SIZE - size_of::<Quarter>()..STACK_SIZE];
+        let actual = &p.stack[TEST_STACK_SIZE - size_of::<Quarter>()..TEST_STACK_SIZE];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == STACK_SIZE as u64);
+        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
     }
 }
 
 #[cfg(test)]
 mod half {
     use crate::{
-        constant::{Half, Word, STACK_SIZE},
+        constant::{Half, Word, TEST_STACK_SIZE},
         error::ExecuteError,
         Processor,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = STACK_SIZE as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
         let actual = p.push_value(Half::MAX);
@@ -135,30 +135,30 @@ mod half {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = (STACK_SIZE - size_of::<Half>()) as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Half>()) as Word;
         let expected = Half::MAX.to_le_bytes();
 
         p.push_value(Half::MAX).unwrap();
-        let actual = &p.stack[STACK_SIZE - size_of::<Half>()..STACK_SIZE];
+        let actual = &p.stack[TEST_STACK_SIZE - size_of::<Half>()..TEST_STACK_SIZE];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == STACK_SIZE as u64);
+        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
     }
 }
 
 #[cfg(test)]
 mod word {
     use crate::{
-        constant::{Word, STACK_SIZE},
+        constant::{Word, TEST_STACK_SIZE},
         error::ExecuteError,
         Processor,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = STACK_SIZE as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
         let actual = p.push_value(Word::MAX);
@@ -168,14 +168,14 @@ mod word {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::test_instance();
-        p.stack_pointer = (STACK_SIZE - size_of::<Word>()) as Word;
+        let mut p = Processor::new_test();
+        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Word>()) as Word;
         let expected = Word::MAX.to_le_bytes();
 
         p.push_value(Word::MAX).unwrap();
-        let actual = &p.stack[STACK_SIZE - size_of::<Word>()..STACK_SIZE];
+        let actual = &p.stack[TEST_STACK_SIZE - size_of::<Word>()..TEST_STACK_SIZE];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == STACK_SIZE as u64);
+        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
     }
 }

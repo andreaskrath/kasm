@@ -40,7 +40,7 @@ mod byte {
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.div_value(Register::A, Operand::Immediate(0u8));
@@ -50,7 +50,7 @@ mod byte {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = 0;
 
         p.div_value(Register::A, Operand::Immediate(Byte::MAX))?;
@@ -65,7 +65,7 @@ mod byte {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 5;
@@ -82,7 +82,7 @@ mod byte {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 3;
@@ -106,7 +106,7 @@ mod quarter {
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.div_value(Register::A, Operand::Immediate(0u16));
@@ -116,7 +116,7 @@ mod quarter {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = 0;
 
         p.div_value(Register::A, Operand::Immediate(Quarter::MAX))?;
@@ -131,7 +131,7 @@ mod quarter {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 5;
@@ -148,7 +148,7 @@ mod quarter {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 3;
@@ -172,7 +172,7 @@ mod half {
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.div_value(Register::A, Operand::Immediate(0u32));
@@ -182,7 +182,7 @@ mod half {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = 0;
 
         p.div_value(Register::A, Operand::Immediate(Half::MAX))?;
@@ -197,7 +197,7 @@ mod half {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 5;
@@ -214,7 +214,7 @@ mod half {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 3;
@@ -238,7 +238,7 @@ mod word {
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.div_value(Register::A, Operand::Immediate(0u64));
@@ -248,7 +248,7 @@ mod word {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = 0;
 
         p.div_value(Register::A, Operand::Immediate(Word::MAX))?;
@@ -263,7 +263,7 @@ mod word {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 5;
@@ -280,7 +280,7 @@ mod word {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 3;

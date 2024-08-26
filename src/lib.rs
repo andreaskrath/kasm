@@ -26,20 +26,18 @@ pub struct Processor {
     flags: Flags,
     running: bool,
     output: Box<dyn Writer>,
-    stack: Box<[u8; STACK_SIZE]>,
+    stack: Box<[u8]>,
 }
 
-impl Processor {
-    pub fn new() -> Result<Self, ProcessorError> {
+impl Default for Processor {
+    fn default() -> Self {
         // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
         // https://github.com/rust-lang/rust/issues/53827
-        let Ok(stack) = vec![0; STACK_SIZE].into_boxed_slice().try_into() else {
-            return Err(ProcessorError::FailedStackAllocation);
-        };
+        let stack = vec![0; STACK_SIZE].into_boxed_slice();
 
         let output = Box::new(stdout());
 
-        let p = Self {
+        Self {
             registers: [0; Register::VARIANT_COUNT],
             stack_pointer: 0,
             program_counter: 0,
@@ -47,13 +45,16 @@ impl Processor {
             running: true,
             output,
             stack,
-        };
-        Ok(p)
+        }
     }
+}
 
+impl Processor {
     #[cfg(test)]
-    pub fn test_instance() -> Self {
-        let stack = vec![0; STACK_SIZE].into_boxed_slice().try_into().unwrap();
+    pub fn new_test() -> Self {
+        use constant::TEST_STACK_SIZE;
+
+        let stack = vec![0; TEST_STACK_SIZE].into_boxed_slice();
 
         Self {
             registers: [0; Register::VARIANT_COUNT],

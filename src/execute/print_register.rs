@@ -42,7 +42,7 @@ mod byte {
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Byte::MAX);
         p.print_register_value::<Byte>(Register::A)?;
@@ -65,7 +65,7 @@ mod quarter {
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Quarter::MAX);
 
@@ -89,7 +89,7 @@ mod half {
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Half::MAX);
 
@@ -108,7 +108,7 @@ mod word {
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Word::MAX;
         let expected = format!("{}: {}\n", Register::A, Word::MAX);
 

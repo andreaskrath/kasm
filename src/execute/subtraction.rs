@@ -37,7 +37,7 @@ mod byte {
 
     #[test]
     fn sub_causes_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Byte::MIN as Word;
         let expected = Byte::MAX as Word;
 
@@ -51,7 +51,7 @@ mod byte {
 
     #[test]
     fn sub_does_not_cause_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = Byte::MAX as Word - 1;
 
@@ -65,7 +65,7 @@ mod byte {
 
     #[test]
     fn sub_two_registers_together() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 0;
@@ -80,7 +80,7 @@ mod byte {
 
     #[test]
     fn sub_the_register_to_itself() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         let expected = 0;
 
@@ -104,7 +104,7 @@ mod quarter {
 
     #[test]
     fn sub_causes_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Quarter::MIN as Word;
         let expected = Quarter::MAX as Word;
 
@@ -118,7 +118,7 @@ mod quarter {
 
     #[test]
     fn sub_does_not_cause_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = Quarter::MAX as Word - 1;
 
@@ -132,7 +132,7 @@ mod quarter {
 
     #[test]
     fn sub_two_registers_together() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 0;
@@ -147,7 +147,7 @@ mod quarter {
 
     #[test]
     fn sub_the_register_to_itself() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         let expected = 0;
 
@@ -171,7 +171,7 @@ mod half {
 
     #[test]
     fn sub_causes_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Half::MIN as Word;
         let expected = Half::MAX as Word;
 
@@ -185,7 +185,7 @@ mod half {
 
     #[test]
     fn sub_does_not_cause_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = Half::MAX as Word - 1;
 
@@ -199,7 +199,7 @@ mod half {
 
     #[test]
     fn sub_two_registers_together() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 0;
@@ -214,7 +214,7 @@ mod half {
 
     #[test]
     fn sub_the_register_to_itself() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         let expected = 0;
 
@@ -233,7 +233,7 @@ mod word {
 
     #[test]
     fn sub_causes_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Word::MIN;
         let expected = Word::MAX;
 
@@ -247,7 +247,7 @@ mod word {
 
     #[test]
     fn sub_does_not_cause_overflow() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = Word::MAX;
         let expected = Word::MAX - 1;
 
@@ -261,7 +261,7 @@ mod word {
 
     #[test]
     fn sub_two_registers_together() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 0;
@@ -276,7 +276,7 @@ mod word {
 
     #[test]
     fn sub_the_register_to_itself() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::A] = 2;
         let expected = 0;
 

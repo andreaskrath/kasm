@@ -36,7 +36,7 @@ mod byte {
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Byte::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Byte::MAX));
@@ -46,7 +46,7 @@ mod byte {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::B] = Byte::MAX as Word;
         let expected = Byte::MAX as Word;
 
@@ -67,7 +67,7 @@ mod quarter {
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Quarter::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Quarter::MAX));
@@ -77,7 +77,7 @@ mod quarter {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::B] = Quarter::MAX as Word;
         let expected = Quarter::MAX as Word;
 
@@ -98,7 +98,7 @@ mod half {
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Half::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Half::MAX));
@@ -108,7 +108,7 @@ mod half {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::B] = Half::MAX as Word;
         let expected = Half::MAX as Word;
 
@@ -124,7 +124,7 @@ mod word {
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         let expected = Word::MAX;
 
         p.set_value(Register::A, Operand::Immediate(Word::MAX));
@@ -134,7 +134,7 @@ mod word {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::test_instance();
+        let mut p = Processor::new_test();
         p.registers[Register::B] = Word::MAX;
         let expected = Word::MAX;
 
