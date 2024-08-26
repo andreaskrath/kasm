@@ -36,6 +36,8 @@ The following table illustrates the different size variants.
 
 As an example, the `add` instruction performs arithmetic addition between the two provided paramters, if the instruction is suffixed with `w`, like so `addw`, then the parameters will be interpretted as 64-bit.
 
+Note that the size of an instruction matters, in the sense that `setb ra 3000` will result in a decode error, as the value 3000 cannot be represented in a single byte.
+
 ## Parameters
 There are two types of parameters that an instruction can take: register and operand.
 
@@ -85,6 +87,8 @@ In other words, execute errors indicate an issue that occured during the executi
 
 ## Set
 Sets a register to a given value.
+
+No flags are affected by this instruction.
 
 ### Format
 This is a generalized format for the set instruction.
