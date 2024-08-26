@@ -33,11 +33,12 @@ impl Processor {
     where
         T: FromBytes,
     {
-        if self.sp().checked_sub(size_of::<T>()).is_none() {
-            return Err(ExecuteError::StackUnderflow);
-        }
+        let lower_bound = self
+            .sp()
+            .checked_sub(size_of::<T>())
+            .ok_or(ExecuteError::StackUnderflow)?;
 
-        let bytes = &self.stack[self.sp() - size_of::<T>()..self.sp()];
+        let bytes = &self.stack[lower_bound..self.sp()];
         let value = T::from_bytes(bytes);
 
         Ok(value)
