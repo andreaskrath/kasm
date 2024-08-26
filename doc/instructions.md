@@ -48,6 +48,29 @@ Immediate values are not prefixed with a special character, you simply write the
 
 **NB:** for operations that store the result, like arithmetic operations, the first parameter is **always** the destination.
 
+## Errors
+Because this interpreter does not mimic a processor, some liberties are taken in certain areas - one of these are in relation to errors.
+
+Generally speaking, the intention is that if you make a mistake in the program, an error is returned and program execution stops; as much as possible, undefined behaviour has been limited/removed.
+
+There are a couple of different errors that can happen, but the most likely are decode errors and execute errors.
+
+A decode error indicates that something was wrong with the specified instruction, this can come in multiple different forms including:
+- unknown instruction
+- incomplete instruction (missing paraters)
+- invalid register
+- invalid immediate value (for example specifying 3000 as the immediate value of a byte operation)
+
+In other wrods, decode errors indicate that something is wrong in the source code of the program being executed.
+
+Execute errors on the other hard indicate that something went wrong during execution, this can also come in multiple different forms like:
+- stack overflow
+- stack underflow
+- io error (in relation to print statements)
+- attempting divide by 0
+
+In other words, execute errors indicate an issue that occured during the execution of the program, most often this would be logic errors in the program.
+
 ## List
 - [Set](#Set)
 - [Push](#Push)
