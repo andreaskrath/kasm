@@ -4,11 +4,11 @@ use crate::{
     instruction::PrintStack,
     operand::Operand,
     utils::FromBytes,
-    Processor,
+    Interpreter,
 };
 use std::fmt::Debug;
 
-impl Processor {
+impl Interpreter {
     pub fn print_stack(&mut self, instruction: PrintStack) -> Result<(), ExecuteError> {
         match instruction {
             PrintStack::Byte(o) => self.print_stack_value::<Byte>(o)?,
@@ -58,11 +58,11 @@ impl Processor {
 
 #[cfg(test)]
 mod byte {
-    use crate::{constant::Byte, error::ExecuteError, operand::Operand, Processor};
+    use crate::{constant::Byte, error::ExecuteError, operand::Operand, Interpreter};
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Byte>(Operand::Immediate(1));
@@ -72,7 +72,7 @@ mod byte {
 
     #[test]
     fn print() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack_pointer = 2;
@@ -91,12 +91,12 @@ mod quarter {
         constant::{Byte, Quarter},
         error::ExecuteError,
         operand::Operand,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Quarter>(Operand::Immediate(1));
@@ -106,7 +106,7 @@ mod quarter {
 
     #[test]
     fn print() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack[2] = Byte::MAX;
@@ -128,12 +128,12 @@ mod half {
         constant::{Byte, Half},
         error::ExecuteError,
         operand::Operand,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Half>(Operand::Immediate(1));
@@ -143,7 +143,7 @@ mod half {
 
     #[test]
     fn print() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack[2] = Byte::MAX;
@@ -168,12 +168,12 @@ mod word {
         constant::{Byte, Word},
         error::ExecuteError,
         operand::Operand,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_value::<Word>(Operand::Immediate(1));
@@ -183,7 +183,7 @@ mod word {
 
     #[test]
     fn print() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack[0] = Byte::MAX;
         p.stack[1] = Byte::MAX;
         p.stack[2] = Byte::MAX;
@@ -212,11 +212,11 @@ mod word {
 
 #[cfg(test)]
 mod print_stack_str {
-    use crate::{error::ExecuteError, operand::Operand, Processor};
+    use crate::{error::ExecuteError, operand::Operand, Interpreter};
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
 
         let actual = p.print_stack_str(Operand::Immediate(1));
@@ -226,7 +226,7 @@ mod print_stack_str {
 
     #[test]
     fn hello_world() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack[0] = b'H';
         p.stack[1] = b'e';
         p.stack[2] = b'l';
@@ -251,7 +251,7 @@ mod print_stack_str {
 
     #[test]
     fn non_printable_ascii_character() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         // backspace character
         p.stack[0] = 8;
         p.stack_pointer = 1;

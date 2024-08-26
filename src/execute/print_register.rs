@@ -5,11 +5,11 @@ use crate::{
     register::Register,
     registers::RegisterOperations,
     utils::FromBytes,
-    Processor,
+    Interpreter,
 };
 use std::fmt::Display;
 
-impl Processor {
+impl Interpreter {
     pub fn print_register(&mut self, instruction: PrintRegister) -> Result<(), ExecuteError> {
         match instruction {
             PrintRegister::Byte(r) => self.print_register_value::<Byte>(r)?,
@@ -37,12 +37,12 @@ mod byte {
         constant::{Byte, Word},
         error::ExecuteError,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Byte::MAX);
         p.print_register_value::<Byte>(Register::A)?;
@@ -60,12 +60,12 @@ mod quarter {
         constant::{Quarter, Word},
         error::ExecuteError,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Quarter::MAX);
 
@@ -84,12 +84,12 @@ mod half {
         constant::{Half, Word},
         error::ExecuteError,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Half::MAX);
 
@@ -104,11 +104,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, error::ExecuteError, register::Register, Processor};
+    use crate::{constant::Word, error::ExecuteError, register::Register, Interpreter};
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
         let expected = format!("{}: {}\n", Register::A, Word::MAX);
 

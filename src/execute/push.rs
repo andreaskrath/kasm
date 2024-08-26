@@ -3,10 +3,10 @@ use crate::{
     error::ExecuteError,
     instruction::Push,
     utils::{FromBytes, ToBytes},
-    Processor,
+    Interpreter,
 };
 
-impl Processor {
+impl Interpreter {
     pub fn push(&mut self, instruction: Push) -> Result<(), ExecuteError> {
         match instruction {
             Push::Byte(operand) => {
@@ -53,12 +53,12 @@ mod byte {
     use crate::{
         constant::{Byte, Word, TEST_STACK_SIZE},
         error::ExecuteError,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -69,7 +69,7 @@ mod byte {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = (TEST_STACK_SIZE - size_of::<Byte>()) as Word;
         let expected = Byte::MAX;
 
@@ -86,12 +86,12 @@ mod quarter {
     use crate::{
         constant::{Quarter, Word, TEST_STACK_SIZE},
         error::ExecuteError,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -102,7 +102,7 @@ mod quarter {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = (TEST_STACK_SIZE - size_of::<Quarter>()) as Word;
         let expected = Quarter::MAX.to_le_bytes();
 
@@ -119,12 +119,12 @@ mod half {
     use crate::{
         constant::{Half, Word, TEST_STACK_SIZE},
         error::ExecuteError,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -135,7 +135,7 @@ mod half {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = (TEST_STACK_SIZE - size_of::<Half>()) as Word;
         let expected = Half::MAX.to_le_bytes();
 
@@ -152,12 +152,12 @@ mod word {
     use crate::{
         constant::{Word, TEST_STACK_SIZE},
         error::ExecuteError,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -168,7 +168,7 @@ mod word {
 
     #[test]
     fn no_stack_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack_pointer = (TEST_STACK_SIZE - size_of::<Word>()) as Word;
         let expected = Word::MAX.to_le_bytes();
 

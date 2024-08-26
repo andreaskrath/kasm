@@ -19,7 +19,7 @@ mod register;
 mod registers;
 mod utils;
 
-pub struct Processor {
+pub struct Interpreter {
     registers: Registers,
     stack_pointer: Word,
     program_counter: Word,
@@ -29,7 +29,7 @@ pub struct Processor {
     stack: Box<[u8]>,
 }
 
-impl Default for Processor {
+impl Default for Interpreter {
     fn default() -> Self {
         // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
         // https://github.com/rust-lang/rust/issues/53827
@@ -49,7 +49,7 @@ impl Default for Processor {
     }
 }
 
-impl Processor {
+impl Interpreter {
     #[cfg(test)]
     pub fn new_test() -> Self {
         use constant::TEST_STACK_SIZE;

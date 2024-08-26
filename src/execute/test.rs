@@ -1,6 +1,6 @@
-use crate::{instruction::Test, operand::Operand, utils::BitWise, Processor};
+use crate::{instruction::Test, operand::Operand, utils::BitWise, Interpreter};
 
-impl Processor {
+impl Interpreter {
     pub fn test(&mut self, instruction: Test) {
         match instruction {
             Test::Byte(o1, o2) => self.test_value(o1, o2),
@@ -27,12 +27,12 @@ mod byte {
         constant::{Byte, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn no_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(Operand::Immediate(Byte::MAX), Operand::Immediate(0));
 
@@ -43,7 +43,7 @@ mod byte {
 
     #[test]
     fn all_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(Operand::Immediate(Byte::MAX), Operand::Immediate(Byte::MAX));
 
@@ -54,7 +54,7 @@ mod byte {
 
     #[test]
     fn no_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
 
         p.test_value::<Byte>(
@@ -69,7 +69,7 @@ mod byte {
 
     #[test]
     fn all_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
         p.registers[Register::B] = Byte::MAX as Word;
 
@@ -85,7 +85,7 @@ mod byte {
 
     #[test]
     fn no_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(
             Operand::Register(Register::A),
@@ -99,7 +99,7 @@ mod byte {
 
     #[test]
     fn all_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
 
         p.test_value(
@@ -119,12 +119,12 @@ mod quarter {
         constant::{Quarter, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn no_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(Operand::Immediate(Quarter::MAX), Operand::Immediate(0));
 
@@ -135,7 +135,7 @@ mod quarter {
 
     #[test]
     fn all_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(
             Operand::Immediate(Quarter::MAX),
@@ -149,7 +149,7 @@ mod quarter {
 
     #[test]
     fn no_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
 
         p.test_value::<Quarter>(
@@ -164,7 +164,7 @@ mod quarter {
 
     #[test]
     fn all_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
         p.registers[Register::B] = Quarter::MAX as Word;
 
@@ -180,7 +180,7 @@ mod quarter {
 
     #[test]
     fn no_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(
             Operand::Register(Register::A),
@@ -194,7 +194,7 @@ mod quarter {
 
     #[test]
     fn all_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
 
         p.test_value(
@@ -214,12 +214,12 @@ mod half {
         constant::{Half, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn no_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(Operand::Immediate(Half::MAX), Operand::Immediate(0));
 
@@ -230,7 +230,7 @@ mod half {
 
     #[test]
     fn all_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(Operand::Immediate(Half::MAX), Operand::Immediate(Half::MAX));
 
@@ -241,7 +241,7 @@ mod half {
 
     #[test]
     fn no_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
 
         p.test_value::<Half>(
@@ -256,7 +256,7 @@ mod half {
 
     #[test]
     fn all_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
         p.registers[Register::B] = Half::MAX as Word;
 
@@ -272,7 +272,7 @@ mod half {
 
     #[test]
     fn no_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(
             Operand::Register(Register::A),
@@ -286,7 +286,7 @@ mod half {
 
     #[test]
     fn all_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
 
         p.test_value(
@@ -302,11 +302,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Processor};
+    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn no_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(Operand::Immediate(Word::MAX), Operand::Immediate(0));
 
@@ -317,7 +317,7 @@ mod word {
 
     #[test]
     fn all_bits_in_common_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(Operand::Immediate(Word::MAX), Operand::Immediate(Word::MAX));
 
@@ -328,7 +328,7 @@ mod word {
 
     #[test]
     fn no_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
 
         p.test_value::<Word>(
@@ -343,7 +343,7 @@ mod word {
 
     #[test]
     fn all_bits_in_common_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
         p.registers[Register::B] = Word::MAX;
 
@@ -359,7 +359,7 @@ mod word {
 
     #[test]
     fn no_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.test_value(
             Operand::Register(Register::A),
@@ -373,7 +373,7 @@ mod word {
 
     #[test]
     fn all_bits_in_common_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
 
         p.test_value(

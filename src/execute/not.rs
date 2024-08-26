@@ -4,10 +4,10 @@ use crate::{
     register::Register,
     registers::RegisterOperations,
     utils::BitWise,
-    Processor,
+    Interpreter,
 };
 
-impl Processor {
+impl Interpreter {
     pub fn not(&mut self, instruction: Not) {
         match instruction {
             Not::Byte(r) => self.not_value::<Byte>(r),
@@ -33,12 +33,12 @@ mod byte {
     use crate::{
         constant::{Byte, Word},
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Byte::MAX as Word;
 
         p.not_value::<Byte>(Register::A);
@@ -51,7 +51,7 @@ mod byte {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = 0;
 
@@ -69,12 +69,12 @@ mod quarter {
     use crate::{
         constant::{Quarter, Word},
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Quarter::MAX as Word;
 
         p.not_value::<Quarter>(Register::A);
@@ -87,7 +87,7 @@ mod quarter {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = 0;
 
@@ -105,12 +105,12 @@ mod half {
     use crate::{
         constant::{Half, Word},
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Half::MAX as Word;
 
         p.not_value::<Half>(Register::A);
@@ -123,7 +123,7 @@ mod half {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = 0;
 
@@ -138,11 +138,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, register::Register, Processor};
+    use crate::{constant::Word, register::Register, Interpreter};
 
     #[test]
     fn negate_all_zeros() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Word::MAX;
 
         p.not_value::<Word>(Register::A);
@@ -155,7 +155,7 @@ mod word {
 
     #[test]
     fn negate_all_ones() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
         let expected = 0;
 

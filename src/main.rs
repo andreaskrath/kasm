@@ -1,7 +1,7 @@
-use processor::Processor;
+use kasm::Interpreter;
 
 fn main() {
-    let mut p = Processor::default();
+    let mut p = Interpreter::default();
     // this is just an example program for now
     let program = String::from("set ra 2500\nstp");
 

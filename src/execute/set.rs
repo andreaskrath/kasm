@@ -3,10 +3,10 @@ use crate::{
     operand::Operand,
     register::Register,
     utils::{FromBytes, ToWord},
-    Processor,
+    Interpreter,
 };
 
-impl Processor {
+impl Interpreter {
     pub fn set(&mut self, instruction: Set) {
         match instruction {
             Set::Byte(r, o) => self.set_value(r, o),
@@ -31,12 +31,12 @@ mod byte {
         constant::{Byte, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Byte::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Byte::MAX));
@@ -46,7 +46,7 @@ mod byte {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = Byte::MAX as Word;
         let expected = Byte::MAX as Word;
 
@@ -62,12 +62,12 @@ mod quarter {
         constant::{Quarter, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Quarter::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Quarter::MAX));
@@ -77,7 +77,7 @@ mod quarter {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = Quarter::MAX as Word;
         let expected = Quarter::MAX as Word;
 
@@ -93,12 +93,12 @@ mod half {
         constant::{Half, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Half::MAX as Word;
 
         p.set_value(Register::A, Operand::Immediate(Half::MAX));
@@ -108,7 +108,7 @@ mod half {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = Half::MAX as Word;
         let expected = Half::MAX as Word;
 
@@ -120,11 +120,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Processor};
+    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn set_from_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Word::MAX;
 
         p.set_value(Register::A, Operand::Immediate(Word::MAX));
@@ -134,7 +134,7 @@ mod word {
 
     #[test]
     fn set_from_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = Word::MAX;
         let expected = Word::MAX;
 

@@ -1,6 +1,6 @@
-use crate::{instruction::Compare, operand::Operand, utils::Arithmetic, Processor};
+use crate::{instruction::Compare, operand::Operand, utils::Arithmetic, Interpreter};
 
-impl Processor {
+impl Interpreter {
     pub fn compare(&mut self, instruction: Compare) {
         match instruction {
             Compare::Byte(o1, o2) => self.compare_value(o1, o2),
@@ -27,12 +27,12 @@ mod byte {
         constant::{Byte, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn a_and_b_equal_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(Operand::Immediate(Byte::MAX), Operand::Immediate(Byte::MAX));
 
@@ -43,7 +43,7 @@ mod byte {
 
     #[test]
     fn a_greater_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(Operand::Immediate(Byte::MAX), Operand::Immediate(0));
 
@@ -54,7 +54,7 @@ mod byte {
 
     #[test]
     fn a_lesser_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Byte>(Operand::Immediate(0), Operand::Immediate(1));
 
@@ -65,7 +65,7 @@ mod byte {
 
     #[test]
     fn a_and_b_equal_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
         p.registers[Register::B] = Byte::MAX as Word;
 
@@ -81,7 +81,7 @@ mod byte {
 
     #[test]
     fn a_greater_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
 
         p.compare_value::<Byte>(
@@ -96,7 +96,7 @@ mod byte {
 
     #[test]
     fn a_lesser_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = 1;
 
         p.compare_value::<Byte>(
@@ -111,7 +111,7 @@ mod byte {
 
     #[test]
     fn a_and_b_equal_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
 
         p.compare_value(
@@ -126,7 +126,7 @@ mod byte {
 
     #[test]
     fn a_greater_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
 
         p.compare_value::<Byte>(Operand::Register(Register::A), Operand::Immediate(0));
@@ -138,7 +138,7 @@ mod byte {
 
     #[test]
     fn a_lesser_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Byte>(Operand::Register(Register::A), Operand::Immediate(1));
 
@@ -154,12 +154,12 @@ mod quarter {
         constant::{Quarter, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn a_and_b_equal_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(
             Operand::Immediate(Quarter::MAX),
@@ -173,7 +173,7 @@ mod quarter {
 
     #[test]
     fn a_greater_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(Operand::Immediate(Quarter::MAX), Operand::Immediate(0));
 
@@ -184,7 +184,7 @@ mod quarter {
 
     #[test]
     fn a_lesser_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Quarter>(Operand::Immediate(0), Operand::Immediate(1));
 
@@ -195,7 +195,7 @@ mod quarter {
 
     #[test]
     fn a_and_b_equal_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
         p.registers[Register::B] = Quarter::MAX as Word;
 
@@ -211,7 +211,7 @@ mod quarter {
 
     #[test]
     fn a_greater_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
 
         p.compare_value::<Quarter>(
@@ -226,7 +226,7 @@ mod quarter {
 
     #[test]
     fn a_lesser_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = 1;
 
         p.compare_value::<Quarter>(
@@ -241,7 +241,7 @@ mod quarter {
 
     #[test]
     fn a_and_b_equal_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
 
         p.compare_value(
@@ -256,7 +256,7 @@ mod quarter {
 
     #[test]
     fn a_greater_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
 
         p.compare_value::<Quarter>(Operand::Register(Register::A), Operand::Immediate(0));
@@ -268,7 +268,7 @@ mod quarter {
 
     #[test]
     fn a_lesser_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Quarter>(Operand::Register(Register::A), Operand::Immediate(1));
 
@@ -284,12 +284,12 @@ mod half {
         constant::{Half, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn a_and_b_equal_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(Operand::Immediate(Half::MAX), Operand::Immediate(Half::MAX));
 
@@ -300,7 +300,7 @@ mod half {
 
     #[test]
     fn a_greater_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(Operand::Immediate(Half::MAX), Operand::Immediate(0));
 
@@ -311,7 +311,7 @@ mod half {
 
     #[test]
     fn a_lesser_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Half>(Operand::Immediate(0), Operand::Immediate(1));
 
@@ -322,7 +322,7 @@ mod half {
 
     #[test]
     fn a_and_b_equal_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
         p.registers[Register::B] = Half::MAX as Word;
 
@@ -338,7 +338,7 @@ mod half {
 
     #[test]
     fn a_greater_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
 
         p.compare_value::<Half>(
@@ -353,7 +353,7 @@ mod half {
 
     #[test]
     fn a_lesser_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = 1;
 
         p.compare_value::<Half>(
@@ -368,7 +368,7 @@ mod half {
 
     #[test]
     fn a_and_b_equal_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
 
         p.compare_value(
@@ -383,7 +383,7 @@ mod half {
 
     #[test]
     fn a_greater_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
 
         p.compare_value::<Half>(Operand::Register(Register::A), Operand::Immediate(0));
@@ -395,7 +395,7 @@ mod half {
 
     #[test]
     fn a_lesser_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Half>(Operand::Register(Register::A), Operand::Immediate(1));
 
@@ -407,11 +407,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Processor};
+    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn a_and_b_equal_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(Operand::Immediate(Word::MAX), Operand::Immediate(Word::MAX));
 
@@ -422,7 +422,7 @@ mod word {
 
     #[test]
     fn a_greater_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value(Operand::Immediate(Word::MAX), Operand::Immediate(0));
 
@@ -433,7 +433,7 @@ mod word {
 
     #[test]
     fn a_lesser_than_b_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Word>(Operand::Immediate(0), Operand::Immediate(1));
 
@@ -444,7 +444,7 @@ mod word {
 
     #[test]
     fn a_and_b_equal_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
         p.registers[Register::B] = Word::MAX;
 
@@ -460,7 +460,7 @@ mod word {
 
     #[test]
     fn a_greater_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
 
         p.compare_value::<Word>(
@@ -475,7 +475,7 @@ mod word {
 
     #[test]
     fn a_lesser_than_b_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::B] = 1;
 
         p.compare_value::<Word>(
@@ -490,7 +490,7 @@ mod word {
 
     #[test]
     fn a_and_b_equal_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
 
         p.compare_value(
@@ -505,7 +505,7 @@ mod word {
 
     #[test]
     fn a_greater_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
 
         p.compare_value::<Word>(Operand::Register(Register::A), Operand::Immediate(0));
@@ -517,7 +517,7 @@ mod word {
 
     #[test]
     fn a_lesser_than_b_mix() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
 
         p.compare_value::<Word>(Operand::Register(Register::A), Operand::Immediate(1));
 

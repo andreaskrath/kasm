@@ -1,6 +1,6 @@
-use crate::{constant::Word, instruction::Jump, operand::Operand, Processor};
+use crate::{constant::Word, instruction::Jump, operand::Operand, Interpreter};
 
-impl Processor {
+impl Interpreter {
     pub fn jump(&mut self, instruction: Jump) {
         match instruction {
             Jump::Unconditional(o) => self.jump_unconditional(o),
@@ -86,11 +86,11 @@ impl Processor {
 
 #[cfg(test)]
 mod unconditional {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 5;
 
         p.jump_unconditional(Operand::Immediate(5));
@@ -100,7 +100,7 @@ mod unconditional {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 5;
         let expected = 5;
 
@@ -112,11 +112,11 @@ mod unconditional {
 
 #[cfg(test)]
 mod if_zero {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.zero = true;
         let expected = 5;
 
@@ -127,7 +127,7 @@ mod if_zero {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.zero = true;
         p.registers[Register::A] = 5;
         let expected = 5;
@@ -140,11 +140,11 @@ mod if_zero {
 
 #[cfg(test)]
 mod if_not_zero {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 5;
 
         p.jump_if_not_zero(Operand::Immediate(5));
@@ -154,7 +154,7 @@ mod if_not_zero {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 5;
         let expected = 5;
 
@@ -166,11 +166,11 @@ mod if_not_zero {
 
 #[cfg(test)]
 mod if_sign {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.sign = true;
         let expected = 5;
 
@@ -181,7 +181,7 @@ mod if_sign {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.sign = true;
         p.registers[Register::A] = 5;
         let expected = 5;
@@ -194,11 +194,11 @@ mod if_sign {
 
 #[cfg(test)]
 mod if_not_sign {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 5;
 
         p.jump_if_not_sign(Operand::Immediate(5));
@@ -208,7 +208,7 @@ mod if_not_sign {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 5;
         let expected = 5;
 
@@ -220,11 +220,11 @@ mod if_not_sign {
 
 #[cfg(test)]
 mod if_overflow {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.overflow = true;
         let expected = 5;
 
@@ -235,7 +235,7 @@ mod if_overflow {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.overflow = true;
         p.registers[Register::A] = 5;
         let expected = 5;
@@ -248,11 +248,11 @@ mod if_overflow {
 
 #[cfg(test)]
 mod if_not_overflow {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 5;
 
         p.jump_if_not_overflow(Operand::Immediate(5));
@@ -262,7 +262,7 @@ mod if_not_overflow {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 5;
         let expected = 5;
 
@@ -274,11 +274,11 @@ mod if_not_overflow {
 
 #[cfg(test)]
 mod if_greater {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 5;
 
         p.jump_if_greater(Operand::Immediate(5));
@@ -288,7 +288,7 @@ mod if_greater {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 5;
         let expected = 5;
 
@@ -300,11 +300,11 @@ mod if_greater {
 
 #[cfg(test)]
 mod if_lesser {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.overflow = true;
         let expected = 5;
 
@@ -315,7 +315,7 @@ mod if_lesser {
 
     #[test]
     fn jump_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.overflow = true;
         p.registers[Register::A] = 5;
         let expected = 5;
@@ -328,11 +328,11 @@ mod if_lesser {
 
 #[cfg(test)]
 mod if_greater_or_equal {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_greater_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 5;
 
         p.jump_if_greater_or_equal(Operand::Immediate(5));
@@ -342,7 +342,7 @@ mod if_greater_or_equal {
 
     #[test]
     fn jump_greater_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 5;
         let expected = 5;
 
@@ -353,7 +353,7 @@ mod if_greater_or_equal {
 
     #[test]
     fn jump_equal_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.zero = true;
         let expected = 5;
 
@@ -364,7 +364,7 @@ mod if_greater_or_equal {
 
     #[test]
     fn jump_equal_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.zero = true;
         p.registers[Register::A] = 5;
         let expected = 5;
@@ -377,11 +377,11 @@ mod if_greater_or_equal {
 
 #[cfg(test)]
 mod if_lesser_or_equal {
-    use crate::{operand::Operand, register::Register, Processor};
+    use crate::{operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn jump_lesser_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.overflow = true;
         let expected = 5;
 
@@ -392,7 +392,7 @@ mod if_lesser_or_equal {
 
     #[test]
     fn jump_lesser_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.overflow = true;
         p.registers[Register::A] = 5;
         let expected = 5;
@@ -404,7 +404,7 @@ mod if_lesser_or_equal {
 
     #[test]
     fn jump_equal_immediate() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.zero = true;
         let expected = 5;
 
@@ -415,7 +415,7 @@ mod if_lesser_or_equal {
 
     #[test]
     fn jump_equal_register() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.flags.zero = true;
         p.registers[Register::A] = 5;
         let expected = 5;

@@ -1,9 +1,9 @@
 use crate::{
     error::ExecuteError, instruction::Remainder, operand::Operand, register::Register,
-    registers::RegisterOperations, utils::Arithmetic, Processor,
+    registers::RegisterOperations, utils::Arithmetic, Interpreter,
 };
 
-impl Processor {
+impl Interpreter {
     pub fn rem(&mut self, instruction: Remainder) -> Result<(), ExecuteError> {
         match instruction {
             Remainder::Byte(r, o) => self.rem_value(r, o),
@@ -35,12 +35,12 @@ impl Processor {
 #[cfg(test)]
 mod byte {
     use crate::{
-        constant::Byte, error::ExecuteError, operand::Operand, register::Register, Processor,
+        constant::Byte, error::ExecuteError, operand::Operand, register::Register, Interpreter,
     };
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.rem_value(Register::A, Operand::Immediate(0u8));
@@ -50,7 +50,7 @@ mod byte {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 0;
 
         p.rem_value(Register::A, Operand::Immediate(Byte::MAX))?;
@@ -65,7 +65,7 @@ mod byte {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 0;
@@ -82,7 +82,7 @@ mod byte {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 2;
@@ -101,12 +101,12 @@ mod byte {
 #[cfg(test)]
 mod quarter {
     use crate::{
-        constant::Quarter, error::ExecuteError, operand::Operand, register::Register, Processor,
+        constant::Quarter, error::ExecuteError, operand::Operand, register::Register, Interpreter,
     };
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.rem_value(Register::A, Operand::Immediate(0u16));
@@ -116,7 +116,7 @@ mod quarter {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 0;
 
         p.rem_value(Register::A, Operand::Immediate(Quarter::MAX))?;
@@ -131,7 +131,7 @@ mod quarter {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 0;
@@ -148,7 +148,7 @@ mod quarter {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 2;
@@ -167,12 +167,12 @@ mod quarter {
 #[cfg(test)]
 mod half {
     use crate::{
-        constant::Half, error::ExecuteError, operand::Operand, register::Register, Processor,
+        constant::Half, error::ExecuteError, operand::Operand, register::Register, Interpreter,
     };
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.rem_value(Register::A, Operand::Immediate(0u32));
@@ -182,7 +182,7 @@ mod half {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 0;
 
         p.rem_value(Register::A, Operand::Immediate(Half::MAX))?;
@@ -197,7 +197,7 @@ mod half {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 0;
@@ -214,7 +214,7 @@ mod half {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 2;
@@ -233,12 +233,12 @@ mod half {
 #[cfg(test)]
 mod word {
     use crate::{
-        constant::Word, error::ExecuteError, operand::Operand, register::Register, Processor,
+        constant::Word, error::ExecuteError, operand::Operand, register::Register, Interpreter,
     };
 
     #[test]
     fn divide_by_zero_error() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::DivideByZero);
 
         let actual = p.rem_value(Register::A, Operand::Immediate(0u64));
@@ -248,7 +248,7 @@ mod word {
 
     #[test]
     fn dividend_is_zero() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = 0;
 
         p.rem_value(Register::A, Operand::Immediate(Word::MAX))?;
@@ -263,7 +263,7 @@ mod word {
 
     #[test]
     fn dividing_two_registers() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 4;
         let expected = 0;
@@ -280,7 +280,7 @@ mod word {
 
     #[test]
     fn uneven_division() -> Result<(), ExecuteError> {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 20;
         p.registers[Register::B] = 6;
         let expected = 2;

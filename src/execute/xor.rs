@@ -1,9 +1,9 @@
 use crate::{
     instruction::Xor, operand::Operand, register::Register, registers::RegisterOperations,
-    utils::BitWise, Processor,
+    utils::BitWise, Interpreter,
 };
 
-impl Processor {
+impl Interpreter {
     pub fn xor(&mut self, instruction: Xor) {
         match instruction {
             Xor::Byte(r, o) => self.xor_value(r, o),
@@ -32,12 +32,12 @@ mod byte {
         constant::{Byte, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Byte::MAX as Word;
 
         p.xor_value(Register::A, Operand::Immediate(Byte::MAX));
@@ -50,7 +50,7 @@ mod byte {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word;
         let expected = 0;
 
@@ -69,12 +69,12 @@ mod quarter {
         constant::{Quarter, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Quarter::MAX as Word;
 
         p.xor_value(Register::A, Operand::Immediate(Quarter::MAX));
@@ -87,7 +87,7 @@ mod quarter {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word;
         let expected = 0;
 
@@ -106,12 +106,12 @@ mod half {
         constant::{Half, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Half::MAX as Word;
 
         p.xor_value(Register::A, Operand::Immediate(Half::MAX));
@@ -124,7 +124,7 @@ mod half {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word;
         let expected = 0;
 
@@ -139,11 +139,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Processor};
+    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn no_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Word::MAX;
 
         p.xor_value(Register::A, Operand::Immediate(Word::MAX));
@@ -156,7 +156,7 @@ mod word {
 
     #[test]
     fn all_bits_in_common() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX;
         let expected = 0;
 

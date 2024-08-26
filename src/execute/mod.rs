@@ -1,6 +1,6 @@
 use crate::{
     constant::Word, error::ExecuteError, instruction::Instruction, operand::Operand,
-    registers::RegisterOperations, utils::FromBytes, Processor,
+    registers::RegisterOperations, utils::FromBytes, Interpreter,
 };
 
 mod addition;
@@ -21,7 +21,7 @@ mod subtraction;
 mod test;
 mod xor;
 
-impl Processor {
+impl Interpreter {
     fn get_operand_value<T>(&self, operand: Operand<T>) -> T
     where
         T: FromBytes,

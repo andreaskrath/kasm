@@ -1,9 +1,9 @@
 use crate::{
     instruction::Multiplication, operand::Operand, register::Register,
-    registers::RegisterOperations, utils::Arithmetic, Processor,
+    registers::RegisterOperations, utils::Arithmetic, Interpreter,
 };
 
-impl Processor {
+impl Interpreter {
     pub fn mul(&mut self, instruction: Multiplication) {
         match instruction {
             Multiplication::Byte(r, o) => self.mul_value(r, o),
@@ -32,12 +32,12 @@ mod byte {
         constant::{Byte, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn mul_causes_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = (Byte::MAX as Word / 2) + 1;
         let expected = 0;
 
@@ -51,7 +51,7 @@ mod byte {
 
     #[test]
     fn mul_does_not_cause_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Byte::MAX as Word / 2;
         let expected = Byte::MAX as Word - 1;
 
@@ -65,7 +65,7 @@ mod byte {
 
     #[test]
     fn mul_two_registers_together() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 4;
@@ -80,7 +80,7 @@ mod byte {
 
     #[test]
     fn mul_the_register_with_itself() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         let expected = 4;
 
@@ -99,12 +99,12 @@ mod quarter {
         constant::{Quarter, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn mul_causes_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = (Quarter::MAX as Word / 2) + 1;
         let expected = 0;
 
@@ -118,7 +118,7 @@ mod quarter {
 
     #[test]
     fn mul_does_not_cause_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Quarter::MAX as Word / 2;
         let expected = Quarter::MAX as Word - 1;
 
@@ -132,7 +132,7 @@ mod quarter {
 
     #[test]
     fn mul_two_registers_together() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 4;
@@ -147,7 +147,7 @@ mod quarter {
 
     #[test]
     fn mul_the_register_with_itself() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         let expected = 4;
 
@@ -166,12 +166,12 @@ mod half {
         constant::{Half, Word},
         operand::Operand,
         register::Register,
-        Processor,
+        Interpreter,
     };
 
     #[test]
     fn mul_causes_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = (Half::MAX as Word / 2) + 1;
         let expected = 0;
 
@@ -185,7 +185,7 @@ mod half {
 
     #[test]
     fn mul_does_not_cause_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Half::MAX as Word / 2;
         let expected = Half::MAX as Word - 1;
 
@@ -199,7 +199,7 @@ mod half {
 
     #[test]
     fn mul_two_registers_together() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 4;
@@ -214,7 +214,7 @@ mod half {
 
     #[test]
     fn mul_the_register_with_itself() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         let expected = 4;
 
@@ -229,11 +229,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Processor};
+    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
 
     #[test]
     fn mul_causes_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = (Word::MAX / 2) + 1;
         let expected = 0;
 
@@ -247,7 +247,7 @@ mod word {
 
     #[test]
     fn mul_does_not_cause_overflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = Word::MAX / 2;
         let expected = Word::MAX - 1;
 
@@ -261,7 +261,7 @@ mod word {
 
     #[test]
     fn mul_two_registers_together() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         p.registers[Register::B] = 2;
         let expected = 4;
@@ -276,7 +276,7 @@ mod word {
 
     #[test]
     fn mul_the_register_with_itself() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.registers[Register::A] = 2;
         let expected = 4;
 

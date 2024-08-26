@@ -3,10 +3,10 @@ use crate::{
     error::ExecuteError,
     instruction::Pop,
     utils::FromBytes,
-    Processor,
+    Interpreter,
 };
 
-impl Processor {
+impl Interpreter {
     pub fn pop(&mut self, instruction: Pop) -> Result<(), ExecuteError> {
         match instruction {
             Pop::Byte(register) => {
@@ -49,11 +49,11 @@ impl Processor {
 
 #[cfg(test)]
 mod byte {
-    use crate::{constant::Byte, error::ExecuteError, Processor};
+    use crate::{constant::Byte, error::ExecuteError, Interpreter};
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Byte>();
 
@@ -62,7 +62,7 @@ mod byte {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         p.stack[0] = Byte::MAX;
         p.stack_pointer = 1;
         let expected = Byte::MAX;
@@ -76,11 +76,11 @@ mod byte {
 
 #[cfg(test)]
 mod quarter {
-    use crate::{constant::Quarter, error::ExecuteError, Processor};
+    use crate::{constant::Quarter, error::ExecuteError, Interpreter};
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Quarter>();
 
@@ -89,7 +89,7 @@ mod quarter {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let bytes = Quarter::MAX.to_le_bytes();
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];
@@ -105,11 +105,11 @@ mod quarter {
 
 #[cfg(test)]
 mod half {
-    use crate::{constant::Half, error::ExecuteError, Processor};
+    use crate::{constant::Half, error::ExecuteError, Interpreter};
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Half>();
 
@@ -118,7 +118,7 @@ mod half {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let bytes = Half::MAX.to_le_bytes();
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];
@@ -136,11 +136,11 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, error::ExecuteError, Processor};
+    use crate::{constant::Word, error::ExecuteError, Interpreter};
 
     #[test]
     fn stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let expected = Err(ExecuteError::StackUnderflow);
         let actual = p.pop_value::<Word>();
 
@@ -149,7 +149,7 @@ mod word {
 
     #[test]
     fn no_stack_underflow() {
-        let mut p = Processor::new_test();
+        let mut p = Interpreter::new_test();
         let bytes = Word::MAX.to_le_bytes();
         p.stack[0] = bytes[0];
         p.stack[1] = bytes[1];
