@@ -117,6 +117,27 @@ setb ra 200
 ```
 
 ## Push
+Pushes a value onto the stack.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the push instruction.
+
+```
+psh* operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a word instruction and will push the value in register *a* onto the stack.
+
+```
+pshw ra
+```
+### Error
+This instruction can return a stack overflow error in case the stack cannot contain the value specified to be pushed onto it.
 
 ## Pop
 
