@@ -186,6 +186,25 @@ addq ra rf
 ```
 
 ## Subtraction
+Subtracts the second parameter from the first and stores the result in the first parameter.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the sub instruction.
+
+```
+sub* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a word instruction and will decrement the value in register *g*.
+
+```
+subw rg 1
+```
 
 ## Multiplication
 
