@@ -1518,3 +1518,254 @@ mod division_regression {
         }
     }
 }
+
+#[cfg(test)]
+mod remainder_regression {
+    mod byte {
+        use crate::{
+            error::DecodeError,
+            instruction::{Instruction, Remainder},
+            operand::Operand,
+            register::Register,
+            Interpreter,
+        };
+
+        #[test]
+        fn incomplete_instruction_error_missing_first_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn incomplete_instruction_error_missing_second_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb ra";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn second_param_register() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb ra rb";
+            let expected = Instruction::Remainder(Remainder::Byte(
+                Register::A,
+                Operand::Register(Register::B),
+            ));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn second_param_immediate() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb ra 20";
+            let expected =
+                Instruction::Remainder(Remainder::Byte(Register::A, Operand::Immediate(20)));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+    }
+
+    mod quarter {
+        use crate::{
+            error::DecodeError,
+            instruction::{Instruction, Remainder},
+            operand::Operand,
+            register::Register,
+            Interpreter,
+        };
+
+        #[test]
+        fn incomplete_instruction_error_missing_first_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn incomplete_instruction_error_missing_second_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq ra";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn second_param_register() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq ra rb";
+            let expected = Instruction::Remainder(Remainder::Quarter(
+                Register::A,
+                Operand::Register(Register::B),
+            ));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn second_param_immediate() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq ra 20";
+            let expected =
+                Instruction::Remainder(Remainder::Quarter(Register::A, Operand::Immediate(20)));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+    }
+
+    mod half {
+        use crate::{
+            error::DecodeError,
+            instruction::{Instruction, Remainder},
+            operand::Operand,
+            register::Register,
+            Interpreter,
+        };
+
+        #[test]
+        fn incomplete_instruction_error_missing_first_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn incomplete_instruction_error_missing_second_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh ra";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn second_param_register() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh ra rb";
+            let expected = Instruction::Remainder(Remainder::Half(
+                Register::A,
+                Operand::Register(Register::B),
+            ));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn second_param_immediate() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh ra 20";
+            let expected =
+                Instruction::Remainder(Remainder::Half(Register::A, Operand::Immediate(20)));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+    }
+
+    mod word {
+        use crate::{
+            error::DecodeError,
+            instruction::{Instruction, Remainder},
+            operand::Operand,
+            register::Register,
+            Interpreter,
+        };
+
+        #[test]
+        fn incomplete_instruction_error_missing_first_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn incomplete_instruction_error_missing_second_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw ra";
+            let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn second_param_register() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw ra rb";
+            let expected = Instruction::Remainder(Remainder::Word(
+                Register::A,
+                Operand::Register(Register::B),
+            ));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn second_param_immediate() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw ra 20";
+            let expected =
+                Instruction::Remainder(Remainder::Word(Register::A, Operand::Immediate(20)));
+
+            let actual = i.decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+    }
+}
