@@ -253,6 +253,29 @@ divq rd 4
 This instruction can return a divide by zero error in case the divisor is zero.
 
 ## Remainder
+Divides the first parameter with the second to determine the remainder, and stores the result in the first parameter.
+
+For the unsigned variants of this instruction, the zero and sign flags are affected, and the overflow flag is cleared.
+For the signed variants of this instruction, the overflow flag is also affected.
+
+### Format
+This is a generalized format for the rem instruction.
+
+```
+rem* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a half instruction and computes the remainder after dividing the value in register *a* with 3, and stores the result in register *a*.
+
+```
+remh ra 3
+```
+
+### Error
+This instruction can return a divide by zero error in case the divisor is zero.
 
 ## Print Register
 
