@@ -136,6 +136,7 @@ The following example is a word instruction and will push the value in register 
 ```
 pshw ra
 ```
+
 ### Error
 This instruction can return a stack overflow error in case the stack cannot contain the value specified to be pushed onto it.
 
@@ -159,6 +160,7 @@ The following example is a half instruction and will pop the four topmost bytes 
 ```
 poph rb
 ```
+
 ### Error
 This instruction can return a stack underflow error in case the stack contained less bytes than specified to be popped by the instruction.
 
