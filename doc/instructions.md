@@ -140,6 +140,27 @@ pshw ra
 This instruction can return a stack overflow error in case the stack cannot contain the value specified to be pushed onto it.
 
 ## Pop
+Pops a value from the stack into a register.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the pop instruction.
+
+```
+pop* register
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a half instruction and will pop the four topmost bytes on the stack into register *b*.
+
+```
+poph rb
+```
+### Error
+This instruction can return a stack underflow error in case the stack contained less bytes than specified to be popped by the instruction.
 
 ## Addition
 
