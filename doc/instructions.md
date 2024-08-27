@@ -307,4 +307,39 @@ re: 150
 Note that this instruction always ends on a newline.
 
 ## Print Stack
+Prints a section of values from the top of the stack, to the defined output.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the print stack instruction.
+
+```
+prs* operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+Note that here is also an additional prefix that can be used here, `s` which will interpret the specified section of the stack as an ASCII string.
+
+### Example
+The following example is a string instruction and prints the 5 topmost bytes on the stack interpreted as an ASCII string.
+
+```
+prss 5
+```
+
+Say that the stack looks like the following: \[72, 101, 108, 108, 111\] with the left side being towards the bottom of the stackand the right side being towards the top.
+
+```
+Hello
+```
+
+If you instead used the `prsb` variant, to interpret the stack section as bytes, the output would be the following.
+
+```
+[72, 101, 108, 108, 111]
+```
+
+Note that this instruction always ends on a newline.
 
