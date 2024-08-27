@@ -1,11 +1,21 @@
 # Architecture
 
 ## Registers
-There are 8 registers, each referred to by a single letter: A through H.
+There are 8 registers:
+- Register A referred to by `ra`
+- Register B referred to by `rb`
+- Register C referred to by `rc`
+- Register D referred to by `rd`
+- Register E referred to by `re`
+- Register F referred to by `rf`
+- Register G referred to by `rg`
+- Register H referred to by `rh`
 
 Registers have a 64-bit capacity, but can also be used for instructions that target less than 64-bits.
 However, it is worth noting that any bytes outside the ones targeted by an instruction are zeroed.
 In other words, setting the least significant byte of a register will clear the remaining seven bytes of all their data.
+
+Each register does not have a designated purpose like in other instruction sets, and you are free to use them as you see fit.
 
 There are also registers that contain the stack pointer and program counter. However, unlike most other assembly languages, these are not accessible through the instruction set.
 In essence, they can be thought of as private registers.
@@ -41,7 +51,7 @@ Note that the size of an instruction matters, in the sense that `setb ra 3000` w
 ## Parameters
 There are two types of parameters that an instruction can take: register and operand.
 
-A register is specified with a prefix `r` and then the letter indicating the register, for example `rd` to indicate register D.
+A register is specified with a prefix `r` and then the letter indicating the register, for example `rd` to indicate register *d*.
 There is no prefix required to indicate that a register has been specified.
 In the same vein, you do not specify the register differently based on the size variant of the instruction; if you specify register A in a byte instruction, only the least significant byte of the register will be used.
 
