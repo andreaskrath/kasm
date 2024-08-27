@@ -6,24 +6,24 @@ pub trait ToWord {
 
 impl ToWord for Byte {
     fn to_word(self) -> Word {
-        self as Word
+        Word::from(self)
     }
 }
 
 impl ToWord for Quarter {
     fn to_word(self) -> Word {
-        self as Word
+        Word::from(self)
     }
 }
 
 impl ToWord for Half {
     fn to_word(self) -> Word {
-        self as Word
+        Word::from(self)
     }
 }
 
 impl ToWord for Word {
     fn to_word(self) -> Word {
-        self as Word
+        self
     }
 }

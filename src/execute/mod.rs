@@ -33,29 +33,27 @@ impl Interpreter {
     }
 
     pub fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
-        use Instruction::*;
-
         match instruction {
-            Stop => self.stop()?,
-            Set(set_ins) => self.set(set_ins),
-            Addition(add_ins) => self.add(add_ins),
-            Subtraction(sub_ins) => self.sub(sub_ins),
-            Multiplication(mul_ins) => self.mul(mul_ins),
-            Division(div_ins) => self.div(div_ins)?,
-            Remainder(rem_ins) => self.rem(rem_ins)?,
-            Push(push_ins) => self.push(push_ins)?,
-            Pop(pop_ins) => self.pop(pop_ins)?,
-            Call(operand) => self.call(operand)?,
-            Return => self.ret()?,
-            And(and_ins) => self.and(and_ins),
-            Or(or_ins) => self.or(or_ins),
-            Xor(xor_ins) => self.xor(xor_ins),
-            Not(not_ins) => self.not(not_ins),
-            Test(test_ins) => self.test(test_ins),
-            Compare(compare_ins) => self.compare(compare_ins),
-            Jump(jump_ins) => self.jump(jump_ins),
-            PrintRegister(print_reg_ins) => self.print_register(print_reg_ins)?,
-            PrintStack(print_stack_ins) => self.print_stack(print_stack_ins)?,
+            Instruction::Stop => self.stop()?,
+            Instruction::Set(set_ins) => self.set(set_ins),
+            Instruction::Addition(add_ins) => self.add(add_ins),
+            Instruction::Subtraction(sub_ins) => self.sub(sub_ins),
+            Instruction::Multiplication(mul_ins) => self.mul(mul_ins),
+            Instruction::Division(div_ins) => self.div(div_ins)?,
+            Instruction::Remainder(rem_ins) => self.rem(rem_ins)?,
+            Instruction::Push(push_ins) => self.push(push_ins)?,
+            Instruction::Pop(pop_ins) => self.pop(pop_ins)?,
+            Instruction::Call(operand) => self.call(operand)?,
+            Instruction::Return => self.ret()?,
+            Instruction::And(and_ins) => self.and(and_ins),
+            Instruction::Or(or_ins) => self.or(or_ins),
+            Instruction::Xor(xor_ins) => self.xor(xor_ins),
+            Instruction::Not(not_ins) => self.not(not_ins),
+            Instruction::Test(test_ins) => self.test(test_ins),
+            Instruction::Compare(compare_ins) => self.compare(compare_ins),
+            Instruction::Jump(jump_ins) => self.jump(jump_ins),
+            Instruction::PrintRegister(print_reg_ins) => self.print_register(print_reg_ins)?,
+            Instruction::PrintStack(print_stack_ins) => self.print_stack(print_stack_ins)?,
         }
 
         Ok(())

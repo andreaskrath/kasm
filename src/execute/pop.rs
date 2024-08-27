@@ -11,15 +11,15 @@ impl Interpreter {
         match instruction {
             Pop::Byte(register) => {
                 let value = self.pop_value::<Byte>()?;
-                self.registers[register] = value as Word;
+                self.registers[register] = Word::from(value);
             }
             Pop::Quarter(register) => {
                 let value = self.pop_value::<Quarter>()?;
-                self.registers[register] = value as Word;
+                self.registers[register] = Word::from(value);
             }
             Pop::Half(register) => {
                 let value = self.pop_value::<Half>()?;
-                self.registers[register] = value as Word;
+                self.registers[register] = Word::from(value);
             }
             Pop::Word(register) => {
                 let value = self.pop_value::<Word>()?;

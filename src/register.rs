@@ -41,7 +41,7 @@ impl Display for Register {
             Register::H => Register::REG_H,
         };
 
-        write!(f, "{}", s)
+        write!(f, "{s}")
     }
 }
 
@@ -49,17 +49,15 @@ impl TryFrom<&str> for Register {
     type Error = DecodeError;
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
-        use Register::*;
-
         match s {
-            Register::REG_A => Ok(A),
-            Register::REG_B => Ok(B),
-            Register::REG_C => Ok(C),
-            Register::REG_D => Ok(D),
-            Register::REG_E => Ok(E),
-            Register::REG_F => Ok(F),
-            Register::REG_G => Ok(G),
-            Register::REG_H => Ok(H),
+            Register::REG_A => Ok(Register::A),
+            Register::REG_B => Ok(Register::B),
+            Register::REG_C => Ok(Register::C),
+            Register::REG_D => Ok(Register::D),
+            Register::REG_E => Ok(Register::E),
+            Register::REG_F => Ok(Register::F),
+            Register::REG_G => Ok(Register::G),
+            Register::REG_H => Ok(Register::H),
             unknown => Err(DecodeError::InvalidRegister(unknown.to_string())),
         }
     }

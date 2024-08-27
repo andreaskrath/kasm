@@ -11,19 +11,19 @@ impl Interpreter {
         match instruction {
             Push::Byte(operand) => {
                 let value = self.get_operand_value(operand);
-                self.push_value(value)?
+                self.push_value(value)?;
             }
             Push::Quarter(operand) => {
                 let value = self.get_operand_value(operand);
-                self.push_value(value)?
+                self.push_value(value)?;
             }
             Push::Half(operand) => {
                 let value = self.get_operand_value(operand);
-                self.push_value(value)?
+                self.push_value(value)?;
             }
             Push::Word(operand) => {
                 let value = self.get_operand_value(operand);
-                self.push_value(value)?
+                self.push_value(value)?;
             }
         }
 

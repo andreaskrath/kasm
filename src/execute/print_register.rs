@@ -26,7 +26,7 @@ impl Interpreter {
         T: Display + FromBytes,
     {
         let value = self.registers.get::<T>(register);
-        writeln!(self.config.output, "{}: {}", register, value)
+        writeln!(self.config.output, "{register}: {value}")
             .map_err(|err| ExecuteError::IO(err.to_string()))
     }
 }

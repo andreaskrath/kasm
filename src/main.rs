@@ -14,6 +14,6 @@ fn main() {
     let program = include_str!("../program.kasm");
 
     if let Err(err) = p.run(program) {
-        eprintln!("{}", err)
+        eprintln!("{err}");
     }
 }
