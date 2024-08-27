@@ -165,6 +165,25 @@ poph rb
 This instruction can return a stack underflow error in case the stack contained less bytes than specified to be popped by the instruction.
 
 ## Addition
+Adds two values and stores the result in the first parameter.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the add instruction.
+
+```
+add* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a quarter instruction and will add the values stored in register *a* and *f* and store the result in register *a*.
+
+```
+addq ra rf
+```
 
 ## Subtraction
 
