@@ -207,6 +207,25 @@ subw rg 1
 ```
 
 ## Multiplication
+Multiplies two values and stores the result in the first parameter.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the mul instruction.
+
+```
+mul* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a byte instruction and will double the value stored in register *b*.
+
+```
+mulb rb 2
+```
 
 ## Division
 
