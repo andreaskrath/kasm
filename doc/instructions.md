@@ -228,6 +228,29 @@ mulb rb 2
 ```
 
 ## Division
+Divides the first parameter with the second, and stores the result in the first parameter.
+
+For the unsigned variants of this instruction, the zero and sign flags are affected, and the overflow flag is cleared.
+For the signed variants of this instruction, the overflow flag is also affected.
+
+### Format
+This is a generalized format for the div instruction.
+
+```
+div* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a quarter instruction divide the value in register *d* by 4.
+
+```
+divq rd 4
+```
+
+### Error
+This instruction can return a divide by zero error in case the divisor is zero.
 
 ## Remainder
 
