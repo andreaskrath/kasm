@@ -278,6 +278,33 @@ remh ra 3
 This instruction can return a divide by zero error in case the divisor is zero.
 
 ## Print Register
+Prints a register value to the defined output.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the print register instruction.
+
+```
+prr* register
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a byte instruction and prints the least significant byte of register *e* to the defined output.
+
+```
+prrb rd
+```
+
+Say that the least significant byte of register *e* contains the value 150, then the output would look like the following.
+
+```
+re: 150
+```
+
+Note that this instruction always ends on a newline.
 
 ## Print Stack
 
