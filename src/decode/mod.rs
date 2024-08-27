@@ -317,6 +317,50 @@ mod set_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setb rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setb ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setb ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setb ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "setb ra rb";
@@ -389,6 +433,50 @@ mod set_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setq rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setq ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setq ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setq ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_immediate() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "setq ra 20";
@@ -427,6 +515,50 @@ mod set_regression {
             let mut i = Interpreter::new_test();
             let instruction = "seth ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "seth rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "seth ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "seth ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "seth ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -485,6 +617,50 @@ mod set_regression {
             let mut i = Interpreter::new_test();
             let instruction = "setw ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setw rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setw ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setw ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "setw ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -553,6 +729,50 @@ mod addition_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addb rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addb ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addb ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addb ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "addb ra rb";
@@ -606,6 +826,50 @@ mod addition_regression {
             let mut i = Interpreter::new_test();
             let instruction = "addq ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addq rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addq ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addq ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addq ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -675,6 +939,50 @@ mod addition_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addh rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addh ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addh ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addh ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "addh ra rb";
@@ -728,6 +1036,50 @@ mod addition_regression {
             let mut i = Interpreter::new_test();
             let instruction = "addw ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addw rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addw ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addw ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "addw ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -798,6 +1150,50 @@ mod subtraction_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subb rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subb ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subb ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subb ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "subb ra rb";
@@ -853,6 +1249,50 @@ mod subtraction_regression {
             let mut i = Interpreter::new_test();
             let instruction = "subq ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subq rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subq ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subq ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subq ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -922,6 +1362,50 @@ mod subtraction_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subh rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subh ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subh ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subh ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "subh ra rb";
@@ -977,6 +1461,50 @@ mod subtraction_regression {
             let mut i = Interpreter::new_test();
             let instruction = "subw ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subw rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subw ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subw ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "subw ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -1049,6 +1577,50 @@ mod multiplication_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulb rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulb ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulb ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulb ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "mulb ra rb";
@@ -1106,6 +1678,50 @@ mod multiplication_regression {
             let mut i = Interpreter::new_test();
             let instruction = "mulq ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulq rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulq ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulq ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulq ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -1177,6 +1793,50 @@ mod multiplication_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulh rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulh ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulh ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulh ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "mulh ra rb";
@@ -1234,6 +1894,50 @@ mod multiplication_regression {
             let mut i = Interpreter::new_test();
             let instruction = "mulw ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulw rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulw ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulw ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "mulw ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -1308,6 +2012,50 @@ mod division_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divb rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divb ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divb ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divb ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "divb ra rb";
@@ -1361,6 +2109,50 @@ mod division_regression {
             let mut i = Interpreter::new_test();
             let instruction = "divq ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divq rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divq ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divq ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divq ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -1430,6 +2222,50 @@ mod division_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divh rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divh ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divh ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divh ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "divh ra rb";
@@ -1483,6 +2319,50 @@ mod division_regression {
             let mut i = Interpreter::new_test();
             let instruction = "divw ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divw rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divw ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divw ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "divw ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -1553,6 +2433,50 @@ mod remainder_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remb ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "remb ra rb";
@@ -1608,6 +2532,50 @@ mod remainder_regression {
             let mut i = Interpreter::new_test();
             let instruction = "remq ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remq ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
@@ -1677,6 +2645,50 @@ mod remainder_regression {
         }
 
         #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remh ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
         fn second_param_register() -> Result<(), DecodeError> {
             let mut i = Interpreter::new_test();
             let instruction = "remh ra rb";
@@ -1732,6 +2744,50 @@ mod remainder_regression {
             let mut i = Interpreter::new_test();
             let instruction = "remw ra";
             let expected = Err(DecodeError::IncompleteInstruction);
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw rx 1";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register_error_in_operand() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw ra rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw ra -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+            let actual = i.decode(instruction);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "remw ra 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
             let actual = i.decode(instruction);
 
