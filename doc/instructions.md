@@ -63,9 +63,9 @@ Immediate values are not prefixed with a special character, you simply write the
 ## Errors
 Because this interpreter does not mimic a processor, some liberties are taken in certain areas - one of these are in relation to errors.
 
-Generally speaking, the intention is that if you make a mistake in the program, an error is returned and program execution stops; as much as possible, undefined behaviour has been limited/removed.
+Generally speaking, the intention is that if you make a mistake in the program, an error is returned and program execution stops; to the greatest of my ability, undefined behaviour has been limited/removed.
 
-There are a couple of different errors that can happen, but the most likely are decode errors and execute errors.
+There are a couple of different errors that can be returned, but the most likely are decode errors and execute errors.
 
 A decode error indicates that something was wrong with the specified instruction, this can come in multiple different forms including:
 - unknown instruction
