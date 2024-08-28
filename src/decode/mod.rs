@@ -4240,3 +4240,81 @@ mod not_regression {
         }
     }
 }
+
+#[cfg(test)]
+mod call_regression {
+    use crate::{
+        error::DecodeError, instruction::Instruction, operand::Operand, register::Register,
+        Interpreter,
+    };
+
+    #[test]
+    fn incomplete_instruction_error_missing_param() {
+        let mut i = Interpreter::new_test();
+        let instruction = "call";
+        let expected = Err(DecodeError::IncompleteInstruction);
+
+        let actual = i.decode(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_register_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = "call rx";
+        let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+
+        let actual = i.decode(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_immediate_value_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = "call -1";
+        let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+
+        let actual = i.decode(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn invalid_operand_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = "call 200u8";
+        let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+
+        let actual = i.decode(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn register_in_operand() -> Result<(), DecodeError> {
+        let mut i = Interpreter::new_test();
+        let instruction = "call ra";
+        let expected = Instruction::Call(Operand::Register(Register::A));
+
+        let actual = i.decode(instruction)?;
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn immediate_value_in_operand() -> Result<(), DecodeError> {
+        let mut i = Interpreter::new_test();
+        let instruction = "call 10";
+        let expected = Instruction::Call(Operand::Immediate(10));
+
+        let actual = i.decode(instruction)?;
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+}
