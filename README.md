@@ -19,6 +19,7 @@ The following list contains my goals for the project:
 # Feature Roadmap
 The following list is not necessarily in any specific order, however it encompasses the long term goals of this project:
 - [x] Unsigned instruction set (also including instructions without a size component)
+- [ ] Logging/tracing
 - [ ] Call functions by name
 - [ ] Signed instruction set
 - [ ] Support float instructions
