@@ -212,7 +212,7 @@ impl Instruction {
 }
 
 #[cfg(test)]
-mod get_reg_and_operand_str {
+mod get_both_parameters_str {
     use super::get_both_parameters_str;
     use crate::error::DecodeError;
 
