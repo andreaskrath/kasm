@@ -88,90 +88,180 @@ mod is_possible_immediate_value {
 }
 
 #[cfg(test)]
-mod try_from_specific_types {
-    use super::Operand;
-    use crate::{
-        constant::{Byte, Half, Quarter, Word},
-        error::DecodeError,
-    };
+mod try_from {
+    mod byte {
+        use crate::{constant::Byte, error::DecodeError, operand::Operand, register::Register};
 
-    #[test]
-    fn invalid_immediate_value_error_byte() {
-        let input = "-1";
-        let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+        #[test]
+        fn invalid_register() {
+            let input = "rx";
+            let expected = Err(DecodeError::InvalidRegister(input.to_string()));
+            let actual: Result<Operand<Byte>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-        let actual: Result<Operand<Byte>, DecodeError> = Operand::try_from(input);
+        #[test]
+        fn invalid_immediate_value() {
+            let input = "-1";
+            let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+            let actual: Result<Operand<Byte>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-        assert_eq!(actual, expected);
+        #[test]
+        fn invalid_operand() {
+            let input = "200u8";
+            let expected = Err(DecodeError::InvalidOperand(input.to_string()));
+            let actual: Result<Operand<Byte>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn valid_register() {
+            let input = "ra";
+            let expected = Ok(Operand::Register(Register::A));
+            let actual: Result<Operand<Byte>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn valid_immediate_value() {
+            let input = format!("{}", Byte::MAX);
+            let expected = Ok(Operand::Immediate(Byte::MAX));
+            let actual = Operand::try_from(input.as_ref());
+            assert_eq!(actual, expected);
+        }
     }
 
-    #[test]
-    fn invalid_immediate_value_error_quarter() {
-        let input = "-1";
-        let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+    mod quarter {
+        use crate::{constant::Quarter, error::DecodeError, operand::Operand, register::Register};
 
-        let actual: Result<Operand<Quarter>, DecodeError> = Operand::try_from(input);
+        #[test]
+        fn invalid_register() {
+            let input = "rx";
+            let expected = Err(DecodeError::InvalidRegister(input.to_string()));
+            let actual: Result<Operand<Quarter>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-        assert_eq!(actual, expected);
+        #[test]
+        fn invalid_immediate_value() {
+            let input = "-1";
+            let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+            let actual: Result<Operand<Quarter>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand() {
+            let input = "200u8";
+            let expected = Err(DecodeError::InvalidOperand(input.to_string()));
+            let actual: Result<Operand<Quarter>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn valid_register() {
+            let input = "ra";
+            let expected = Ok(Operand::Register(Register::A));
+            let actual: Result<Operand<Quarter>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn valid_immediate_value() {
+            let input = format!("{}", Quarter::MAX);
+            let expected = Ok(Operand::Immediate(Quarter::MAX));
+            let actual = Operand::try_from(input.as_ref());
+            assert_eq!(actual, expected);
+        }
     }
 
-    #[test]
-    fn invalid_immediate_value_error_half() {
-        let input = "-1";
-        let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+    mod half {
+        use crate::{constant::Half, error::DecodeError, operand::Operand, register::Register};
 
-        let actual: Result<Operand<Half>, DecodeError> = Operand::try_from(input);
+        #[test]
+        fn invalid_register() {
+            let input = "rx";
+            let expected = Err(DecodeError::InvalidRegister(input.to_string()));
+            let actual: Result<Operand<Half>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-        assert_eq!(actual, expected);
+        #[test]
+        fn invalid_immediate_value() {
+            let input = "-1";
+            let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+            let actual: Result<Operand<Half>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_operand() {
+            let input = "200u8";
+            let expected = Err(DecodeError::InvalidOperand(input.to_string()));
+            let actual: Result<Operand<Half>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn valid_register() {
+            let input = "ra";
+            let expected = Ok(Operand::Register(Register::A));
+            let actual: Result<Operand<Half>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn valid_immediate_value() {
+            let input = format!("{}", Half::MAX);
+            let expected = Ok(Operand::Immediate(Half::MAX));
+            let actual = Operand::try_from(input.as_ref());
+            assert_eq!(actual, expected);
+        }
     }
 
-    #[test]
-    fn invalid_immediate_value_error_word() {
-        let input = "-1";
-        let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+    mod word {
+        use crate::{constant::Word, error::DecodeError, operand::Operand, register::Register};
 
-        let actual: Result<Operand<Word>, DecodeError> = Operand::try_from(input);
+        #[test]
+        fn invalid_register() {
+            let input = "rx";
+            let expected = Err(DecodeError::InvalidRegister(input.to_string()));
+            let actual: Result<Operand<Word>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-        assert_eq!(actual, expected);
-    }
+        #[test]
+        fn invalid_immediate_value() {
+            let input = "-1";
+            let expected = Err(DecodeError::InvalidImmediateValue(input.to_string()));
+            let actual: Result<Operand<Word>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-    #[test]
-    fn valid_byte() {
-        let input = format!("{}", Byte::MAX);
-        let expected = Ok(Operand::Immediate(Byte::MAX));
+        #[test]
+        fn invalid_operand() {
+            let input = "200u8";
+            let expected = Err(DecodeError::InvalidOperand(input.to_string()));
+            let actual: Result<Operand<Word>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-        let actual = Operand::try_from(input.as_ref());
+        #[test]
+        fn valid_register() {
+            let input = "ra";
+            let expected = Ok(Operand::Register(Register::A));
+            let actual: Result<Operand<Word>, DecodeError> = Operand::try_from(input);
+            assert_eq!(actual, expected);
+        }
 
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn valid_quarter() {
-        let input = format!("{}", Quarter::MAX);
-        let expected = Ok(Operand::Immediate(Quarter::MAX));
-
-        let actual = Operand::try_from(input.as_ref());
-
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn valid_half() {
-        let input = format!("{}", Half::MAX);
-        let expected = Ok(Operand::Immediate(Half::MAX));
-
-        let actual = Operand::try_from(input.as_ref());
-
-        assert_eq!(actual, expected);
-    }
-
-    #[test]
-    fn valid_word() {
-        let input = format!("{}", Word::MAX);
-        let expected = Ok(Operand::Immediate(Word::MAX));
-
-        let actual = Operand::try_from(input.as_ref());
-
-        assert_eq!(actual, expected);
+        #[test]
+        fn valid_immediate_value() {
+            let input = format!("{}", Word::MAX);
+            let expected = Ok(Operand::Immediate(Word::MAX));
+            let actual = Operand::try_from(input.as_ref());
+            assert_eq!(actual, expected);
+        }
     }
 }
