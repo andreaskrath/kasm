@@ -11,7 +11,7 @@ pub enum Operand<Size> {
     Immediate(Size),
 }
 
-fn is_possible_reg(s: &str) -> bool {
+fn is_possible_register(s: &str) -> bool {
     s.chars().all(|c| c.is_ascii_lowercase())
 }
 
@@ -24,7 +24,7 @@ impl<T: FromStr> TryFrom<&str> for Operand<T> {
     type Error = DecodeError;
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
-        if is_possible_reg(s) {
+        if is_possible_register(s) {
             let register = Register::try_from(s)?;
 
             Ok(Operand::Register(register))
@@ -41,26 +41,26 @@ impl<T: FromStr> TryFrom<&str> for Operand<T> {
 }
 
 #[cfg(test)]
-mod is_possible_reg {
-    use crate::operand::is_possible_reg;
+mod is_possible_register {
+    use crate::operand::is_possible_register;
 
     #[test]
     fn actual_register() {
         let input = "ra";
 
-        assert!(is_possible_reg(input));
+        assert!(is_possible_register(input));
     }
 
     #[test]
     fn not_register_but_correct_format() {
         let input = "hello";
-        assert!(is_possible_reg(input));
+        assert!(is_possible_register(input));
     }
 
     #[test]
     fn invalid_format() {
         let input = "ra10";
-        assert!(!is_possible_reg(input));
+        assert!(!is_possible_register(input));
     }
 }
 
