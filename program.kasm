@@ -11,5 +11,5 @@ pshb rb
 addb rd 1
 cmpb rd 10
 jnz 3
-psb 10
+prsb 10
 stop
