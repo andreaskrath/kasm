@@ -262,6 +262,38 @@ mod get_first_parameter_str {
         assert_eq!(actual, expected);
     }
 }
+
+#[cfg(test)]
+mod decoder_helper {
+    mod try_register {
+        use crate::{decode::DecoderHelper, error::DecodeError, register::Register};
+
+        #[test]
+        fn missing_parameter() {
+            let iter = "".split_whitespace();
+            let expected = Err(DecodeError::IncompleteInstruction);
+            let actual = DecoderHelper::try_register(iter);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn invalid_register() {
+            let iter = "rx".split_whitespace();
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+            let actual = DecoderHelper::try_register(iter);
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn valid_register() {
+            let iter = "ra".split_whitespace();
+            let expected = Ok(Register::A);
+            let actual = DecoderHelper::try_register(iter);
+            assert_eq!(actual, expected);
+        }
+    }
+}
+
 #[cfg(test)]
 mod regression {
     use crate::{error::DecodeError, instruction::Instruction, Interpreter};
