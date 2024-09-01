@@ -243,6 +243,26 @@ mod get_both_parameters_str {
 
 #[cfg(test)]
 mod ungrouped_regression {
+mod get_first_parameter_str {
+    use super::get_first_parameter_str;
+    use crate::error::DecodeError;
+
+    #[test]
+    fn empty_parameter() {
+        let iter = "".split_whitespace();
+        let expected = Err(DecodeError::IncompleteInstruction);
+        let actual = get_first_parameter_str(iter);
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn first_parameter_defined() {
+        let iter = "ra".split_whitespace();
+        let expected = Ok("ra");
+        let actual = get_first_parameter_str(iter);
+        assert_eq!(actual, expected);
+    }
+}
     use crate::{error::DecodeError, instruction::Instruction, Interpreter};
 
     #[test]
