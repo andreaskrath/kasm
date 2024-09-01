@@ -514,6 +514,292 @@ mod decoder_helper {
             }
         }
     }
+
+    mod try_register_and_operand {
+        mod byte {
+            use crate::{
+                constant::Byte, decode::DecoderHelper, error::DecodeError, operand::Operand,
+                register::Register,
+            };
+
+            #[test]
+            fn missing_both_parameters() {
+                let iter = "".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn missing_second_paramter() {
+                let iter = "ra".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_first_parameter() {
+                let iter = "rx ra".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_operand() {
+                let iter = "ra rx".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_immediate_value_in_operand() {
+                let iter = "ra -1".split_whitespace();
+                let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_operand_error() {
+                let iter = "ra 200u8".split_whitespace();
+                let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_register_in_operand() {
+                let iter = "ra rb".split_whitespace();
+                let expected = Ok((Register::A, Operand::Register(Register::B)));
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_immediate_value_in_operand() {
+                let iter = "ra 10".split_whitespace();
+                let expected = Ok((Register::A, Operand::Immediate(10)));
+                let actual = DecoderHelper::try_register_and_operand::<Byte>(iter);
+                assert_eq!(actual, expected);
+            }
+        }
+
+        mod quarter {
+            use crate::{
+                constant::Quarter, decode::DecoderHelper, error::DecodeError, operand::Operand,
+                register::Register,
+            };
+
+            #[test]
+            fn missing_both_parameters() {
+                let iter = "".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn missing_second_paramter() {
+                let iter = "ra".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_first_parameter() {
+                let iter = "rx ra".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_operand() {
+                let iter = "ra rx".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_immediate_value_in_operand() {
+                let iter = "ra -1".split_whitespace();
+                let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_operand_error() {
+                let iter = "ra 200u8".split_whitespace();
+                let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_register_in_operand() {
+                let iter = "ra rb".split_whitespace();
+                let expected = Ok((Register::A, Operand::Register(Register::B)));
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_immediate_value_in_operand() {
+                let iter = "ra 10".split_whitespace();
+                let expected = Ok((Register::A, Operand::Immediate(10)));
+                let actual = DecoderHelper::try_register_and_operand::<Quarter>(iter);
+                assert_eq!(actual, expected);
+            }
+        }
+
+        mod half {
+            use crate::{
+                constant::Half, decode::DecoderHelper, error::DecodeError, operand::Operand,
+                register::Register,
+            };
+
+            #[test]
+            fn missing_both_parameters() {
+                let iter = "".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn missing_second_paramter() {
+                let iter = "ra".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_first_parameter() {
+                let iter = "rx ra".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_operand() {
+                let iter = "ra rx".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_immediate_value_in_operand() {
+                let iter = "ra -1".split_whitespace();
+                let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_operand_error() {
+                let iter = "ra 200u8".split_whitespace();
+                let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_register_in_operand() {
+                let iter = "ra rb".split_whitespace();
+                let expected = Ok((Register::A, Operand::Register(Register::B)));
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_immediate_value_in_operand() {
+                let iter = "ra 10".split_whitespace();
+                let expected = Ok((Register::A, Operand::Immediate(10)));
+                let actual = DecoderHelper::try_register_and_operand::<Half>(iter);
+                assert_eq!(actual, expected);
+            }
+        }
+
+        mod word {
+            use crate::{
+                constant::Word, decode::DecoderHelper, error::DecodeError, operand::Operand,
+                register::Register,
+            };
+
+            #[test]
+            fn missing_both_parameters() {
+                let iter = "".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn missing_second_paramter() {
+                let iter = "ra".split_whitespace();
+                let expected = Err(DecodeError::IncompleteInstruction);
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_first_parameter() {
+                let iter = "rx ra".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_register_in_operand() {
+                let iter = "ra rx".split_whitespace();
+                let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_immediate_value_in_operand() {
+                let iter = "ra -1".split_whitespace();
+                let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn invalid_operand_error() {
+                let iter = "ra 200u8".split_whitespace();
+                let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_register_in_operand() {
+                let iter = "ra rb".split_whitespace();
+                let expected = Ok((Register::A, Operand::Register(Register::B)));
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+
+            #[test]
+            fn valid_register_and_immediate_value_in_operand() {
+                let iter = "ra 10".split_whitespace();
+                let expected = Ok((Register::A, Operand::Immediate(10)));
+                let actual = DecoderHelper::try_register_and_operand::<Word>(iter);
+                assert_eq!(actual, expected);
+            }
+        }
+    }
 }
 
 #[cfg(test)]
