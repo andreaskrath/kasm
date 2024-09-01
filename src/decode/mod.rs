@@ -242,7 +242,6 @@ mod get_both_parameters_str {
 }
 
 #[cfg(test)]
-mod ungrouped_regression {
 mod get_first_parameter_str {
     use super::get_first_parameter_str;
     use crate::error::DecodeError;
@@ -263,6 +262,8 @@ mod get_first_parameter_str {
         assert_eq!(actual, expected);
     }
 }
+#[cfg(test)]
+mod regression {
     use crate::{error::DecodeError, instruction::Instruction, Interpreter};
 
     #[test]
@@ -301,82 +302,81 @@ mod get_first_parameter_str {
 
         Ok(())
     }
-}
 
-#[cfg(test)]
-mod call_regression {
-    use crate::{
-        error::DecodeError, instruction::Instruction, operand::Operand, register::Register,
-        Interpreter,
-    };
+    mod call_regression {
+        use crate::{
+            error::DecodeError, instruction::Instruction, operand::Operand, register::Register,
+            Interpreter,
+        };
 
-    #[test]
-    fn incomplete_instruction_error_missing_param() {
-        let mut i = Interpreter::new_test();
-        let instruction = "call";
-        let expected = Err(DecodeError::IncompleteInstruction);
+        #[test]
+        fn incomplete_instruction_error_missing_param() {
+            let mut i = Interpreter::new_test();
+            let instruction = "call";
+            let expected = Err(DecodeError::IncompleteInstruction);
 
-        let actual = i.decode(instruction);
+            let actual = i.decode(instruction);
 
-        assert_eq!(actual, expected);
-    }
+            assert_eq!(actual, expected);
+        }
 
-    #[test]
-    fn invalid_register_error() {
-        let mut i = Interpreter::new_test();
-        let instruction = "call rx";
-        let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
+        #[test]
+        fn invalid_register_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "call rx";
+            let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-        let actual = i.decode(instruction);
+            let actual = i.decode(instruction);
 
-        assert_eq!(actual, expected);
-    }
+            assert_eq!(actual, expected);
+        }
 
-    #[test]
-    fn invalid_immediate_value_error() {
-        let mut i = Interpreter::new_test();
-        let instruction = "call -1";
-        let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
+        #[test]
+        fn invalid_immediate_value_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "call -1";
+            let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
 
-        let actual = i.decode(instruction);
+            let actual = i.decode(instruction);
 
-        assert_eq!(actual, expected);
-    }
+            assert_eq!(actual, expected);
+        }
 
-    #[test]
-    fn invalid_operand_error() {
-        let mut i = Interpreter::new_test();
-        let instruction = "call 200u8";
-        let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
+        #[test]
+        fn invalid_operand_error() {
+            let mut i = Interpreter::new_test();
+            let instruction = "call 200u8";
+            let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
-        let actual = i.decode(instruction);
+            let actual = i.decode(instruction);
 
-        assert_eq!(actual, expected);
-    }
+            assert_eq!(actual, expected);
+        }
 
-    #[test]
-    fn register_in_operand() -> Result<(), DecodeError> {
-        let mut i = Interpreter::new_test();
-        let instruction = "call ra";
-        let expected = Instruction::Call(Operand::Register(Register::A));
+        #[test]
+        fn register_in_operand() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "call ra";
+            let expected = Instruction::Call(Operand::Register(Register::A));
 
-        let actual = i.decode(instruction)?;
+            let actual = i.decode(instruction)?;
 
-        assert_eq!(actual, expected);
+            assert_eq!(actual, expected);
 
-        Ok(())
-    }
+            Ok(())
+        }
 
-    #[test]
-    fn immediate_value_in_operand() -> Result<(), DecodeError> {
-        let mut i = Interpreter::new_test();
-        let instruction = "call 10";
-        let expected = Instruction::Call(Operand::Immediate(10));
+        #[test]
+        fn immediate_value_in_operand() -> Result<(), DecodeError> {
+            let mut i = Interpreter::new_test();
+            let instruction = "call 10";
+            let expected = Instruction::Call(Operand::Immediate(10));
 
-        let actual = i.decode(instruction)?;
+            let actual = i.decode(instruction)?;
 
-        assert_eq!(actual, expected);
+            assert_eq!(actual, expected);
 
-        Ok(())
+            Ok(())
+        }
     }
 }
