@@ -21,6 +21,8 @@ mod utils;
 
 pub struct Interpreter {
     registers: Registers,
+
+    /// The stack pointer points to the next free byte on the stack.
     stack_pointer: Word,
     program_counter: Word,
     flags: Flags,
