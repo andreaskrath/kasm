@@ -90,3 +90,25 @@ impl Interpreter {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod stop {
+    use crate::{error::ExecuteError, instruction::Instruction, Interpreter};
+
+    #[test]
+    fn sets_running_bool_to_false_and_prints_instructions_executed() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        i.config.print_instructions_executed = true;
+        let instruction = Instruction::Stop;
+        let expected = "Instructions Executed: 1\n";
+
+        i.execute(instruction)?;
+        let buffer = i.config.output.get_buffer().unwrap();
+
+        assert!(!i.running);
+        assert_eq!(i.config.instructions_executed, 1);
+        assert_eq!(buffer, expected);
+
+        Ok(())
+    }
+}
