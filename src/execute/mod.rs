@@ -33,6 +33,8 @@ impl Interpreter {
     }
 
     pub fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
+        self.config.instructions_executed += 1;
+
         match instruction {
             Instruction::Stop => self.stop()?,
             Instruction::Set(set_ins) => self.set(set_ins),

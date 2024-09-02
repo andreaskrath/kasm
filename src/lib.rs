@@ -87,7 +87,6 @@ impl Interpreter {
                 .map_err(|e| InterpreterError::Decode(self.pc(), e))?;
 
             self.program_counter += 1;
-            self.config.instructions_executed += 1;
 
             self.execute(instruction)
                 .map_err(|e| InterpreterError::Execute(self.pc(), e))?;
