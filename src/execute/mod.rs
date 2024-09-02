@@ -165,3 +165,42 @@ mod call {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod ret {
+    use crate::{constant::Word, error::ExecuteError, instruction::Instruction, Interpreter};
+
+    #[test]
+    fn stack_underflow() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Return;
+        let expected = Err(ExecuteError::StackUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn valid_return() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let bytes = Word::MAX.to_le_bytes();
+        i.stack[0] = bytes[0];
+        i.stack[1] = bytes[1];
+        i.stack[2] = bytes[2];
+        i.stack[3] = bytes[3];
+        i.stack[4] = bytes[4];
+        i.stack[5] = bytes[5];
+        i.stack[6] = bytes[6];
+        i.stack[7] = bytes[7];
+        i.stack_pointer = 8;
+        let instruction = Instruction::Return;
+        let expected = Word::MAX;
+
+        i.execute(instruction)?;
+
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
+    }
+}
