@@ -8,4 +8,4 @@ test:
 
 # Run a pedantic clippy linting check
 check:
-    cargo clippy -- -W clippy::pedantic
+    cargo clippy --all-targets -- -W clippy::pedantic
