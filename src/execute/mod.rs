@@ -112,3 +112,56 @@ mod stop {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod call {
+    use crate::{
+        constant::Word, error::ExecuteError, instruction::Instruction, operand::Operand,
+        register::Register, Interpreter,
+    };
+
+    #[test]
+    fn stack_overflow() {
+        let mut i = Interpreter::new_test();
+        i.stack_pointer = i.stack.len() as Word - 1;
+        let instruction = Instruction::Call(Operand::Immediate(5));
+        let expected = Err(ExecuteError::StackOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn call_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        i.registers[Register::A] = Word::MAX;
+        let instruction = Instruction::Call(Operand::Register(Register::A));
+        let expected = Word::MAX;
+
+        i.execute(instruction)?;
+        let mut bytes = [0; 8];
+        bytes.copy_from_slice(&i.stack[0..i.sp()]);
+        let actual = Word::from_le_bytes(bytes);
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn call_from_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Call(Operand::Immediate(Word::MAX));
+        let expected = Word::MAX;
+
+        i.execute(instruction)?;
+        let mut bytes = [0; 8];
+        bytes.copy_from_slice(&i.stack[0..i.sp()]);
+        let actual = Word::from_le_bytes(bytes);
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+}
