@@ -30,36 +30,44 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Or},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn no_bits_in_common() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Or(Or::Byte(Register::A, Operand::Immediate(Byte::MAX)));
         let expected = Byte::MAX as Word;
 
-        p.or_value(Register::A, Operand::Immediate(Byte::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
+    fn all_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        i.registers[Register::A] = Byte::MAX as Word;
+        let instruction = Instruction::Or(Or::Byte(Register::A, Operand::Immediate(Byte::MAX)));
         let expected = Byte::MAX as Word;
 
-        p.or_value(Register::A, Operand::Immediate(Byte::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 }
 
@@ -67,36 +75,46 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Or},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn no_bits_in_common() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Or(Or::Quarter(Register::A, Operand::Immediate(Quarter::MAX)));
         let expected = Quarter::MAX as Word;
 
-        p.or_value(Register::A, Operand::Immediate(Quarter::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
+    fn all_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        i.registers[Register::A] = Quarter::MAX as Word;
+        let instruction =
+            Instruction::Or(Or::Quarter(Register::A, Operand::Immediate(Quarter::MAX)));
         let expected = Quarter::MAX as Word;
 
-        p.or_value(Register::A, Operand::Immediate(Quarter::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 }
 
@@ -104,67 +122,88 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Or},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn no_bits_in_common() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Or(Or::Half(Register::A, Operand::Immediate(Half::MAX)));
         let expected = Half::MAX as Word;
 
-        p.or_value(Register::A, Operand::Immediate(Half::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
+    fn all_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        i.registers[Register::A] = Half::MAX as Word;
+        let instruction = Instruction::Or(Or::Half(Register::A, Operand::Immediate(Half::MAX)));
         let expected = Half::MAX as Word;
 
-        p.or_value(Register::A, Operand::Immediate(Half::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, Or},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn no_bits_in_common() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Or(Or::Word(Register::A, Operand::Immediate(Word::MAX)));
         let expected = Word::MAX;
 
-        p.or_value(Register::A, Operand::Immediate(Word::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
+    fn all_bits_in_common() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        i.registers[Register::A] = Word::MAX;
+        let instruction = Instruction::Or(Or::Word(Register::A, Operand::Immediate(Word::MAX)));
         let expected = Word::MAX;
 
-        p.or_value(Register::A, Operand::Immediate(Word::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.sign);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+
+        Ok(())
     }
 }

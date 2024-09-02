@@ -63,6 +63,8 @@ impl Interpreter {
         }
     }
 
+    // Is a bug here, consider a scenario where a - b results in overflow and result being 0.
+    // It would still be lesser but would fail with current implementation.
     fn jump_if_lesser(&mut self, operand: Operand<Word>) {
         if self.flags.overflow && !self.flags.zero {
             self.program_counter = self.get_operand_value(operand);
@@ -86,342 +88,486 @@ impl Interpreter {
 
 #[cfg(test)]
 mod unconditional {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::Unconditional(Operand::Immediate(5)));
         let expected = 5;
 
-        p.jump_unconditional(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::Unconditional(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_unconditional(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_zero {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
-        p.flags.zero = true;
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfZero(Operand::Immediate(5)));
+        i.flags.zero = true;
         let expected = 5;
 
-        p.jump_if_zero(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.flags.zero = true;
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfZero(Operand::Register(Register::A)));
+        i.flags.zero = true;
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_zero(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_not_zero {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfNotZero(Operand::Immediate(5)));
         let expected = 5;
 
-        p.jump_if_not_zero(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfNotZero(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_not_zero(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_sign {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
-        p.flags.sign = true;
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfSign(Operand::Immediate(5)));
+        i.flags.sign = true;
         let expected = 5;
 
-        p.jump_if_sign(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.flags.sign = true;
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfSign(Operand::Register(Register::A)));
+        i.flags.sign = true;
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_sign(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_not_sign {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfNotSign(Operand::Immediate(5)));
         let expected = 5;
 
-        p.jump_if_not_sign(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfNotSign(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_not_sign(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_overflow {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
-        p.flags.overflow = true;
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfOverflow(Operand::Immediate(5)));
+        i.flags.overflow = true;
         let expected = 5;
 
-        p.jump_if_overflow(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.flags.overflow = true;
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfOverflow(Operand::Register(Register::A)));
+        i.flags.overflow = true;
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_overflow(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_not_overflow {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfNotOverflow(Operand::Immediate(5)));
         let expected = 5;
 
-        p.jump_if_not_overflow(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfNotOverflow(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_not_overflow(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_greater {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfGreater(Operand::Immediate(5)));
         let expected = 5;
 
-        p.jump_if_greater(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfGreater(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_greater(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_lesser {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_immediate() {
-        let mut p = Interpreter::new_test();
-        p.flags.overflow = true;
+    fn jump_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfLesser(Operand::Immediate(5)));
+        i.flags.overflow = true;
         let expected = 5;
 
-        p.jump_if_lesser(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_register() {
-        let mut p = Interpreter::new_test();
-        p.flags.overflow = true;
-        p.registers[Register::A] = 5;
+    fn jump_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfLesser(Operand::Register(Register::A)));
+        i.flags.overflow = true;
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_lesser(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_greater_or_equal {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_greater_immediate() {
-        let mut p = Interpreter::new_test();
+    fn jump_greater_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Immediate(5)));
         let expected = 5;
 
-        p.jump_if_greater_or_equal(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_greater_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 5;
+    fn jump_greater_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
         let expected = 5;
 
-        p.jump_if_greater_or_equal(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_equal_immediate() {
-        let mut p = Interpreter::new_test();
-        p.flags.zero = true;
+    fn jump_equal_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Immediate(5)));
+        i.flags.zero = true;
         let expected = 5;
 
-        p.jump_if_greater_or_equal(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_equal_register() {
-        let mut p = Interpreter::new_test();
-        p.flags.zero = true;
-        p.registers[Register::A] = 5;
+    fn jump_equal_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
+        i.flags.zero = true;
         let expected = 5;
 
-        p.jump_if_greater_or_equal(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod if_lesser_or_equal {
-    use crate::{operand::Operand, register::Register, Interpreter};
+    use crate::{
+        error::ExecuteError,
+        instruction::{Instruction, Jump},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn jump_lesser_immediate() {
-        let mut p = Interpreter::new_test();
-        p.flags.overflow = true;
+    fn jump_greater_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Immediate(5)));
+        i.flags.overflow = true;
         let expected = 5;
 
-        p.jump_if_lesser_or_equal(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_lesser_register() {
-        let mut p = Interpreter::new_test();
-        p.flags.overflow = true;
-        p.registers[Register::A] = 5;
+    fn jump_greater_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
+        i.flags.overflow = true;
         let expected = 5;
 
-        p.jump_if_lesser_or_equal(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_equal_immediate() {
-        let mut p = Interpreter::new_test();
-        p.flags.zero = true;
+    fn jump_equal_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Immediate(5)));
+        i.flags.zero = true;
         let expected = 5;
 
-        p.jump_if_lesser_or_equal(Operand::Immediate(5));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 
     #[test]
-    fn jump_equal_register() {
-        let mut p = Interpreter::new_test();
-        p.flags.zero = true;
-        p.registers[Register::A] = 5;
+    fn jump_equal_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Register(Register::A)));
+        i.registers[Register::A] = 5;
+        i.flags.zero = true;
         let expected = 5;
 
-        p.jump_if_lesser_or_equal(Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.program_counter, expected);
+        assert_eq!(i.program_counter, expected);
+
+        Ok(())
     }
 }

@@ -29,30 +29,38 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Set},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn set_from_immediate() {
-        let mut p = Interpreter::new_test();
+    fn set_from_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Set(Set::Byte(Register::A, Operand::Immediate(Byte::MAX)));
         let expected = Byte::MAX as Word;
 
-        p.set_value(Register::A, Operand::Immediate(Byte::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 
     #[test]
-    fn set_from_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = Byte::MAX as Word;
+    fn set_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Set(Set::Byte(Register::A, Operand::Register(Register::B)));
+        i.registers[Register::B] = Byte::MAX as Word;
         let expected = Byte::MAX as Word;
 
-        p.set_value::<Byte>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 }
 
@@ -60,30 +68,40 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Set},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn set_from_immediate() {
-        let mut p = Interpreter::new_test();
+    fn set_from_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Set(Set::Quarter(Register::A, Operand::Immediate(Quarter::MAX)));
         let expected = Quarter::MAX as Word;
 
-        p.set_value(Register::A, Operand::Immediate(Quarter::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 
     #[test]
-    fn set_from_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = Quarter::MAX as Word;
+    fn set_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Set(Set::Quarter(Register::A, Operand::Register(Register::B)));
+        i.registers[Register::B] = Quarter::MAX as Word;
         let expected = Quarter::MAX as Word;
 
-        p.set_value::<Quarter>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 }
 
@@ -91,55 +109,76 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Set},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn set_from_immediate() {
-        let mut p = Interpreter::new_test();
+    fn set_from_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Set(Set::Half(Register::A, Operand::Immediate(Half::MAX)));
         let expected = Half::MAX as Word;
 
-        p.set_value(Register::A, Operand::Immediate(Half::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 
     #[test]
-    fn set_from_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = Half::MAX as Word;
+    fn set_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Set(Set::Half(Register::A, Operand::Register(Register::B)));
+        i.registers[Register::B] = Half::MAX as Word;
         let expected = Half::MAX as Word;
 
-        p.set_value::<Half>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, Set},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn set_from_immediate() {
-        let mut p = Interpreter::new_test();
+    fn set_from_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Set(Set::Word(Register::A, Operand::Immediate(Word::MAX)));
         let expected = Word::MAX;
 
-        p.set_value(Register::A, Operand::Immediate(Word::MAX));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 
     #[test]
-    fn set_from_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = Word::MAX;
+    fn set_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Set(Set::Word(Register::A, Operand::Register(Register::B)));
+        i.registers[Register::B] = Word::MAX;
         let expected = Word::MAX;
 
-        p.set_value::<Word>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
+        assert_eq!(i.registers[Register::A], expected);
+
+        Ok(())
     }
 }

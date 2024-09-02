@@ -32,35 +32,43 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Not},
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn negate_all_zeros() {
-        let mut p = Interpreter::new_test();
+    fn negate_all_zeros() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Byte(Register::A));
         let expected = Byte::MAX as Word;
 
-        p.not_value::<Byte>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn negate_all_ones() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
+    fn negate_all_ones() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Byte(Register::A));
+        i.registers[Register::A] = Byte::MAX as Word;
         let expected = 0;
 
-        p.not_value::<Byte>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -68,35 +76,43 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Not},
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn negate_all_zeros() {
-        let mut p = Interpreter::new_test();
+    fn negate_all_zeros() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Quarter(Register::A));
         let expected = Quarter::MAX as Word;
 
-        p.not_value::<Quarter>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn negate_all_ones() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
+    fn negate_all_ones() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Quarter(Register::A));
+        i.registers[Register::A] = Quarter::MAX as Word;
         let expected = 0;
 
-        p.not_value::<Quarter>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -104,66 +120,86 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Not},
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn negate_all_zeros() {
-        let mut p = Interpreter::new_test();
+    fn negate_all_zeros() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Half(Register::A));
         let expected = Half::MAX as Word;
 
-        p.not_value::<Half>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn negate_all_ones() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
+    fn negate_all_ones() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Half(Register::A));
+        i.registers[Register::A] = Half::MAX as Word;
         let expected = 0;
 
-        p.not_value::<Half>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, Not},
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn negate_all_zeros() {
-        let mut p = Interpreter::new_test();
+    fn negate_all_zeros() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Word(Register::A));
         let expected = Word::MAX;
 
-        p.not_value::<Word>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn negate_all_ones() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
+    fn negate_all_ones() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Not(Not::Word(Register::A));
+        i.registers[Register::A] = Word::MAX;
         let expected = 0;
 
-        p.not_value::<Word>(Register::A);
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }

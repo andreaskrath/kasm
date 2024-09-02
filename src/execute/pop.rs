@@ -49,122 +49,162 @@ impl Interpreter {
 
 #[cfg(test)]
 mod byte {
-    use crate::{constant::Byte, error::ExecuteError, Interpreter};
+    use crate::{
+        constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Pop},
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
     fn stack_underflow() {
-        let mut p = Interpreter::new_test();
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Byte(Register::A));
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Byte>();
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_underflow() {
-        let mut p = Interpreter::new_test();
-        p.stack[0] = Byte::MAX;
-        p.stack_pointer = 1;
-        let expected = Byte::MAX;
+    fn no_stack_underflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Byte(Register::A));
+        i.stack[0] = Byte::MAX;
+        i.stack_pointer = 1;
+        let expected = Byte::MAX as Word;
 
-        let actual = p.pop_value::<Byte>().unwrap();
+        i.execute(instruction)?;
 
-        assert_eq!(actual, expected);
-        assert!(p.stack_pointer == 0);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.stack_pointer == 0);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod quarter {
-    use crate::{constant::Quarter, error::ExecuteError, Interpreter};
+    use crate::{
+        constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Pop},
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
     fn stack_underflow() {
-        let mut p = Interpreter::new_test();
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Quarter(Register::A));
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Quarter>();
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_underflow() {
-        let mut p = Interpreter::new_test();
+    fn no_stack_underflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Quarter(Register::A));
         let bytes = Quarter::MAX.to_le_bytes();
-        p.stack[0] = bytes[0];
-        p.stack[1] = bytes[1];
-        p.stack_pointer = 2;
-        let expected = Quarter::MAX;
+        i.stack[0] = bytes[0];
+        i.stack[1] = bytes[1];
+        i.stack_pointer = 2;
+        let expected = Quarter::MAX as Word;
 
-        let actual = p.pop_value::<Quarter>().unwrap();
+        i.execute(instruction)?;
 
-        assert_eq!(actual, expected);
-        assert!(p.stack_pointer == 0);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.stack_pointer == 0);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod half {
-    use crate::{constant::Half, error::ExecuteError, Interpreter};
+    use crate::{
+        constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Pop},
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
     fn stack_underflow() {
-        let mut p = Interpreter::new_test();
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Half(Register::A));
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Half>();
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_underflow() {
-        let mut p = Interpreter::new_test();
+    fn no_stack_underflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Half(Register::A));
         let bytes = Half::MAX.to_le_bytes();
-        p.stack[0] = bytes[0];
-        p.stack[1] = bytes[1];
-        p.stack[2] = bytes[2];
-        p.stack[3] = bytes[3];
-        p.stack_pointer = 4;
-        let expected = Half::MAX;
+        i.stack[0] = bytes[0];
+        i.stack[1] = bytes[1];
+        i.stack[2] = bytes[2];
+        i.stack[3] = bytes[3];
+        i.stack_pointer = 4;
+        let expected = Half::MAX as Word;
 
-        let actual = p.pop_value::<Half>().unwrap();
+        i.execute(instruction)?;
 
-        assert_eq!(actual, expected);
-        assert!(p.stack_pointer == 0);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.stack_pointer == 0);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, error::ExecuteError, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, Pop},
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
     fn stack_underflow() {
-        let mut p = Interpreter::new_test();
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Word(Register::A));
         let expected = Err(ExecuteError::StackUnderflow);
-        let actual = p.pop_value::<Word>();
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_underflow() {
-        let mut p = Interpreter::new_test();
+    fn no_stack_underflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Pop(Pop::Word(Register::A));
         let bytes = Word::MAX.to_le_bytes();
-        p.stack[0] = bytes[0];
-        p.stack[1] = bytes[1];
-        p.stack[2] = bytes[2];
-        p.stack[3] = bytes[3];
-        p.stack[4] = bytes[4];
-        p.stack[5] = bytes[5];
-        p.stack[6] = bytes[6];
-        p.stack[7] = bytes[7];
-        p.stack_pointer = 8;
+        i.stack[0] = bytes[0];
+        i.stack[1] = bytes[1];
+        i.stack[2] = bytes[2];
+        i.stack[3] = bytes[3];
+        i.stack[4] = bytes[4];
+        i.stack[5] = bytes[5];
+        i.stack[6] = bytes[6];
+        i.stack[7] = bytes[7];
+        i.stack_pointer = 8;
         let expected = Word::MAX;
 
-        let actual = p.pop_value::<Word>().unwrap();
+        i.execute(instruction)?;
 
-        assert_eq!(actual, expected);
-        assert!(p.stack_pointer == 0);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.stack_pointer == 0);
+
+        Ok(())
     }
 }
