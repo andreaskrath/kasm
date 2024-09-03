@@ -1,10 +1,4 @@
-use crate::{
-    constant::Word,
-    error::ExecuteError,
-    instruction::Push,
-    utils::{FromBytes, ToBytes},
-    Interpreter,
-};
+use crate::{constant::Word, error::ExecuteError, instruction::Push, utils::ToBytes, Interpreter};
 
 impl Interpreter {
     pub fn push(&mut self, instruction: Push) -> Result<(), ExecuteError> {
@@ -32,7 +26,7 @@ impl Interpreter {
 
     pub fn push_value<T>(&mut self, value: T) -> Result<(), ExecuteError>
     where
-        T: ToBytes + FromBytes,
+        T: ToBytes,
     {
         if self.sp() + size_of::<T>() > self.stack.len() {
             return Err(ExecuteError::StackOverflow);
