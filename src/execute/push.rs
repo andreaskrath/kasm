@@ -47,31 +47,54 @@ mod byte {
     use crate::{
         constant::{Byte, Word, TEST_STACK_SIZE},
         error::ExecuteError,
+        instruction::{Instruction, Push},
+        operand::Operand,
+        register::Register,
         Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = TEST_STACK_SIZE as Word;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Byte(Operand::Immediate(Byte::MAX)));
+        i.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Byte::MAX);
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Byte>()) as Word;
+    fn push_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Byte(Operand::Register(Register::A)));
+        i.registers[Register::A] = Byte::MAX as Word;
         let expected = Byte::MAX;
 
-        p.push_value(Byte::MAX).unwrap();
-        let actual = p.stack[TEST_STACK_SIZE - size_of::<Byte>()];
+        i.execute(instruction)?;
+        let actual = i.stack[0];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
+        assert_eq!(i.stack_pointer, size_of::<Byte>() as Word);
+
+        Ok(())
+    }
+
+    #[test]
+    fn push_from_immediate_value() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Byte(Operand::Immediate(Byte::MAX)));
+        i.registers[Register::A] = Byte::MAX as Word;
+        let expected = Byte::MAX;
+
+        i.execute(instruction)?;
+        let actual = i.stack[0];
+
+        assert_eq!(actual, expected);
+        assert_eq!(i.stack_pointer, size_of::<Byte>() as Word);
+
+        Ok(())
     }
 }
 
@@ -80,31 +103,54 @@ mod quarter {
     use crate::{
         constant::{Quarter, Word, TEST_STACK_SIZE},
         error::ExecuteError,
+        instruction::{Instruction, Push},
+        operand::Operand,
+        register::Register,
         Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = TEST_STACK_SIZE as Word;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Quarter(Operand::Immediate(Quarter::MAX)));
+        i.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Quarter::MAX);
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Quarter>()) as Word;
+    fn push_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Quarter(Operand::Register(Register::A)));
+        i.registers[Register::A] = Quarter::MAX as Word;
         let expected = Quarter::MAX.to_le_bytes();
 
-        p.push_value(Quarter::MAX).unwrap();
-        let actual = &p.stack[TEST_STACK_SIZE - size_of::<Quarter>()..TEST_STACK_SIZE];
+        i.execute(instruction)?;
+        let actual = &i.stack[0..size_of::<Quarter>()];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
+        assert_eq!(i.stack_pointer, size_of::<Quarter>() as Word);
+
+        Ok(())
+    }
+
+    #[test]
+    fn push_from_immediate_value() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Quarter(Operand::Immediate(Quarter::MAX)));
+        i.registers[Register::A] = Quarter::MAX as Word;
+        let expected = Quarter::MAX.to_le_bytes();
+
+        i.execute(instruction)?;
+        let actual = &i.stack[0..size_of::<Quarter>()];
+
+        assert_eq!(actual, expected);
+        assert_eq!(i.stack_pointer, size_of::<Quarter>() as Word);
+
+        Ok(())
     }
 }
 
@@ -113,31 +159,54 @@ mod half {
     use crate::{
         constant::{Half, Word, TEST_STACK_SIZE},
         error::ExecuteError,
+        instruction::{Instruction, Push},
+        operand::Operand,
+        register::Register,
         Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = TEST_STACK_SIZE as Word;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Half(Operand::Immediate(Half::MAX)));
+        i.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Half::MAX);
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Half>()) as Word;
+    fn push_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Half(Operand::Register(Register::A)));
+        i.registers[Register::A] = Half::MAX as Word;
         let expected = Half::MAX.to_le_bytes();
 
-        p.push_value(Half::MAX).unwrap();
-        let actual = &p.stack[TEST_STACK_SIZE - size_of::<Half>()..TEST_STACK_SIZE];
+        i.execute(instruction)?;
+        let actual = &i.stack[0..size_of::<Half>()];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
+        assert_eq!(i.stack_pointer, size_of::<Half>() as Word);
+
+        Ok(())
+    }
+
+    #[test]
+    fn push_from_immediate_value() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Half(Operand::Immediate(Half::MAX)));
+        i.registers[Register::A] = Half::MAX as Word;
+        let expected = Half::MAX.to_le_bytes();
+
+        i.execute(instruction)?;
+        let actual = &i.stack[0..size_of::<Half>()];
+
+        assert_eq!(actual, expected);
+        assert_eq!(i.stack_pointer, size_of::<Half>() as Word);
+
+        Ok(())
     }
 }
 
@@ -146,30 +215,53 @@ mod word {
     use crate::{
         constant::{Word, TEST_STACK_SIZE},
         error::ExecuteError,
+        instruction::{Instruction, Push},
+        operand::Operand,
+        register::Register,
         Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = TEST_STACK_SIZE as Word;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Word(Operand::Immediate(Word::MAX)));
+        i.stack_pointer = TEST_STACK_SIZE as Word;
         let expected = Err(ExecuteError::StackOverflow);
 
-        let actual = p.push_value(Word::MAX);
+        let actual = i.execute(instruction);
 
         assert_eq!(actual, expected);
     }
 
     #[test]
-    fn no_stack_overflow() {
-        let mut p = Interpreter::new_test();
-        p.stack_pointer = (TEST_STACK_SIZE - size_of::<Word>()) as Word;
+    fn push_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Word(Operand::Register(Register::A)));
+        i.registers[Register::A] = Word::MAX;
         let expected = Word::MAX.to_le_bytes();
 
-        p.push_value(Word::MAX).unwrap();
-        let actual = &p.stack[TEST_STACK_SIZE - size_of::<Word>()..TEST_STACK_SIZE];
+        i.execute(instruction)?;
+        let actual = &i.stack[0..size_of::<Word>()];
 
         assert_eq!(actual, expected);
-        assert!(p.stack_pointer == TEST_STACK_SIZE as u64);
+        assert_eq!(i.stack_pointer, size_of::<Word>() as Word);
+
+        Ok(())
+    }
+
+    #[test]
+    fn push_from_immediate_value() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Push(Push::Word(Operand::Immediate(Word::MAX)));
+        i.registers[Register::A] = Word::MAX;
+        let expected = Word::MAX.to_le_bytes();
+
+        i.execute(instruction)?;
+        let actual = &i.stack[0..size_of::<Word>()];
+
+        assert_eq!(actual, expected);
+        assert_eq!(i.stack_pointer, size_of::<Word>() as Word);
+
+        Ok(())
     }
 }
