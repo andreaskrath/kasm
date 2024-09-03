@@ -25,91 +25,117 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Test},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn no_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Byte(
+            Operand::Immediate(Byte::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.test_value(Operand::Immediate(Byte::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
+    fn all_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Byte(
+            Operand::Immediate(Byte::MAX),
+            Operand::Immediate(Byte::MAX),
+        ));
 
-        p.test_value(Operand::Immediate(Byte::MAX), Operand::Immediate(Byte::MAX));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
-
-        p.test_value::<Byte>(
+    fn no_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Byte(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Byte::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
-        p.registers[Register::B] = Byte::MAX as Word;
-
-        p.test_value::<Byte>(
+    fn all_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Byte(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers[Register::B] = Byte::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-
-        p.test_value(
+    fn no_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Byte(
             Operand::Register(Register::A),
             Operand::Immediate(Byte::MAX),
-        );
+        ));
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
-
-        p.test_value(
+    fn all_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Byte(
             Operand::Register(Register::A),
             Operand::Immediate(Byte::MAX),
-        );
+        ));
+        i.registers[Register::A] = Byte::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -117,94 +143,117 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Test},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn no_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Quarter(
+            Operand::Immediate(Quarter::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.test_value(Operand::Immediate(Quarter::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
-
-        p.test_value(
+    fn all_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Quarter(
             Operand::Immediate(Quarter::MAX),
             Operand::Immediate(Quarter::MAX),
-        );
+        ));
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
-
-        p.test_value::<Quarter>(
+    fn no_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Quarter(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
-        p.registers[Register::B] = Quarter::MAX as Word;
-
-        p.test_value::<Quarter>(
+    fn all_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Quarter(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers[Register::B] = Quarter::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-
-        p.test_value(
+    fn no_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Quarter(
             Operand::Register(Register::A),
             Operand::Immediate(Quarter::MAX),
-        );
+        ));
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
-
-        p.test_value(
+    fn all_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Quarter(
             Operand::Register(Register::A),
             Operand::Immediate(Quarter::MAX),
-        );
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -212,177 +261,234 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Test},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn no_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Half(
+            Operand::Immediate(Half::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.test_value(Operand::Immediate(Half::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
+    fn all_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Half(
+            Operand::Immediate(Half::MAX),
+            Operand::Immediate(Half::MAX),
+        ));
 
-        p.test_value(Operand::Immediate(Half::MAX), Operand::Immediate(Half::MAX));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
-
-        p.test_value::<Half>(
+    fn no_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Half(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Half::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
-        p.registers[Register::B] = Half::MAX as Word;
-
-        p.test_value::<Half>(
+    fn all_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Half(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Half::MAX as Word;
+        i.registers[Register::B] = Half::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-
-        p.test_value(
+    fn no_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Half(
             Operand::Register(Register::A),
             Operand::Immediate(Half::MAX),
-        );
+        ));
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
-
-        p.test_value(
+    fn all_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Half(
             Operand::Register(Register::A),
             Operand::Immediate(Half::MAX),
-        );
+        ));
+        i.registers[Register::A] = Half::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, Test},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn no_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
+    fn no_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Word(
+            Operand::Immediate(Word::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.test_value(Operand::Immediate(Word::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_immediate() {
-        let mut p = Interpreter::new_test();
+    fn all_bits_in_common_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Word(
+            Operand::Immediate(Word::MAX),
+            Operand::Immediate(Word::MAX),
+        ));
 
-        p.test_value(Operand::Immediate(Word::MAX), Operand::Immediate(Word::MAX));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
-
-        p.test_value::<Word>(
+    fn no_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Word(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Word::MAX;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
-        p.registers[Register::B] = Word::MAX;
-
-        p.test_value::<Word>(
+    fn all_bits_in_common_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Word(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Word::MAX;
+        i.registers[Register::B] = Word::MAX;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn no_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-
-        p.test_value(
+    fn no_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Word(
             Operand::Register(Register::A),
             Operand::Immediate(Word::MAX),
-        );
+        ));
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn all_bits_in_common_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
-
-        p.test_value(
+    fn all_bits_in_common_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Test(Test::Word(
             Operand::Register(Register::A),
             Operand::Immediate(Word::MAX),
-        );
+        ));
+        i.registers[Register::A] = Word::MAX;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
