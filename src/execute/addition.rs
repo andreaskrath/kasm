@@ -30,66 +30,82 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Addition, Instruction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn add_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
+    fn add_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Byte(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Byte::MAX as Word;
         let expected = 0;
 
-        p.add_value(Register::A, Operand::Immediate(1u8));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word - 1;
+    fn add_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Byte(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Byte::MAX as Word - 1;
         let expected = Byte::MAX as Word;
 
-        p.add_value(Register::A, Operand::Immediate(1u8));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn add_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Byte(Register::A, Operand::Register(Register::B)));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value::<Byte>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn add_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Byte(Register::A, Operand::Register(Register::A)));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value::<Byte>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -97,66 +113,88 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Addition, Instruction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn add_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
+    fn add_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Quarter(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Quarter::MAX as Word;
         let expected = 0;
 
-        p.add_value(Register::A, Operand::Immediate(1u16));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word - 1;
+    fn add_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Quarter(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Quarter::MAX as Word - 1;
         let expected = Quarter::MAX as Word;
 
-        p.add_value(Register::A, Operand::Immediate(1u16));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn add_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Quarter(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value::<Quarter>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn add_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Quarter(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value::<Quarter>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -164,127 +202,164 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Addition, Instruction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn add_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
+    fn add_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Half(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Half::MAX as Word;
         let expected = 0;
 
-        p.add_value(Register::A, Operand::Immediate(1u32));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word - 1;
+    fn add_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Half(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Half::MAX as Word - 1;
         let expected = Half::MAX as Word;
 
-        p.add_value(Register::A, Operand::Immediate(1u32));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn add_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Half(Register::A, Operand::Register(Register::B)));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value::<Half>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn add_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Half(Register::A, Operand::Register(Register::A)));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value::<Half>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Addition, Instruction},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn add_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
+    fn add_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Word(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Word::MAX;
         let expected = 0;
 
-        p.add_value(Register::A, Operand::Immediate(1u64));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX - 1;
+    fn add_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Addition(Addition::Word(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Word::MAX - 1;
         let expected = Word::MAX;
 
-        p.add_value(Register::A, Operand::Immediate(1u64));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn add_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Word(Register::A, Operand::Register(Register::B)));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.add_value::<Word>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn add_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn add_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Addition(Addition::Word(Register::A, Operand::Register(Register::A)));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.add_value::<Word>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
