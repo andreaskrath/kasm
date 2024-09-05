@@ -25,126 +25,168 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Compare, Instruction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn a_and_b_equal_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_and_b_equal_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
+            Operand::Immediate(Byte::MAX),
+            Operand::Immediate(Byte::MAX),
+        ));
 
-        p.compare_value(Operand::Immediate(Byte::MAX), Operand::Immediate(Byte::MAX));
+        i.execute(instruction)?;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_greater_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
+            Operand::Immediate(Byte::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.compare_value(Operand::Immediate(Byte::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Compare(Compare::Byte(Operand::Immediate(0), Operand::Immediate(1)));
 
-        p.compare_value::<Byte>(Operand::Immediate(0), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
-        p.registers[Register::B] = Byte::MAX as Word;
-
-        p.compare_value::<Byte>(
+    fn a_and_b_equal_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers[Register::B] = Byte::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
-
-        p.compare_value::<Byte>(
+    fn a_greater_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Byte::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = 1;
-
-        p.compare_value::<Byte>(
+    fn a_lesser_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::B] = 1;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
-
-        p.compare_value(
+    fn a_and_b_equal_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
             Operand::Register(Register::A),
             Operand::Immediate(Byte::MAX),
-        );
+        ));
+        i.registers[Register::A] = Byte::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
+    fn a_greater_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
+            Operand::Register(Register::A),
+            Operand::Immediate(0),
+        ));
+        i.registers[Register::A] = Byte::MAX as Word;
 
-        p.compare_value::<Byte>(Operand::Register(Register::A), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_mix() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Byte(
+            Operand::Register(Register::A),
+            Operand::Immediate(1),
+        ));
 
-        p.compare_value::<Byte>(Operand::Register(Register::A), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -152,129 +194,170 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Compare, Instruction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn a_and_b_equal_immediate() {
-        let mut p = Interpreter::new_test();
-
-        p.compare_value(
+    fn a_and_b_equal_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
             Operand::Immediate(Quarter::MAX),
             Operand::Immediate(Quarter::MAX),
-        );
+        ));
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_greater_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
+            Operand::Immediate(Quarter::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.compare_value(Operand::Immediate(Quarter::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
+            Operand::Immediate(0),
+            Operand::Immediate(1),
+        ));
 
-        p.compare_value::<Quarter>(Operand::Immediate(0), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
-        p.registers[Register::B] = Quarter::MAX as Word;
-
-        p.compare_value::<Quarter>(
+    fn a_and_b_equal_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers[Register::B] = Quarter::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
-
-        p.compare_value::<Quarter>(
+    fn a_greater_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = 1;
-
-        p.compare_value::<Quarter>(
+    fn a_lesser_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::B] = 1;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
-
-        p.compare_value(
+    fn a_and_b_equal_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
             Operand::Register(Register::A),
             Operand::Immediate(Quarter::MAX),
-        );
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
+    fn a_greater_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
+            Operand::Register(Register::A),
+            Operand::Immediate(0),
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word;
 
-        p.compare_value::<Quarter>(Operand::Register(Register::A), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_mix() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Quarter(
+            Operand::Register(Register::A),
+            Operand::Immediate(1),
+        ));
 
-        p.compare_value::<Quarter>(Operand::Register(Register::A), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -282,247 +365,336 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Compare, Instruction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn a_and_b_equal_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_and_b_equal_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
+            Operand::Immediate(Half::MAX),
+            Operand::Immediate(Half::MAX),
+        ));
 
-        p.compare_value(Operand::Immediate(Half::MAX), Operand::Immediate(Half::MAX));
+        i.execute(instruction)?;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_greater_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
+            Operand::Immediate(Half::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.compare_value(Operand::Immediate(Half::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Compare(Compare::Half(Operand::Immediate(0), Operand::Immediate(1)));
 
-        p.compare_value::<Half>(Operand::Immediate(0), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
-        p.registers[Register::B] = Half::MAX as Word;
-
-        p.compare_value::<Half>(
+    fn a_and_b_equal_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Half::MAX as Word;
+        i.registers[Register::B] = Half::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
-
-        p.compare_value::<Half>(
+    fn a_greater_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Half::MAX as Word;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = 1;
-
-        p.compare_value::<Half>(
+    fn a_lesser_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::B] = 1;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
-
-        p.compare_value(
+    fn a_and_b_equal_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
             Operand::Register(Register::A),
             Operand::Immediate(Half::MAX),
-        );
+        ));
+        i.registers[Register::A] = Half::MAX as Word;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
+    fn a_greater_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
+            Operand::Register(Register::A),
+            Operand::Immediate(0),
+        ));
+        i.registers[Register::A] = Half::MAX as Word;
 
-        p.compare_value::<Half>(Operand::Register(Register::A), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_mix() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Half(
+            Operand::Register(Register::A),
+            Operand::Immediate(1),
+        ));
 
-        p.compare_value::<Half>(Operand::Register(Register::A), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Compare, Instruction},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn a_and_b_equal_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_and_b_equal_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
+            Operand::Immediate(Word::MAX),
+            Operand::Immediate(Word::MAX),
+        ));
 
-        p.compare_value(Operand::Immediate(Word::MAX), Operand::Immediate(Word::MAX));
+        i.execute(instruction)?;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_greater_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
+            Operand::Immediate(Word::MAX),
+            Operand::Immediate(0),
+        ));
 
-        p.compare_value(Operand::Immediate(Word::MAX), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_immediate() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_immediate() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Compare(Compare::Word(Operand::Immediate(0), Operand::Immediate(1)));
 
-        p.compare_value::<Word>(Operand::Immediate(0), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
-        p.registers[Register::B] = Word::MAX;
-
-        p.compare_value::<Word>(
+    fn a_and_b_equal_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Word::MAX;
+        i.registers[Register::B] = Word::MAX;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
-
-        p.compare_value::<Word>(
+    fn a_greater_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::A] = Word::MAX;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_register() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::B] = 1;
-
-        p.compare_value::<Word>(
+    fn a_lesser_than_b_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
             Operand::Register(Register::A),
             Operand::Register(Register::B),
-        );
+        ));
+        i.registers[Register::B] = 1;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_and_b_equal_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
-
-        p.compare_value(
+    fn a_and_b_equal_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
             Operand::Register(Register::A),
             Operand::Immediate(Word::MAX),
-        );
+        ));
+        i.registers[Register::A] = Word::MAX;
 
-        assert!(p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.sign);
+        i.execute(instruction)?;
+
+        assert!(i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_greater_than_b_mix() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
+    fn a_greater_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
+            Operand::Register(Register::A),
+            Operand::Immediate(0),
+        ));
+        i.registers[Register::A] = Word::MAX;
 
-        p.compare_value::<Word>(Operand::Register(Register::A), Operand::Immediate(0));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn a_lesser_than_b_mix() {
-        let mut p = Interpreter::new_test();
+    fn a_lesser_than_b_mix() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Compare(Compare::Word(
+            Operand::Register(Register::A),
+            Operand::Immediate(1),
+        ));
 
-        p.compare_value::<Word>(Operand::Register(Register::A), Operand::Immediate(1));
+        i.execute(instruction)?;
 
-        assert!(!p.flags.zero);
-        assert!(p.flags.overflow);
-        assert!(p.flags.sign);
+        assert!(!i.flags.zero);
+        assert!(i.flags.overflow);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 }
