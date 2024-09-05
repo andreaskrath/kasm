@@ -30,66 +30,88 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Subtraction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn sub_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MIN as Word;
+    fn sub_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Byte(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Byte::MIN as Word;
         let expected = Byte::MAX as Word;
 
-        p.sub_value(Register::A, Operand::Immediate(1u8));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
+    fn sub_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Byte(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Byte::MAX as Word;
         let expected = Byte::MAX as Word - 1;
 
-        p.sub_value(Register::A, Operand::Immediate(1u8));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn sub_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Byte(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 0;
 
-        p.sub_value::<Byte>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn sub_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Byte(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 0;
 
-        p.sub_value::<Byte>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -97,66 +119,88 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Subtraction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn sub_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MIN as Word;
+    fn sub_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Quarter(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Quarter::MIN as Word;
         let expected = Quarter::MAX as Word;
 
-        p.sub_value(Register::A, Operand::Immediate(1u16));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
+    fn sub_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Quarter(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Quarter::MAX as Word;
         let expected = Quarter::MAX as Word - 1;
 
-        p.sub_value(Register::A, Operand::Immediate(1u16));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn sub_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Quarter(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 0;
 
-        p.sub_value::<Quarter>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn sub_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Quarter(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 0;
 
-        p.sub_value::<Quarter>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -164,127 +208,176 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Subtraction},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn sub_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MIN as Word;
+    fn sub_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Half(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Half::MIN as Word;
         let expected = Half::MAX as Word;
 
-        p.sub_value(Register::A, Operand::Immediate(1u32));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
+    fn sub_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Half(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Half::MAX as Word;
         let expected = Half::MAX as Word - 1;
 
-        p.sub_value(Register::A, Operand::Immediate(1u32));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn sub_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Half(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 0;
 
-        p.sub_value::<Half>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn sub_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Half(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 0;
 
-        p.sub_value::<Half>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, Subtraction},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn sub_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MIN;
+    fn sub_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Word(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Word::MIN;
         let expected = Word::MAX;
 
-        p.sub_value(Register::A, Operand::Immediate(1u64));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
+    fn sub_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Subtraction(Subtraction::Word(Register::A, Operand::Immediate(1)));
+        i.registers[Register::A] = Word::MAX;
         let expected = Word::MAX - 1;
 
-        p.sub_value(Register::A, Operand::Immediate(1u64));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn sub_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Word(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 0;
 
-        p.sub_value::<Word>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn sub_the_register_to_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn sub_the_register_to_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Subtraction(Subtraction::Word(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 0;
 
-        p.sub_value::<Word>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }

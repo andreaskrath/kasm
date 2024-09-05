@@ -30,66 +30,88 @@ impl Interpreter {
 mod byte {
     use crate::{
         constant::{Byte, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Multiplication},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn mul_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = (Byte::MAX as Word / 2) + 1;
+    fn mul_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Multiplication(Multiplication::Byte(Register::A, Operand::Immediate(2)));
+        i.registers[Register::A] = (Byte::MAX as Word / 2) + 1;
         let expected = 0;
 
-        p.mul_value(Register::A, Operand::Immediate(2u8));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word / 2;
+    fn mul_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Multiplication(Multiplication::Byte(Register::A, Operand::Immediate(2)));
+        i.registers[Register::A] = Byte::MAX as Word / 2;
         let expected = Byte::MAX as Word - 1;
 
-        p.mul_value(Register::A, Operand::Immediate(2u8));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn mul_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Byte(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.mul_value::<Byte>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_the_register_with_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn mul_the_register_with_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Byte(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.mul_value::<Byte>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -97,66 +119,92 @@ mod byte {
 mod quarter {
     use crate::{
         constant::{Quarter, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Multiplication},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn mul_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = (Quarter::MAX as Word / 2) + 1;
+    fn mul_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Quarter(
+            Register::A,
+            Operand::Immediate(2),
+        ));
+        i.registers[Register::A] = (Quarter::MAX as Word / 2) + 1;
         let expected = 0;
 
-        p.mul_value(Register::A, Operand::Immediate(2u16));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word / 2;
+    fn mul_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Quarter(
+            Register::A,
+            Operand::Immediate(2),
+        ));
+        i.registers[Register::A] = Quarter::MAX as Word / 2;
         let expected = Quarter::MAX as Word - 1;
 
-        p.mul_value(Register::A, Operand::Immediate(2u16));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn mul_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Quarter(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.mul_value::<Quarter>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_the_register_with_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn mul_the_register_with_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Quarter(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.mul_value::<Quarter>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
@@ -164,127 +212,176 @@ mod quarter {
 mod half {
     use crate::{
         constant::{Half, Word},
+        error::ExecuteError,
+        instruction::{Instruction, Multiplication},
         operand::Operand,
         register::Register,
         Interpreter,
     };
 
     #[test]
-    fn mul_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = (Half::MAX as Word / 2) + 1;
+    fn mul_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Multiplication(Multiplication::Half(Register::A, Operand::Immediate(2)));
+        i.registers[Register::A] = (Half::MAX as Word / 2) + 1;
         let expected = 0;
 
-        p.mul_value(Register::A, Operand::Immediate(2u32));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word / 2;
+    fn mul_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Multiplication(Multiplication::Half(Register::A, Operand::Immediate(2)));
+        i.registers[Register::A] = Half::MAX as Word / 2;
         let expected = Half::MAX as Word - 1;
 
-        p.mul_value(Register::A, Operand::Immediate(2u32));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn mul_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Half(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.mul_value::<Half>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_the_register_with_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn mul_the_register_with_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Half(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.mul_value::<Half>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, operand::Operand, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, Multiplication},
+        operand::Operand,
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
-    fn mul_causes_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = (Word::MAX / 2) + 1;
+    fn mul_causes_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Multiplication(Multiplication::Word(Register::A, Operand::Immediate(2)));
+        i.registers[Register::A] = (Word::MAX / 2) + 1;
         let expected = 0;
 
-        p.mul_value(Register::A, Operand::Immediate(2u64));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(p.flags.overflow);
-        assert!(p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(i.flags.overflow);
+        assert!(i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_does_not_cause_overflow() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX / 2;
+    fn mul_does_not_cause_overflow() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::Multiplication(Multiplication::Word(Register::A, Operand::Immediate(2)));
+        i.registers[Register::A] = Word::MAX / 2;
         let expected = Word::MAX - 1;
 
-        p.mul_value(Register::A, Operand::Immediate(2u64));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_two_registers_together() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
-        p.registers[Register::B] = 2;
+    fn mul_two_registers_together() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Word(
+            Register::A,
+            Operand::Register(Register::B),
+        ));
+        i.registers[Register::A] = 2;
+        i.registers[Register::B] = 2;
         let expected = 4;
 
-        p.mul_value::<Word>(Register::A, Operand::Register(Register::B));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 
     #[test]
-    fn mul_the_register_with_itself() {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = 2;
+    fn mul_the_register_with_itself() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Multiplication(Multiplication::Word(
+            Register::A,
+            Operand::Register(Register::A),
+        ));
+        i.registers[Register::A] = 2;
         let expected = 4;
 
-        p.mul_value::<Word>(Register::A, Operand::Register(Register::A));
+        i.execute(instruction)?;
 
-        assert_eq!(p.registers[Register::A], expected);
-        assert!(!p.flags.overflow);
-        assert!(!p.flags.zero);
-        assert!(!p.flags.sign);
+        assert_eq!(i.registers[Register::A], expected);
+        assert!(!i.flags.overflow);
+        assert!(!i.flags.zero);
+        assert!(!i.flags.sign);
+
+        Ok(())
     }
 }

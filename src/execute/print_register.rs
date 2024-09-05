@@ -36,18 +36,20 @@ mod byte {
     use crate::{
         constant::{Byte, Word},
         error::ExecuteError,
+        instruction::{Instruction, PrintRegister},
         register::Register,
         Interpreter,
     };
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Byte::MAX as Word;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintRegister(PrintRegister::Byte(Register::A));
+        i.registers[Register::A] = Byte::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Byte::MAX);
-        p.print_register_value::<Byte>(Register::A)?;
+        i.execute(instruction)?;
 
-        let actual = p.config.output.get_buffer().unwrap();
+        let actual = i.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())
@@ -59,19 +61,20 @@ mod quarter {
     use crate::{
         constant::{Quarter, Word},
         error::ExecuteError,
+        instruction::{Instruction, PrintRegister},
         register::Register,
         Interpreter,
     };
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Quarter::MAX as Word;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintRegister(PrintRegister::Quarter(Register::A));
+        i.registers[Register::A] = Quarter::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Quarter::MAX);
+        i.execute(instruction)?;
 
-        p.print_register_value::<Quarter>(Register::A)?;
-
-        let actual = p.config.output.get_buffer().unwrap();
+        let actual = i.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())
@@ -83,19 +86,20 @@ mod half {
     use crate::{
         constant::{Half, Word},
         error::ExecuteError,
+        instruction::{Instruction, PrintRegister},
         register::Register,
         Interpreter,
     };
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Half::MAX as Word;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintRegister(PrintRegister::Half(Register::A));
+        i.registers[Register::A] = Half::MAX as Word;
         let expected = format!("{}: {}\n", Register::A, Half::MAX);
+        i.execute(instruction)?;
 
-        p.print_register_value::<Half>(Register::A)?;
-
-        let actual = p.config.output.get_buffer().unwrap();
+        let actual = i.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())
@@ -104,17 +108,23 @@ mod half {
 
 #[cfg(test)]
 mod word {
-    use crate::{constant::Word, error::ExecuteError, register::Register, Interpreter};
+    use crate::{
+        constant::Word,
+        error::ExecuteError,
+        instruction::{Instruction, PrintRegister},
+        register::Register,
+        Interpreter,
+    };
 
     #[test]
     fn print() -> Result<(), ExecuteError> {
-        let mut p = Interpreter::new_test();
-        p.registers[Register::A] = Word::MAX;
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintRegister(PrintRegister::Word(Register::A));
+        i.registers[Register::A] = Word::MAX;
         let expected = format!("{}: {}\n", Register::A, Word::MAX);
+        i.execute(instruction)?;
 
-        p.print_register_value::<Word>(Register::A)?;
-
-        let actual = p.config.output.get_buffer().unwrap();
+        let actual = i.config.output.get_buffer().unwrap();
         assert_eq!(actual, expected);
 
         Ok(())
