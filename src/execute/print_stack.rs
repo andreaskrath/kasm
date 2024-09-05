@@ -63,6 +63,7 @@ mod byte {
         error::ExecuteError,
         instruction::{Instruction, PrintStack},
         operand::Operand,
+        register::Register,
         Interpreter,
     };
 
@@ -78,12 +79,31 @@ mod byte {
     }
 
     #[test]
-    fn print() -> Result<(), ExecuteError> {
+    fn print_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintStack(PrintStack::Byte(Operand::Immediate(2)));
         i.stack[0] = Byte::MAX;
         i.stack[1] = Byte::MAX;
         i.stack_pointer = 2;
+        let expected = format!("{:?}\n", [Byte::MAX, Byte::MAX]);
+
+        i.execute(instruction)?;
+        let actual = i.config.output.get_buffer().unwrap();
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+
+    fn print_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintStack(PrintStack::Byte(Operand::Register(Register::A)));
+        i.stack[0] = Byte::MAX;
+        i.stack[1] = Byte::MAX;
+        i.stack_pointer = 2;
+        i.registers[Register::A] = 2;
         let expected = format!("{:?}\n", [Byte::MAX, Byte::MAX]);
 
         i.execute(instruction)?;
@@ -102,6 +122,7 @@ mod quarter {
         error::ExecuteError,
         instruction::{Instruction, PrintStack},
         operand::Operand,
+        register::Register,
         Interpreter,
     };
 
@@ -117,7 +138,7 @@ mod quarter {
     }
 
     #[test]
-    fn print() -> Result<(), ExecuteError> {
+    fn print_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintStack(PrintStack::Quarter(Operand::Immediate(2)));
         i.stack[0] = Byte::MAX;
@@ -125,6 +146,27 @@ mod quarter {
         i.stack[2] = Byte::MAX;
         i.stack[3] = Byte::MAX;
         i.stack_pointer = 4;
+        let expected = format!("{:?}\n", [Quarter::MAX, Quarter::MAX]);
+
+        i.execute(instruction)?;
+        let actual = i.config.output.get_buffer().unwrap();
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn print_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction =
+            Instruction::PrintStack(PrintStack::Quarter(Operand::Register(Register::A)));
+        i.stack[0] = Byte::MAX;
+        i.stack[1] = Byte::MAX;
+        i.stack[2] = Byte::MAX;
+        i.stack[3] = Byte::MAX;
+        i.stack_pointer = 4;
+        i.registers[Register::A] = 2;
         let expected = format!("{:?}\n", [Quarter::MAX, Quarter::MAX]);
 
         i.execute(instruction)?;
@@ -143,6 +185,7 @@ mod half {
         error::ExecuteError,
         instruction::{Instruction, PrintStack},
         operand::Operand,
+        register::Register,
         Interpreter,
     };
 
@@ -158,7 +201,7 @@ mod half {
     }
 
     #[test]
-    fn print() -> Result<(), ExecuteError> {
+    fn print_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintStack(PrintStack::Half(Operand::Immediate(2)));
         i.stack[0] = Byte::MAX;
@@ -179,6 +222,30 @@ mod half {
 
         Ok(())
     }
+
+    #[test]
+    fn print_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintStack(PrintStack::Half(Operand::Register(Register::A)));
+        i.stack[0] = Byte::MAX;
+        i.stack[1] = Byte::MAX;
+        i.stack[2] = Byte::MAX;
+        i.stack[3] = Byte::MAX;
+        i.stack[4] = Byte::MAX;
+        i.stack[5] = Byte::MAX;
+        i.stack[6] = Byte::MAX;
+        i.stack[7] = Byte::MAX;
+        i.stack_pointer = 8;
+        i.registers[Register::A] = 2;
+        let expected = format!("{:?}\n", [Half::MAX, Half::MAX]);
+
+        i.execute(instruction)?;
+        let actual = i.config.output.get_buffer().unwrap();
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -188,6 +255,7 @@ mod word {
         error::ExecuteError,
         instruction::{Instruction, PrintStack},
         operand::Operand,
+        register::Register,
         Interpreter,
     };
 
@@ -203,7 +271,7 @@ mod word {
     }
 
     #[test]
-    fn print() -> Result<(), ExecuteError> {
+    fn print_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintStack(PrintStack::Word(Operand::Immediate(2)));
         i.stack[0] = Byte::MAX;
@@ -232,6 +300,38 @@ mod word {
 
         Ok(())
     }
+
+    #[test]
+    fn print_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintStack(PrintStack::Word(Operand::Register(Register::A)));
+        i.stack[0] = Byte::MAX;
+        i.stack[1] = Byte::MAX;
+        i.stack[2] = Byte::MAX;
+        i.stack[3] = Byte::MAX;
+        i.stack[4] = Byte::MAX;
+        i.stack[5] = Byte::MAX;
+        i.stack[6] = Byte::MAX;
+        i.stack[7] = Byte::MAX;
+        i.stack[8] = Byte::MAX;
+        i.stack[9] = Byte::MAX;
+        i.stack[10] = Byte::MAX;
+        i.stack[11] = Byte::MAX;
+        i.stack[12] = Byte::MAX;
+        i.stack[13] = Byte::MAX;
+        i.stack[14] = Byte::MAX;
+        i.stack[15] = Byte::MAX;
+        i.stack_pointer = 16;
+        i.registers[Register::A] = 2;
+        let expected = format!("{:?}\n", [Word::MAX, Word::MAX]);
+
+        i.execute(instruction)?;
+        let actual = i.config.output.get_buffer().unwrap();
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -240,6 +340,7 @@ mod print_stack_str {
         error::ExecuteError,
         instruction::{Instruction, PrintStack},
         operand::Operand,
+        register::Register,
         Interpreter,
     };
 
@@ -255,7 +356,7 @@ mod print_stack_str {
     }
 
     #[test]
-    fn hello_world() -> Result<(), ExecuteError> {
+    fn print_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintStack(PrintStack::Str(Operand::Immediate(13)));
         i.stack[0] = b'H';
@@ -272,6 +373,35 @@ mod print_stack_str {
         i.stack[11] = b'd';
         i.stack[12] = b'!';
         i.stack_pointer = 13;
+        let expected = "Hello, world!\n";
+
+        i.execute(instruction)?;
+        let actual = i.config.output.get_buffer().unwrap();
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn print_from_register() -> Result<(), ExecuteError> {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::PrintStack(PrintStack::Str(Operand::Register(Register::A)));
+        i.stack[0] = b'H';
+        i.stack[1] = b'e';
+        i.stack[2] = b'l';
+        i.stack[3] = b'l';
+        i.stack[4] = b'o';
+        i.stack[5] = b',';
+        i.stack[6] = b' ';
+        i.stack[7] = b'w';
+        i.stack[8] = b'o';
+        i.stack[9] = b'r';
+        i.stack[10] = b'l';
+        i.stack[11] = b'd';
+        i.stack[12] = b'!';
+        i.stack_pointer = 13;
+        i.registers[Register::A] = 13;
         let expected = "Hello, world!\n";
 
         i.execute(instruction)?;
