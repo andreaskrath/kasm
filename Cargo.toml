@@ -11,3 +11,7 @@ variant_count = "1.1.0"
 
 [lints.rust]
 unsafe_code = "forbid"
+
+[lints.clippy]
+allow_attributes = "deny"
+allow_attributes_without_reason = "deny"
