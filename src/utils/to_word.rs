@@ -87,3 +87,115 @@ impl ToWord for SignedWord {
         }
     }
 }
+
+#[cfg(test)]
+mod signed_byte {
+    use crate::{
+        constant::{Byte, SignedByte, Word},
+        utils::ToWord,
+    };
+
+    #[test]
+    fn within_intersected_range() {
+        let input: SignedByte = 50;
+        let expected = 50;
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn outside_intersected_range() {
+        let input: SignedByte = -1;
+        let expected = Word::from(Byte::MAX);
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+}
+
+#[cfg(test)]
+mod signed_quarter {
+    use crate::{
+        constant::{Quarter, SignedQuarter, Word},
+        utils::ToWord,
+    };
+
+    #[test]
+    fn within_intersected_range() {
+        let input: SignedQuarter = 50;
+        let expected = 50;
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn outside_intersected_range() {
+        let input: SignedQuarter = -1;
+        let expected = Word::from(Quarter::MAX);
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+}
+
+#[cfg(test)]
+mod signed_half {
+    use crate::{
+        constant::{Half, SignedHalf, Word},
+        utils::ToWord,
+    };
+
+    #[test]
+    fn within_intersected_range() {
+        let input: SignedHalf = 50;
+        let expected = 50;
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn outside_intersected_range() {
+        let input: SignedHalf = -1;
+        let expected = Word::from(Half::MAX);
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+}
+
+#[cfg(test)]
+mod signed_word {
+    use crate::{
+        constant::{SignedWord, Word},
+        utils::ToWord,
+    };
+
+    #[test]
+    fn within_intersected_range() {
+        let input: SignedWord = 50;
+        let expected = 50;
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn outside_intersected_range() {
+        let input: SignedWord = -1;
+        let expected = Word::MAX;
+
+        let actual = input.to_word();
+
+        assert_eq!(actual, expected);
+    }
+}
