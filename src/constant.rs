@@ -8,6 +8,10 @@ pub type Byte = u8;
 pub type Quarter = u16;
 pub type Half = u32;
 pub type Word = u64;
+pub type SignedByte = i8;
+pub type SignedQuarter = i16;
+pub type SignedHalf = i32;
+pub type SignedWord = i64;
 
 /// The amount of bytes in a mega byte.
 const MEGA_BYTE: usize = 1_048_576;
