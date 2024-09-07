@@ -10,7 +10,7 @@ thiserror = "1.0.63"
 variant_count = "1.1.0"
 
 [lints.rust]
-unsafe_code = "forbid"
+unsafe_code = "deny"
 
 [lints.clippy]
 allow_attributes = "deny"
