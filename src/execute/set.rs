@@ -2,6 +2,7 @@ use crate::{
     instruction::Set,
     operand::Operand,
     register::Register,
+    registers::RegisterOperations,
     utils::{FromBytes, ToWord},
     Interpreter,
 };
@@ -21,18 +22,19 @@ impl Interpreter {
         T: FromBytes + ToWord,
     {
         let value = self.get_operand_value(operand);
-        self.registers[register] = value.to_word();
+        self.registers.set(register, value);
     }
 }
 
 #[cfg(test)]
 mod byte {
     use crate::{
-        constant::{Byte, Word},
+        constant::Byte,
         error::ExecuteError,
         instruction::{Instruction, Set},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -40,11 +42,11 @@ mod byte {
     fn set_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Set(Set::Byte(Register::A, Operand::Immediate(Byte::MAX)));
-        let expected = Byte::MAX as Word;
+        let expected = Byte::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Byte>(Register::A), expected);
 
         Ok(())
     }
@@ -53,12 +55,12 @@ mod byte {
     fn set_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Set(Set::Byte(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::B] = Byte::MAX as Word;
-        let expected = Byte::MAX as Word;
+        i.registers.set(Register::B, Byte::MAX);
+        let expected = Byte::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Byte>(Register::A), expected);
 
         Ok(())
     }
@@ -67,11 +69,12 @@ mod byte {
 #[cfg(test)]
 mod quarter {
     use crate::{
-        constant::{Quarter, Word},
+        constant::Quarter,
         error::ExecuteError,
         instruction::{Instruction, Set},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -80,11 +83,11 @@ mod quarter {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Set(Set::Quarter(Register::A, Operand::Immediate(Quarter::MAX)));
-        let expected = Quarter::MAX as Word;
+        let expected = Quarter::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Quarter>(Register::A), expected);
 
         Ok(())
     }
@@ -94,12 +97,12 @@ mod quarter {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Set(Set::Quarter(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::B] = Quarter::MAX as Word;
-        let expected = Quarter::MAX as Word;
+        i.registers.set(Register::B, Quarter::MAX);
+        let expected = Quarter::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Quarter>(Register::A), expected);
 
         Ok(())
     }
@@ -108,11 +111,12 @@ mod quarter {
 #[cfg(test)]
 mod half {
     use crate::{
-        constant::{Half, Word},
+        constant::Half,
         error::ExecuteError,
         instruction::{Instruction, Set},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -120,11 +124,11 @@ mod half {
     fn set_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Set(Set::Half(Register::A, Operand::Immediate(Half::MAX)));
-        let expected = Half::MAX as Word;
+        let expected = Half::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Half>(Register::A), expected);
 
         Ok(())
     }
@@ -133,12 +137,12 @@ mod half {
     fn set_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Set(Set::Half(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::B] = Half::MAX as Word;
-        let expected = Half::MAX as Word;
+        i.registers.set(Register::B, Half::MAX);
+        let expected = Half::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Half>(Register::A), expected);
 
         Ok(())
     }
@@ -152,6 +156,7 @@ mod word {
         instruction::{Instruction, Set},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -163,7 +168,7 @@ mod word {
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Word>(Register::A), expected);
 
         Ok(())
     }
@@ -172,12 +177,12 @@ mod word {
     fn set_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Set(Set::Word(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::B] = Word::MAX;
+        i.registers.set(Register::B, Word::MAX);
         let expected = Word::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Word>(Register::A), expected);
 
         Ok(())
     }

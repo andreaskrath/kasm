@@ -117,7 +117,7 @@ mod stop {
 mod call {
     use crate::{
         constant::Word, error::ExecuteError, instruction::Instruction, operand::Operand,
-        register::Register, Interpreter,
+        register::Register, registers::RegisterOperations, Interpreter,
     };
 
     #[test]
@@ -135,7 +135,7 @@ mod call {
     #[test]
     fn call_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
-        i.registers[Register::A] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
         let instruction = Instruction::Call(Operand::Register(Register::A));
         let expected = Word::MAX;
 

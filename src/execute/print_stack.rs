@@ -64,6 +64,7 @@ mod byte {
         instruction::{Instruction, PrintStack},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -103,7 +104,7 @@ mod byte {
         i.stack[0] = Byte::MAX;
         i.stack[1] = Byte::MAX;
         i.stack_pointer = 2;
-        i.registers[Register::A] = 2;
+        i.registers.set(Register::A, 2);
         let expected = format!("{:?}\n", [Byte::MAX, Byte::MAX]);
 
         i.execute(instruction)?;
@@ -123,6 +124,7 @@ mod quarter {
         instruction::{Instruction, PrintStack},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -166,7 +168,7 @@ mod quarter {
         i.stack[2] = Byte::MAX;
         i.stack[3] = Byte::MAX;
         i.stack_pointer = 4;
-        i.registers[Register::A] = 2;
+        i.registers.set(Register::A, 2);
         let expected = format!("{:?}\n", [Quarter::MAX, Quarter::MAX]);
 
         i.execute(instruction)?;
@@ -186,6 +188,7 @@ mod half {
         instruction::{Instruction, PrintStack},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -236,7 +239,7 @@ mod half {
         i.stack[6] = Byte::MAX;
         i.stack[7] = Byte::MAX;
         i.stack_pointer = 8;
-        i.registers[Register::A] = 2;
+        i.registers.set(Register::A, 2);
         let expected = format!("{:?}\n", [Half::MAX, Half::MAX]);
 
         i.execute(instruction)?;
@@ -256,6 +259,7 @@ mod word {
         instruction::{Instruction, PrintStack},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -322,7 +326,7 @@ mod word {
         i.stack[14] = Byte::MAX;
         i.stack[15] = Byte::MAX;
         i.stack_pointer = 16;
-        i.registers[Register::A] = 2;
+        i.registers.set(Register::A, 2);
         let expected = format!("{:?}\n", [Word::MAX, Word::MAX]);
 
         i.execute(instruction)?;
@@ -341,6 +345,7 @@ mod print_stack_str {
         instruction::{Instruction, PrintStack},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -401,7 +406,7 @@ mod print_stack_str {
         i.stack[11] = b'd';
         i.stack[12] = b'!';
         i.stack_pointer = 13;
-        i.registers[Register::A] = 13;
+        i.registers.set(Register::A, 13);
         let expected = "Hello, world!\n";
 
         i.execute(instruction)?;

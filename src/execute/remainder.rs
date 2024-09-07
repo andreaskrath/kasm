@@ -26,7 +26,7 @@ impl Interpreter {
 
         let (result, overflow) = a.overflow_rem(b);
         self.flags.set(result, overflow);
-        self.registers[register] = result.to_word();
+        self.registers.set(register, result);
 
         Ok(())
     }
@@ -40,6 +40,7 @@ mod byte {
         instruction::{Instruction, Remainder},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -64,7 +65,7 @@ mod byte {
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Byte>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -77,13 +78,13 @@ mod byte {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Remainder(Remainder::Byte(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 4;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 4);
         let expected = 0;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Byte>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -96,13 +97,13 @@ mod byte {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Remainder(Remainder::Byte(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 6;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 6);
         let expected = 2;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Byte>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(!i.flags.zero);
         assert!(!i.flags.sign);
@@ -119,6 +120,7 @@ mod quarter {
         instruction::{Instruction, Remainder},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -145,7 +147,7 @@ mod quarter {
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Quarter>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -160,13 +162,13 @@ mod quarter {
             Register::A,
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 4;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 4);
         let expected = 0;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Quarter>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -181,13 +183,13 @@ mod quarter {
             Register::A,
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 6;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 6);
         let expected = 2;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Quarter>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(!i.flags.zero);
         assert!(!i.flags.sign);
@@ -204,6 +206,7 @@ mod half {
         instruction::{Instruction, Remainder},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -228,7 +231,7 @@ mod half {
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Half>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -241,13 +244,13 @@ mod half {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Remainder(Remainder::Half(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 4;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 4);
         let expected = 0;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Half>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -260,13 +263,13 @@ mod half {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Remainder(Remainder::Half(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 6;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 6);
         let expected = 2;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Half>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(!i.flags.zero);
         assert!(!i.flags.sign);
@@ -283,6 +286,7 @@ mod word {
         instruction::{Instruction, Remainder},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -307,7 +311,7 @@ mod word {
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Word>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -320,13 +324,13 @@ mod word {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Remainder(Remainder::Word(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 4;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 4);
         let expected = 0;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Word>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
         assert!(!i.flags.sign);
@@ -339,13 +343,13 @@ mod word {
         let mut i = Interpreter::new_test();
         let instruction =
             Instruction::Remainder(Remainder::Word(Register::A, Operand::Register(Register::B)));
-        i.registers[Register::A] = 20;
-        i.registers[Register::B] = 6;
+        i.registers.set(Register::A, 20);
+        i.registers.set(Register::B, 6);
         let expected = 2;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Word>(Register::A), expected);
         assert!(!i.flags.overflow);
         assert!(!i.flags.zero);
         assert!(!i.flags.sign);

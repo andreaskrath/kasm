@@ -93,6 +93,7 @@ mod unconditional {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -113,7 +114,7 @@ mod unconditional {
     fn jump_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::Unconditional(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -131,6 +132,7 @@ mod if_zero {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -153,7 +155,7 @@ mod if_zero {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfZero(Operand::Register(Register::A)));
         i.flags.zero = true;
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -171,6 +173,7 @@ mod if_not_zero {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -191,7 +194,7 @@ mod if_not_zero {
     fn jump_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfNotZero(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -209,6 +212,7 @@ mod if_sign {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -231,7 +235,7 @@ mod if_sign {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfSign(Operand::Register(Register::A)));
         i.flags.sign = true;
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -249,6 +253,7 @@ mod if_not_sign {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -269,7 +274,7 @@ mod if_not_sign {
     fn jump_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfNotSign(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -287,6 +292,7 @@ mod if_overflow {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -309,7 +315,7 @@ mod if_overflow {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfOverflow(Operand::Register(Register::A)));
         i.flags.overflow = true;
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -327,6 +333,7 @@ mod if_not_overflow {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -347,7 +354,7 @@ mod if_not_overflow {
     fn jump_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfNotOverflow(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -365,6 +372,7 @@ mod if_greater {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -385,7 +393,7 @@ mod if_greater {
     fn jump_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfGreater(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -403,6 +411,7 @@ mod if_lesser {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -425,7 +434,7 @@ mod if_lesser {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfLesser(Operand::Register(Register::A)));
         i.flags.overflow = true;
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -443,6 +452,7 @@ mod if_greater_or_equal {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -463,7 +473,7 @@ mod if_greater_or_equal {
     fn jump_greater_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         let expected = 5;
 
         i.execute(instruction)?;
@@ -491,7 +501,7 @@ mod if_greater_or_equal {
     fn jump_equal_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         i.flags.zero = true;
         let expected = 5;
 
@@ -510,6 +520,7 @@ mod if_lesser_or_equal {
         instruction::{Instruction, Jump},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -531,7 +542,7 @@ mod if_lesser_or_equal {
     fn jump_greater_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         i.flags.overflow = true;
         let expected = 5;
 
@@ -560,7 +571,7 @@ mod if_lesser_or_equal {
     fn jump_equal_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Register(Register::A)));
-        i.registers[Register::A] = 5;
+        i.registers.set(Register::A, 5);
         i.flags.zero = true;
         let expected = 5;
 

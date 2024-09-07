@@ -50,6 +50,7 @@ mod byte {
         instruction::{Instruction, Push},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -69,7 +70,7 @@ mod byte {
     fn push_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Byte(Operand::Register(Register::A)));
-        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers.set(Register::A, Byte::MAX);
         let expected = Byte::MAX;
 
         i.execute(instruction)?;
@@ -85,7 +86,7 @@ mod byte {
     fn push_from_immediate_value() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Byte(Operand::Immediate(Byte::MAX)));
-        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers.set(Register::A, Byte::MAX);
         let expected = Byte::MAX;
 
         i.execute(instruction)?;
@@ -106,6 +107,7 @@ mod quarter {
         instruction::{Instruction, Push},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -125,7 +127,7 @@ mod quarter {
     fn push_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Quarter(Operand::Register(Register::A)));
-        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers.set(Register::A, Quarter::MAX);
         let expected = Quarter::MAX.to_le_bytes();
 
         i.execute(instruction)?;
@@ -141,7 +143,7 @@ mod quarter {
     fn push_from_immediate_value() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Quarter(Operand::Immediate(Quarter::MAX)));
-        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers.set(Register::A, Quarter::MAX);
         let expected = Quarter::MAX.to_le_bytes();
 
         i.execute(instruction)?;
@@ -162,6 +164,7 @@ mod half {
         instruction::{Instruction, Push},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -181,7 +184,7 @@ mod half {
     fn push_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Half(Operand::Register(Register::A)));
-        i.registers[Register::A] = Half::MAX as Word;
+        i.registers.set(Register::A, Half::MAX);
         let expected = Half::MAX.to_le_bytes();
 
         i.execute(instruction)?;
@@ -197,7 +200,7 @@ mod half {
     fn push_from_immediate_value() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Half(Operand::Immediate(Half::MAX)));
-        i.registers[Register::A] = Half::MAX as Word;
+        i.registers.set(Register::A, Half::MAX);
         let expected = Half::MAX.to_le_bytes();
 
         i.execute(instruction)?;
@@ -218,6 +221,7 @@ mod word {
         instruction::{Instruction, Push},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -237,7 +241,7 @@ mod word {
     fn push_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Word(Operand::Register(Register::A)));
-        i.registers[Register::A] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
         let expected = Word::MAX.to_le_bytes();
 
         i.execute(instruction)?;
@@ -253,7 +257,7 @@ mod word {
     fn push_from_immediate_value() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Push(Push::Word(Operand::Immediate(Word::MAX)));
-        i.registers[Register::A] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
         let expected = Word::MAX.to_le_bytes();
 
         i.execute(instruction)?;

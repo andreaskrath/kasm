@@ -24,11 +24,12 @@ impl Interpreter {
 #[cfg(test)]
 mod byte {
     use crate::{
-        constant::{Byte, Word},
+        constant::Byte,
         error::ExecuteError,
         instruction::{Compare, Instruction},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -88,8 +89,8 @@ mod byte {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Byte::MAX as Word;
-        i.registers[Register::B] = Byte::MAX as Word;
+        i.registers.set(Register::A, Byte::MAX);
+        i.registers.set(Register::B, Byte::MAX);
 
         i.execute(instruction)?;
 
@@ -107,7 +108,7 @@ mod byte {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers.set(Register::A, Byte::MAX);
 
         i.execute(instruction)?;
 
@@ -125,7 +126,7 @@ mod byte {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::B] = 1;
+        i.registers.set(Register::B, 1);
 
         i.execute(instruction)?;
 
@@ -143,7 +144,7 @@ mod byte {
             Operand::Register(Register::A),
             Operand::Immediate(Byte::MAX),
         ));
-        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers.set(Register::A, Byte::MAX);
 
         i.execute(instruction)?;
 
@@ -161,7 +162,7 @@ mod byte {
             Operand::Register(Register::A),
             Operand::Immediate(0),
         ));
-        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers.set(Register::A, Byte::MAX);
 
         i.execute(instruction)?;
 
@@ -193,11 +194,12 @@ mod byte {
 #[cfg(test)]
 mod quarter {
     use crate::{
-        constant::{Quarter, Word},
+        constant::Quarter,
         error::ExecuteError,
         instruction::{Compare, Instruction},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -259,8 +261,8 @@ mod quarter {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Quarter::MAX as Word;
-        i.registers[Register::B] = Quarter::MAX as Word;
+        i.registers.set(Register::A, Quarter::MAX);
+        i.registers.set(Register::B, Quarter::MAX);
 
         i.execute(instruction)?;
 
@@ -278,7 +280,7 @@ mod quarter {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers.set(Register::A, Quarter::MAX);
 
         i.execute(instruction)?;
 
@@ -296,7 +298,7 @@ mod quarter {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::B] = 1;
+        i.registers.set(Register::B, 1);
 
         i.execute(instruction)?;
 
@@ -314,7 +316,7 @@ mod quarter {
             Operand::Register(Register::A),
             Operand::Immediate(Quarter::MAX),
         ));
-        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers.set(Register::A, Quarter::MAX);
 
         i.execute(instruction)?;
 
@@ -332,7 +334,7 @@ mod quarter {
             Operand::Register(Register::A),
             Operand::Immediate(0),
         ));
-        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers.set(Register::A, Quarter::MAX);
 
         i.execute(instruction)?;
 
@@ -364,11 +366,12 @@ mod quarter {
 #[cfg(test)]
 mod half {
     use crate::{
-        constant::{Half, Word},
+        constant::Half,
         error::ExecuteError,
         instruction::{Compare, Instruction},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -428,8 +431,8 @@ mod half {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Half::MAX as Word;
-        i.registers[Register::B] = Half::MAX as Word;
+        i.registers.set(Register::A, Half::MAX);
+        i.registers.set(Register::B, Half::MAX);
 
         i.execute(instruction)?;
 
@@ -447,7 +450,7 @@ mod half {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Half::MAX as Word;
+        i.registers.set(Register::A, Half::MAX);
 
         i.execute(instruction)?;
 
@@ -465,7 +468,7 @@ mod half {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::B] = 1;
+        i.registers.set(Register::B, 1);
 
         i.execute(instruction)?;
 
@@ -483,7 +486,7 @@ mod half {
             Operand::Register(Register::A),
             Operand::Immediate(Half::MAX),
         ));
-        i.registers[Register::A] = Half::MAX as Word;
+        i.registers.set(Register::A, Half::MAX);
 
         i.execute(instruction)?;
 
@@ -501,7 +504,7 @@ mod half {
             Operand::Register(Register::A),
             Operand::Immediate(0),
         ));
-        i.registers[Register::A] = Half::MAX as Word;
+        i.registers.set(Register::A, Half::MAX);
 
         i.execute(instruction)?;
 
@@ -538,6 +541,7 @@ mod word {
         instruction::{Compare, Instruction},
         operand::Operand,
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -597,8 +601,8 @@ mod word {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Word::MAX;
-        i.registers[Register::B] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
+        i.registers.set(Register::B, Word::MAX);
 
         i.execute(instruction)?;
 
@@ -616,7 +620,7 @@ mod word {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::A] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
 
         i.execute(instruction)?;
 
@@ -634,7 +638,7 @@ mod word {
             Operand::Register(Register::A),
             Operand::Register(Register::B),
         ));
-        i.registers[Register::B] = 1;
+        i.registers.set(Register::B, 1);
 
         i.execute(instruction)?;
 
@@ -652,7 +656,7 @@ mod word {
             Operand::Register(Register::A),
             Operand::Immediate(Word::MAX),
         ));
-        i.registers[Register::A] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
 
         i.execute(instruction)?;
 
@@ -670,7 +674,7 @@ mod word {
             Operand::Register(Register::A),
             Operand::Immediate(0),
         ));
-        i.registers[Register::A] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
 
         i.execute(instruction)?;
 

@@ -34,10 +34,11 @@ impl Interpreter {
 #[cfg(test)]
 mod byte {
     use crate::{
-        constant::{Byte, Word},
+        constant::Byte,
         error::ExecuteError,
         instruction::{Instruction, PrintRegister},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -45,7 +46,7 @@ mod byte {
     fn print() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintRegister(PrintRegister::Byte(Register::A));
-        i.registers[Register::A] = Byte::MAX as Word;
+        i.registers.set(Register::A, Byte::MAX);
         let expected = format!("{}: {}\n", Register::A, Byte::MAX);
         i.execute(instruction)?;
 
@@ -59,10 +60,11 @@ mod byte {
 #[cfg(test)]
 mod quarter {
     use crate::{
-        constant::{Quarter, Word},
+        constant::Quarter,
         error::ExecuteError,
         instruction::{Instruction, PrintRegister},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -70,7 +72,7 @@ mod quarter {
     fn print() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintRegister(PrintRegister::Quarter(Register::A));
-        i.registers[Register::A] = Quarter::MAX as Word;
+        i.registers.set(Register::A, Quarter::MAX);
         let expected = format!("{}: {}\n", Register::A, Quarter::MAX);
         i.execute(instruction)?;
 
@@ -84,10 +86,11 @@ mod quarter {
 #[cfg(test)]
 mod half {
     use crate::{
-        constant::{Half, Word},
+        constant::Half,
         error::ExecuteError,
         instruction::{Instruction, PrintRegister},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -95,7 +98,7 @@ mod half {
     fn print() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintRegister(PrintRegister::Half(Register::A));
-        i.registers[Register::A] = Half::MAX as Word;
+        i.registers.set(Register::A, Half::MAX);
         let expected = format!("{}: {}\n", Register::A, Half::MAX);
         i.execute(instruction)?;
 
@@ -113,6 +116,7 @@ mod word {
         error::ExecuteError,
         instruction::{Instruction, PrintRegister},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -120,7 +124,7 @@ mod word {
     fn print() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::PrintRegister(PrintRegister::Word(Register::A));
-        i.registers[Register::A] = Word::MAX;
+        i.registers.set(Register::A, Word::MAX);
         let expected = format!("{}: {}\n", Register::A, Word::MAX);
         i.execute(instruction)?;
 

@@ -2,6 +2,7 @@ use crate::{
     constant::{Byte, Half, Quarter, Word},
     error::ExecuteError,
     instruction::Pop,
+    registers::RegisterOperations,
     utils::FromBytes,
     Interpreter,
 };
@@ -11,19 +12,19 @@ impl Interpreter {
         match instruction {
             Pop::Byte(register) => {
                 let value = self.pop_value::<Byte>()?;
-                self.registers[register] = Word::from(value);
+                self.registers.set(register, value);
             }
             Pop::Quarter(register) => {
                 let value = self.pop_value::<Quarter>()?;
-                self.registers[register] = Word::from(value);
+                self.registers.set(register, value);
             }
             Pop::Half(register) => {
                 let value = self.pop_value::<Half>()?;
-                self.registers[register] = Word::from(value);
+                self.registers.set(register, value);
             }
             Pop::Word(register) => {
                 let value = self.pop_value::<Word>()?;
-                self.registers[register] = value;
+                self.registers.set(register, value);
             }
         }
         Ok(())
@@ -50,10 +51,11 @@ impl Interpreter {
 #[cfg(test)]
 mod byte {
     use crate::{
-        constant::{Byte, Word},
+        constant::Byte,
         error::ExecuteError,
         instruction::{Instruction, Pop},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -73,11 +75,11 @@ mod byte {
         let instruction = Instruction::Pop(Pop::Byte(Register::A));
         i.stack[0] = Byte::MAX;
         i.stack_pointer = 1;
-        let expected = Byte::MAX as Word;
+        let expected = Byte::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Byte>(Register::A), expected);
         assert!(i.stack_pointer == 0);
 
         Ok(())
@@ -87,10 +89,11 @@ mod byte {
 #[cfg(test)]
 mod quarter {
     use crate::{
-        constant::{Quarter, Word},
+        constant::Quarter,
         error::ExecuteError,
         instruction::{Instruction, Pop},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -112,11 +115,11 @@ mod quarter {
         i.stack[0] = bytes[0];
         i.stack[1] = bytes[1];
         i.stack_pointer = 2;
-        let expected = Quarter::MAX as Word;
+        let expected = Quarter::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Quarter>(Register::A), expected);
         assert!(i.stack_pointer == 0);
 
         Ok(())
@@ -126,10 +129,11 @@ mod quarter {
 #[cfg(test)]
 mod half {
     use crate::{
-        constant::{Half, Word},
+        constant::Half,
         error::ExecuteError,
         instruction::{Instruction, Pop},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -153,11 +157,11 @@ mod half {
         i.stack[2] = bytes[2];
         i.stack[3] = bytes[3];
         i.stack_pointer = 4;
-        let expected = Half::MAX as Word;
+        let expected = Half::MAX;
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Half>(Register::A), expected);
         assert!(i.stack_pointer == 0);
 
         Ok(())
@@ -171,6 +175,7 @@ mod word {
         error::ExecuteError,
         instruction::{Instruction, Pop},
         register::Register,
+        registers::RegisterOperations,
         Interpreter,
     };
 
@@ -202,7 +207,7 @@ mod word {
 
         i.execute(instruction)?;
 
-        assert_eq!(i.registers[Register::A], expected);
+        assert_eq!(i.registers.get::<Word>(Register::A), expected);
         assert!(i.stack_pointer == 0);
 
         Ok(())
