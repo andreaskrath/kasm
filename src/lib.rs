@@ -179,6 +179,9 @@ mod integration {
 
         assert_eq!(actual_value, expected_value);
         assert_eq!(actual_print, expected_print);
+        assert!(!i.flags.sign);
+        assert!(!i.flags.overflow);
+        assert!(i.flags.zero);
 
         Ok(())
     }
