@@ -78,13 +78,13 @@ impl Interpreter {
 
     fn call(&mut self, operand: Operand<Word>) -> Result<(), ExecuteError> {
         let destination = self.get_operand_value(operand);
-        self.push_value(destination)?;
+        self.stack.push(destination)?;
 
         Ok(())
     }
 
     fn ret(&mut self) -> Result<(), ExecuteError> {
-        let destination = self.pop_value::<Word>()?;
+        let destination = self.stack.pop::<Word>()?;
         self.program_counter = destination;
 
         Ok(())
@@ -116,14 +116,24 @@ mod stop {
 #[cfg(test)]
 mod call {
     use crate::{
-        constant::Word, error::ExecuteError, instruction::Instruction, operand::Operand,
-        register::Register, registers::RegisterOperations, Interpreter,
+        constant::{Byte, Word, TEST_STACK_SIZE},
+        error::ExecuteError,
+        instruction::Instruction,
+        operand::Operand,
+        register::Register,
+        registers::RegisterOperations,
+        Interpreter,
     };
 
     #[test]
     fn stack_overflow() {
         let mut i = Interpreter::new_test();
-        i.stack_pointer = i.stack.len() as Word - 1;
+        // filling the stack with values
+        for _ in 0..TEST_STACK_SIZE {
+            i.stack
+                .push::<Byte>(0)
+                .expect("should be able to fill stack");
+        }
         let instruction = Instruction::Call(Operand::Immediate(5));
         let expected = Err(ExecuteError::StackOverflow);
 
@@ -140,9 +150,10 @@ mod call {
         let expected = Word::MAX;
 
         i.execute(instruction)?;
-        let mut bytes = [0; 8];
-        bytes.copy_from_slice(&i.stack[0..i.sp()]);
-        let actual = Word::from_le_bytes(bytes);
+        let actual: Word = i
+            .stack
+            .pop()
+            .expect("should be able to pop value from stack");
 
         assert_eq!(actual, expected);
 
@@ -156,9 +167,10 @@ mod call {
         let expected = Word::MAX;
 
         i.execute(instruction)?;
-        let mut bytes = [0; 8];
-        bytes.copy_from_slice(&i.stack[0..i.sp()]);
-        let actual = Word::from_le_bytes(bytes);
+        let actual: Word = i
+            .stack
+            .pop()
+            .expect("should be able to pop value from stack");
 
         assert_eq!(actual, expected);
 
@@ -184,16 +196,9 @@ mod ret {
     #[test]
     fn valid_return() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
-        let bytes = Word::MAX.to_le_bytes();
-        i.stack[0] = bytes[0];
-        i.stack[1] = bytes[1];
-        i.stack[2] = bytes[2];
-        i.stack[3] = bytes[3];
-        i.stack[4] = bytes[4];
-        i.stack[5] = bytes[5];
-        i.stack[6] = bytes[6];
-        i.stack[7] = bytes[7];
-        i.stack_pointer = 8;
+        i.stack
+            .push(Word::MAX)
+            .expect("should be able to push value onto stack");
         let instruction = Instruction::Return;
         let expected = Word::MAX;
 

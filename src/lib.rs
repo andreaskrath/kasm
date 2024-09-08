@@ -6,6 +6,7 @@ use register::Register;
 use registers::Registers;
 
 pub use cli::Arguments;
+use stack::Stack;
 
 mod cli;
 mod constant;
@@ -17,33 +18,26 @@ mod instruction;
 mod operand;
 mod register;
 mod registers;
+mod stack;
 mod utils;
 
 pub struct Interpreter {
     registers: Registers,
-
-    /// The stack pointer points to the next free byte on the stack.
-    stack_pointer: Word,
     program_counter: Word,
     flags: Flags,
     running: bool,
-    stack: Box<[u8]>,
+    stack: Stack,
     config: Configuration,
 }
 
 impl Interpreter {
     pub fn try_new(args: Arguments) -> Result<Self, InterpreterError> {
-        // Kind of a hack, but simply allocating an array inside a box causes a stack overflow.
-        // https://github.com/rust-lang/rust/issues/53827
-        let stack = vec![0; STACK_SIZE].into_boxed_slice();
-
         let p = Self {
             registers: [0; Register::VARIANT_COUNT],
-            stack_pointer: 0,
             program_counter: 0,
             flags: Flags::new(),
             running: true,
-            stack,
+            stack: Stack::new(STACK_SIZE),
             config: Configuration::try_from(args)?,
         };
         Ok(p)
@@ -53,15 +47,12 @@ impl Interpreter {
     pub fn new_test() -> Self {
         use constant::TEST_STACK_SIZE;
 
-        let stack = vec![0; TEST_STACK_SIZE].into_boxed_slice();
-
         Self {
             registers: [0; Register::VARIANT_COUNT],
-            stack_pointer: 0,
             program_counter: 0,
             flags: Flags::new(),
             running: true,
-            stack,
+            stack: Stack::new(TEST_STACK_SIZE),
             config: Configuration::new_test(),
         }
     }
@@ -69,11 +60,6 @@ impl Interpreter {
     /// Gets the program counter as a usize.
     fn pc(&self) -> usize {
         self.program_counter as usize
-    }
-
-    /// Gets the stack pointer as a usize.
-    fn sp(&self) -> usize {
-        self.stack_pointer as usize
     }
 
     pub fn run(&mut self, program: &str) -> Result<(), InterpreterError> {

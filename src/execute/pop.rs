@@ -2,49 +2,31 @@ use crate::{
     constant::{Byte, Half, Quarter, Word},
     error::ExecuteError,
     instruction::Pop,
+    register::Register,
     registers::RegisterOperations,
-    utils::FromBytes,
+    utils::{FromBytes, ToWord},
     Interpreter,
 };
 
 impl Interpreter {
     pub fn pop(&mut self, instruction: Pop) -> Result<(), ExecuteError> {
         match instruction {
-            Pop::Byte(register) => {
-                let value = self.pop_value::<Byte>()?;
-                self.registers.set(register, value);
-            }
-            Pop::Quarter(register) => {
-                let value = self.pop_value::<Quarter>()?;
-                self.registers.set(register, value);
-            }
-            Pop::Half(register) => {
-                let value = self.pop_value::<Half>()?;
-                self.registers.set(register, value);
-            }
-            Pop::Word(register) => {
-                let value = self.pop_value::<Word>()?;
-                self.registers.set(register, value);
-            }
+            Pop::Byte(register) => self.pop_value::<Byte>(register)?,
+            Pop::Quarter(register) => self.pop_value::<Quarter>(register)?,
+            Pop::Half(register) => self.pop_value::<Half>(register)?,
+            Pop::Word(register) => self.pop_value::<Word>(register)?,
         }
         Ok(())
     }
 
-    pub fn pop_value<T>(&mut self) -> Result<T, ExecuteError>
+    pub fn pop_value<T>(&mut self, register: Register) -> Result<(), ExecuteError>
     where
-        T: FromBytes,
+        T: FromBytes + ToWord,
     {
-        let lower_bound = self
-            .sp()
-            .checked_sub(size_of::<T>())
-            .ok_or(ExecuteError::StackUnderflow)?;
+        let value = self.stack.pop::<T>()?;
+        self.registers.set(register, value);
 
-        let bytes = &self.stack[lower_bound..self.sp()];
-        let value = T::from_bytes(bytes);
-
-        self.stack_pointer -= size_of::<T>() as Word;
-
-        Ok(value)
+        Ok(())
     }
 }
 
@@ -73,14 +55,14 @@ mod byte {
     fn no_stack_underflow() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Pop(Pop::Byte(Register::A));
-        i.stack[0] = Byte::MAX;
-        i.stack_pointer = 1;
+        i.stack
+            .push(Byte::MAX)
+            .expect("should be able to push byte onto stack");
         let expected = Byte::MAX;
 
         i.execute(instruction)?;
 
         assert_eq!(i.registers.get::<Byte>(Register::A), expected);
-        assert!(i.stack_pointer == 0);
 
         Ok(())
     }
@@ -111,16 +93,14 @@ mod quarter {
     fn no_stack_underflow() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Pop(Pop::Quarter(Register::A));
-        let bytes = Quarter::MAX.to_le_bytes();
-        i.stack[0] = bytes[0];
-        i.stack[1] = bytes[1];
-        i.stack_pointer = 2;
+        i.stack
+            .push(Quarter::MAX)
+            .expect("should be able to push quarter onto stack");
         let expected = Quarter::MAX;
 
         i.execute(instruction)?;
 
         assert_eq!(i.registers.get::<Quarter>(Register::A), expected);
-        assert!(i.stack_pointer == 0);
 
         Ok(())
     }
@@ -151,18 +131,14 @@ mod half {
     fn no_stack_underflow() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Pop(Pop::Half(Register::A));
-        let bytes = Half::MAX.to_le_bytes();
-        i.stack[0] = bytes[0];
-        i.stack[1] = bytes[1];
-        i.stack[2] = bytes[2];
-        i.stack[3] = bytes[3];
-        i.stack_pointer = 4;
+        i.stack
+            .push(Half::MAX)
+            .expect("should be able to push half onto stack");
         let expected = Half::MAX;
 
         i.execute(instruction)?;
 
         assert_eq!(i.registers.get::<Half>(Register::A), expected);
-        assert!(i.stack_pointer == 0);
 
         Ok(())
     }
@@ -193,22 +169,14 @@ mod word {
     fn no_stack_underflow() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Pop(Pop::Word(Register::A));
-        let bytes = Word::MAX.to_le_bytes();
-        i.stack[0] = bytes[0];
-        i.stack[1] = bytes[1];
-        i.stack[2] = bytes[2];
-        i.stack[3] = bytes[3];
-        i.stack[4] = bytes[4];
-        i.stack[5] = bytes[5];
-        i.stack[6] = bytes[6];
-        i.stack[7] = bytes[7];
-        i.stack_pointer = 8;
+        i.stack
+            .push(Word::MAX)
+            .expect("should be able to push word onto stack");
         let expected = Word::MAX;
 
         i.execute(instruction)?;
 
         assert_eq!(i.registers.get::<Word>(Register::A), expected);
-        assert!(i.stack_pointer == 0);
 
         Ok(())
     }
