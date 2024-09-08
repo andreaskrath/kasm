@@ -26,3 +26,5 @@ pub const TEST_STACK_SIZE: usize = Quarter::MAX as usize;
 
 type DecodeFn = fn(SplitWhitespace) -> Result<Instruction, DecodeError>;
 pub type DecodeTable = Map<&'static str, DecodeFn>;
+
+pub const COMMENT: &str = "//";

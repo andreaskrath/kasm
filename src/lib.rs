@@ -1,5 +1,5 @@
 use cli::Configuration;
-use constant::{Word, STACK_SIZE};
+use constant::{Word, COMMENT, STACK_SIZE};
 use error::InterpreterError;
 use flags::Flags;
 use register::Register;
@@ -70,11 +70,15 @@ impl Interpreter {
                 .get(self.pc())
                 .ok_or(InterpreterError::InvalidProgramCounter(self.pc()))?;
 
+            self.program_counter += 1;
+
+            if code.starts_with(COMMENT) {
+                continue;
+            }
+
             let instruction = self
                 .decode(code)
-                .map_err(|e| InterpreterError::Decode(self.pc(), e))?;
-
-            self.program_counter += 1;
+                .map_err(|e| InterpreterError::Decode(self.pc() - 1, e))?;
 
             self.execute(instruction)
                 .map_err(|e| InterpreterError::Execute(self.pc() - 1, e))?;
@@ -87,8 +91,8 @@ impl Interpreter {
 #[cfg(test)]
 mod integration {
     use crate::{
-        constant::{Byte, Word},
         error::{ExecuteError, InterpreterError},
+        constant::{Byte, Word, COMMENT},
         register::Register,
         registers::RegisterOperations,
         Interpreter,
@@ -182,6 +186,21 @@ mod integration {
         assert!(!i.flags.sign);
         assert!(!i.flags.overflow);
         assert!(i.flags.zero);
+
+        Ok(())
+    }
+
+    #[test]
+    fn comment_has_no_effect() -> Result<(), InterpreterError> {
+        let mut i = Interpreter::new_test();
+        let program = [format!("{} setb rb 5", COMMENT).as_ref(), "stop"].join("\n");
+        let expected = 0;
+
+        i.run(&program)?;
+        let actual = i.registers.get::<Byte>(Register::B);
+
+        assert_eq!(actual, expected);
+        assert_eq!(i.config.instructions_executed, 1);
 
         Ok(())
     }
