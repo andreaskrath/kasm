@@ -138,10 +138,10 @@ mod integration {
     }
 
     #[test]
-    fn keep_pushing_till_stack_overflow() {
+    fn pop_empty_stack() {
         let mut i = Interpreter::new_test();
-        let program = ["pshw 5", "jmp 0"].join("\n");
-        let expected = Err(InterpreterError::Execute(0, ExecuteError::StackOverflow));
+        let program = ["popb ra"].join("\n");
+        let expected = Err(InterpreterError::Execute(0, ExecuteError::StackUnderflow));
 
         let actual = i.run(&program);
 
