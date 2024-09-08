@@ -63,8 +63,6 @@ impl Interpreter {
         }
     }
 
-    // Is a bug here, consider a scenario where a - b results in overflow and result being 0.
-    // It would still be lesser but would fail with current implementation.
     fn jump_if_lesser(&mut self, operand: Operand<Word>) {
         if self.flags.overflow && !self.flags.zero {
             self.program_counter = self.get_operand_value(operand);

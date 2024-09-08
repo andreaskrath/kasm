@@ -83,3 +83,34 @@ impl Interpreter {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod integration {
+    use crate::{
+        constant::{Byte, Word},
+        error::InterpreterError,
+        register::Register,
+        registers::RegisterOperations,
+        Interpreter,
+    };
+
+    #[test]
+    fn min_sub_max_compare_edge_case_jump_if_lesser() -> Result<(), InterpreterError> {
+        let mut i = Interpreter::new_test();
+        let program = [
+            format!("cmpb 0 {}", Byte::MAX).as_ref(), // this is 1 after wrapping around
+            "jil 3",
+            "setb ra 10",
+            "stop",
+        ]
+        .join("\n");
+
+        i.run(&program)?;
+
+        assert_eq!(i.registers.get::<Byte>(Register::A), 0);
+        assert!(i.flags.overflow);
+        assert!(!i.flags.zero);
+
+        Ok(())
+    }
+}
