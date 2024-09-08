@@ -147,4 +147,39 @@ mod integration {
 
         assert_eq!(actual, expected);
     }
+
+    #[test]
+    fn compute_fibonacci_number_10() -> Result<(), InterpreterError> {
+        let mut i = Interpreter::new_test();
+        let program = [
+            "setb ra 0",
+            "setb rb 1",
+            "setb rc 2",
+            "addb ra rb",
+            "pshb ra",
+            "setb ra rb",
+            "popb rb",
+            "addb rc 1",
+            "cmpb rc 10",
+            "jnz 3",
+            "prrb rb",
+            "stop",
+        ]
+        .join("\n");
+        let expected_value = 34;
+        let expected_print = "rb: 34\n";
+
+        i.run(&program)?;
+        let actual_value = i.registers.get::<Byte>(Register::B);
+        let actual_print = i
+            .config
+            .output
+            .get_buffer()
+            .expect("interpreter test instance should return buffer");
+
+        assert_eq!(actual_value, expected_value);
+        assert_eq!(actual_print, expected_print);
+
+        Ok(())
+    }
 }
