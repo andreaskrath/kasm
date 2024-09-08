@@ -153,6 +153,17 @@ mod integration {
     }
 
     #[test]
+    fn push_until_stack_overflow() {
+        let mut i = Interpreter::new_test();
+        let program = ["pshw 10", "jmp 0"].join("\n");
+        let expected = Err(InterpreterError::Execute(0, ExecuteError::StackOverflow));
+
+        let actual = i.run(&program);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
     fn compute_fibonacci_number_10() -> Result<(), InterpreterError> {
         let mut i = Interpreter::new_test();
         let program = [
