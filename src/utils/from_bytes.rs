@@ -1,3 +1,8 @@
+#![expect(
+    clippy::indexing_slicing,
+    reason = "every time the FromBytes trait is utilized, it has been ensured that that the amount of bytes are appropriate"
+)]
+
 use crate::constant::{Byte, Half, Quarter, Word};
 
 pub trait FromBytes {

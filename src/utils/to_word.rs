@@ -32,59 +32,57 @@ impl ToWord for Word {
 }
 
 impl ToWord for SignedByte {
-    fn to_word(self) -> Word {
-        #[expect(
-            unsafe_code,
-            reason = "
+    #[expect(
+        unsafe_code,
+        reason = "
                 this is the only way to reinterpted the underlying bits into a new type, 
                 while also maintaining the same numerical value if reinterpretted back to the original type
             "
-        )]
+    )]
+    fn to_word(self) -> Word {
         let byte: Byte = unsafe { mem::transmute(self) };
         Word::from(byte)
     }
 }
 
 impl ToWord for SignedQuarter {
-    fn to_word(self) -> Word {
-        #[expect(
-            unsafe_code,
-            reason = "
+    #[expect(
+        unsafe_code,
+        reason = "
                 this is the only way to reinterpted the underlying bits into a new type, 
                 while also maintaining the same numerical value if reinterpretted back to the original type
             "
-        )]
+    )]
+    fn to_word(self) -> Word {
         let quarter: Quarter = unsafe { mem::transmute(self) };
         Word::from(quarter)
     }
 }
 
 impl ToWord for SignedHalf {
-    fn to_word(self) -> Word {
-        #[expect(
-            unsafe_code,
-            reason = "
+    #[expect(
+        unsafe_code,
+        reason = "
                 this is the only way to reinterpted the underlying bits into a new type, 
                 while also maintaining the same numerical value if reinterpretted back to the original type
             "
-        )]
+    )]
+    fn to_word(self) -> Word {
         let half: Half = unsafe { mem::transmute(self) };
         Word::from(half)
     }
 }
 
 impl ToWord for SignedWord {
-    fn to_word(self) -> Word {
-        #[expect(
-            unsafe_code,
-            reason = "
+    #[expect(
+        unsafe_code,
+        reason = "
                 this is the only way to reinterpted the underlying bits into a new type, 
                 while also maintaining the same numerical value if reinterpretted back to the original type
             "
-        )]
-        unsafe {
-            mem::transmute(self)
-        }
+    )]
+    fn to_word(self) -> Word {
+        unsafe { mem::transmute(self) }
     }
 }
 

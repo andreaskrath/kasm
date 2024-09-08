@@ -19,6 +19,10 @@ impl Stack {
         Self { bytes, pointer: 0 }
     }
 
+    #[expect(
+        clippy::indexing_slicing,
+        reason = "the indexing in the for loop is guarded by the condition at the start of the function"
+    )]
     pub fn push<T>(&mut self, value: T) -> Result<(), ExecuteError>
     where
         T: ToBytes,
@@ -36,6 +40,13 @@ impl Stack {
         Ok(())
     }
 
+    #[expect(
+        clippy::indexing_slicing,
+        reason = "
+            the slicing is safe due to the checked subtraction when computing lower bound
+            it ensures that there are enough bytes on the stack to build the requested type
+        "
+    )]
     pub fn pop<T>(&mut self) -> Result<T, ExecuteError>
     where
         T: FromBytes,
@@ -54,6 +65,13 @@ impl Stack {
         Ok(value)
     }
 
+    #[expect(
+        clippy::indexing_slicing,
+        reason = "
+            the slicing is safe due to the checked subtraction when computing lower bound
+            it ensures that there are enough bytes on the stack to build the requested type
+        "
+    )]
     pub fn slice<T>(&self, amount: Word) -> Result<Box<[T]>, ExecuteError>
     where
         T: FromBytes,
@@ -75,5 +93,51 @@ impl Stack {
 
     fn sp(&self) -> usize {
         self.pointer as usize
+    }
+}
+
+#[expect(
+    clippy::indexing_slicing,
+    reason = "it is necessary to index directly in the test cases"
+)]
+#[cfg(test)]
+mod push {
+    mod byte {
+        use crate::{
+            constant::{Byte, Word, TEST_STACK_SIZE},
+            error::ExecuteError,
+            stack::Stack,
+        };
+
+        #[test]
+        fn stack_overflow() {
+            let mut s = Stack::new(TEST_STACK_SIZE);
+            s.pointer = TEST_STACK_SIZE as Word;
+            let expected = Err(ExecuteError::StackOverflow);
+
+            let actual = s.push(Byte::MAX);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn no_stack_overflow() -> Result<(), ExecuteError> {
+            let mut s = Stack::new(TEST_STACK_SIZE);
+            let expected = Byte::MAX;
+
+            s.push(Byte::MAX)?;
+
+            assert_eq!(s.bytes[0], expected);
+
+            Ok(())
+        }
+    }
+}
+
+#[cfg(test)]
+mod pop {
+    mod byte {
+        #[test]
+        fn stack_underflow() {}
     }
 }

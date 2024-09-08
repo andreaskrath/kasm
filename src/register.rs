@@ -66,12 +66,20 @@ impl TryFrom<&str> for Register {
 impl Index<Register> for Registers {
     type Output = Word;
 
+    #[expect(
+        clippy::indexing_slicing,
+        reason = "index type is an enum that is compile time asserted to be a safe index"
+    )]
     fn index(&self, index: Register) -> &Self::Output {
         &self[index as usize]
     }
 }
 
 impl IndexMut<Register> for Registers {
+    #[expect(
+        clippy::indexing_slicing,
+        reason = "index type is an enum that is compile time asserted to be a safe index"
+    )]
     fn index_mut(&mut self, index: Register) -> &mut Self::Output {
         &mut self[index as usize]
     }
