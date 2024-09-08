@@ -95,6 +95,29 @@ mod integration {
     };
 
     #[test]
+    fn push_word_pop_four_bytes_into_registers() -> Result<(), InterpreterError> {
+        let mut i = Interpreter::new_test();
+        let program = [
+            format!("pshw {}", Word::MAX).as_ref(),
+            "popb ra",
+            "popb rb",
+            "popb rc",
+            "popb rd",
+            "stop",
+        ]
+        .join("\n");
+
+        i.run(&program)?;
+
+        assert_eq!(i.registers.get::<Byte>(Register::A), Byte::MAX);
+        assert_eq!(i.registers.get::<Byte>(Register::B), Byte::MAX);
+        assert_eq!(i.registers.get::<Byte>(Register::C), Byte::MAX);
+        assert_eq!(i.registers.get::<Byte>(Register::D), Byte::MAX);
+
+        Ok(())
+    }
+
+    #[test]
     fn min_sub_max_compare_edge_case_jump_if_lesser() -> Result<(), InterpreterError> {
         let mut i = Interpreter::new_test();
         let program = [
