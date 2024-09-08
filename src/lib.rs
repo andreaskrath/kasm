@@ -77,7 +77,7 @@ impl Interpreter {
             self.program_counter += 1;
 
             self.execute(instruction)
-                .map_err(|e| InterpreterError::Execute(self.pc(), e))?;
+                .map_err(|e| InterpreterError::Execute(self.pc() - 1, e))?;
         }
 
         Ok(())
@@ -88,7 +88,7 @@ impl Interpreter {
 mod integration {
     use crate::{
         constant::{Byte, Word},
-        error::InterpreterError,
+        error::{ExecuteError, InterpreterError},
         register::Register,
         registers::RegisterOperations,
         Interpreter,
@@ -135,5 +135,16 @@ mod integration {
         assert!(!i.flags.zero);
 
         Ok(())
+    }
+
+    #[test]
+    fn keep_pushing_till_stack_overflow() {
+        let mut i = Interpreter::new_test();
+        let program = ["pshw 5", "jmp 0"].join("\n");
+        let expected = Err(InterpreterError::Execute(0, ExecuteError::StackOverflow));
+
+        let actual = i.run(&program);
+
+        assert_eq!(actual, expected);
     }
 }
