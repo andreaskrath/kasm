@@ -91,8 +91,8 @@ impl Interpreter {
 #[cfg(test)]
 mod integration {
     use crate::{
-        error::{ExecuteError, InterpreterError},
         constant::{Byte, Word, COMMENT},
+        error::{DecodeError, ExecuteError, InterpreterError},
         register::Register,
         registers::RegisterOperations,
         Interpreter,
@@ -203,5 +203,19 @@ mod integration {
         assert_eq!(i.config.instructions_executed, 1);
 
         Ok(())
+    }
+
+    #[test]
+    fn decode_error_on_expected_line() {
+        let mut i = Interpreter::new_test();
+        let program = "hello";
+        let expected = Err(InterpreterError::Decode(
+            0,
+            DecodeError::UnknownInstruction("hello".to_string()),
+        ));
+
+        let actual = i.run(program);
+
+        assert_eq!(actual, expected);
     }
 }
