@@ -218,4 +218,15 @@ mod integration {
 
         assert_eq!(actual, expected);
     }
+
+    #[test]
+    fn execute_error_on_expected_line() {
+        let mut i = Interpreter::new_test();
+        let program = "divb ra 0";
+        let expected = Err(InterpreterError::Execute(0, ExecuteError::DivideByZero));
+
+        let actual = i.run(program);
+
+        assert_eq!(actual, expected);
+    }
 }
