@@ -4,7 +4,7 @@ default:
 
 # Run test cases
 test:
-    cargo test
+    cargo test -q
 
 # Run a pedantic clippy linting check
 check:
