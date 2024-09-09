@@ -19,11 +19,11 @@ The following list contains my goals for the project:
 # Feature Roadmap
 The following list is not necessarily in any specific order, however it encompasses the long term goals of this project:
 - [x] Unsigned instruction set (also including instructions without a size component)
+- [x] Data section of program
 - [ ] Logging/tracing
 - [ ] Call functions by name
 - [ ] Signed instruction set
 - [ ] Support float instructions
 - [ ] Heap, and associated instructions (store, load, indexing etc.)
-- [ ] Data section of program
 - [ ] Documentation of the architecture, instruction set etc.
 - [ ] Relative jump locations (+2, -2 or the like)
