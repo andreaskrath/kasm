@@ -83,6 +83,33 @@ Execute errors on the other hard indicate that something went wrong during execu
 
 In other words, execute errors indicate an issue that occured during the execution of the program, most often this would be logic errors in the program.
 
+## Data Section
+The data section functions similar to a key-value store that can be used to defined meaningfully named constants for a program, and is entirely optional to use.
+
+It is located at the tail end of the source code and is initialized with `data:` where the lines below defines the key-value pairs.
+
+The key or name **must** be ascii uppercase letters, digits or underscores, for example `FIB_NUMBER_1` is a valid key, while `fib-number-1` is not.
+
+The value of a key can be any value you would otherwise utilize in-place of the constant.
+Therefore, depending on where you use the given constant it could be either a numerical value or a register.
+
+The size of the numerical values and registers are defined by the operation they are used in relation to.
+Meaning if the constant, `FIVE 5`, is used in relation to a byte-operation it will be interpretted as a byte.
+And the constant, `FIVE_HUNDRED 500`, is used in relation to a byte-operation it will result in a decode error, when the interpreter attempts to decode that instruction.
+
+The following is an example of a data section.
+```
+data:
+  FIB_NUMBER_1 0
+  FIVE_HUNDRED 500
+
+  // empty lines are allowed with or without comments
+  FIB_NUMBER_2 1
+```
+
+Anything below the `data:` marker is considered part of the data section, and will be parsed as such.
+Therefore, any source code placed below the marker will result in a data processing error.
+
 ## List
 - [Set](#Set)
 - [Push](#Push)
@@ -104,7 +131,7 @@ No flags are affected by this instruction.
 This is a generalized format for the set instruction.
 
 ```
-set* register operand
+est* register operand
 ```
 
 Where `*` is replaced by any of the size suffixes.
