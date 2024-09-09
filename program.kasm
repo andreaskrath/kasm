@@ -1,6 +1,6 @@
-pshb 0
-pshb 1
-setb rd 2
+pshb FIB_1
+pshb FIB_2
+setb rd KNOWN_FIB_NUMBERS
 popb ra
 popb rb
 setb rc rb
@@ -9,7 +9,13 @@ pshb rc
 pshb ra
 pshb rb
 addb rd 1
-cmpb rd 10
+cmpb rd TARGET_FIB_NUMBER
 jnz 3
 prsb 10
 stop
+
+data:
+    TARGET_FIB_NUMBER 10
+	FIB_1 0
+	FIB_2 1
+	KNOWN_FIB_NUMBERS 2
