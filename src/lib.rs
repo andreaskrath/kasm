@@ -2,6 +2,7 @@ use cli::Configuration;
 use constant::{Word, COMMENT, STACK_SIZE};
 use error::InterpreterError;
 use flags::Flags;
+use preprocess::expand_data_section;
 use register::Register;
 use registers::Registers;
 
@@ -16,6 +17,7 @@ mod execute;
 mod flags;
 mod instruction;
 mod operand;
+mod preprocess;
 mod register;
 mod registers;
 mod stack;
@@ -63,21 +65,22 @@ impl Interpreter {
     }
 
     pub fn run(&mut self, program: &str) -> Result<(), InterpreterError> {
-        let program: Vec<&str> = program.lines().collect();
+        let data_expanded_program = expand_data_section(program).map_err(InterpreterError::Data)?;
+        let program: Vec<&str> = data_expanded_program.lines().collect();
 
         while self.running {
-            let code = program
+            let line = program
                 .get(self.pc())
                 .ok_or(InterpreterError::InvalidProgramCounter(self.pc()))?;
 
             self.program_counter += 1;
 
-            if code.starts_with(COMMENT) {
+            if line.starts_with(COMMENT) {
                 continue;
             }
 
             let instruction = self
-                .decode(code)
+                .decode(line)
                 .map_err(|e| InterpreterError::Decode(self.pc() - 1, e))?;
 
             self.execute(instruction)

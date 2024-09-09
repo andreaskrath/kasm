@@ -10,6 +10,8 @@ pub enum InterpreterError {
     Decode(usize, DecodeError),
     #[error("failed to execute line {0}: {1}")]
     Execute(usize, ExecuteError),
+    #[error("failed to preprocess data section: {0}")]
+    Data(DataError),
     #[error("program counter out of bounds on line '{0}'")]
     InvalidProgramCounter(usize),
 }
@@ -40,4 +42,18 @@ pub enum ExecuteError {
     IO(String),
     #[error("attempted to divide by zero")]
     DivideByZero,
+}
+
+#[derive(Debug, Error, PartialEq)]
+pub enum DataError {
+    #[error("there is no value defined for the key '{0}'")]
+    MissingValue(String),
+    #[error("the format for the key '{0}' is invalid, only use upper case ascii")]
+    InvalidKeyFormat(String),
+
+    /// Not sure when this error occurs, or if it even can occur at all given the string that is split on.
+    ///
+    /// However, for good measuer this provides a better error message than unwrapping.
+    #[error("there is an issue with the encoding, only use ascii")]
+    Encoding,
 }
