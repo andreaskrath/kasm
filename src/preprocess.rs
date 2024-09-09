@@ -1,4 +1,4 @@
-use crate::error::DataError;
+use crate::{constant::COMMENT, error::DataError};
 
 const DATA_SECTION: &str = "data:";
 
@@ -10,24 +10,27 @@ pub fn expand_data_section(s: &str) -> Result<String, DataError> {
 
         let mut program = program.trim_end().to_string();
         for line in data.lines().skip(1) {
-            if !line.is_empty() {
-                let mut split = line.split_ascii_whitespace();
-                let key = split.next().expect(
-                    "due to the line not being empty, there should always be at least a key",
-                );
-
-                for c in key.chars() {
-                    if !c.is_ascii_uppercase() && !c.is_ascii_digit() && c != '_' {
-                        return Err(DataError::InvalidKeyFormat(key.to_string()));
-                    }
-                }
-
-                let value = split
-                    .next()
-                    .ok_or(DataError::MissingValue(key.to_string()))?;
-
-                program = program.replace(key, value);
+            let line = line.trim_start();
+            if line.is_empty() || line.starts_with(COMMENT) {
+                continue;
             }
+
+            let mut split = line.split_ascii_whitespace();
+            let key = split
+                .next()
+                .expect("due to the line not being empty, there should always be at least a key");
+
+            for c in key.chars() {
+                if !c.is_ascii_uppercase() && !c.is_ascii_digit() && c != '_' {
+                    return Err(DataError::InvalidKeyFormat(key.to_string()));
+                }
+            }
+
+            let value = split
+                .next()
+                .ok_or(DataError::MissingValue(key.to_string()))?;
+
+            program = program.replace(key, value);
         }
 
         program.shrink_to_fit();
@@ -65,8 +68,50 @@ mod expand_data_section {
 
     #[test]
     fn data_section() -> Result<(), DataError> {
-        let input = ["pshb NUMBER_1", "stop", "", "data:", "    NUMBER_1 1"].join("\n");
+        let input = ["pshb NUMBER_1", "stop", "", "data:", "  NUMBER_1 1"].join("\n");
         let expected = ["pshb 1", "stop"].join("\n");
+
+        let actual = expand_data_section(&input)?;
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn data_section_with_comment() -> Result<(), DataError> {
+        let input = [
+            "pshb NUMBER_1",
+            "stop",
+            "",
+            "data:",
+            "  NUMBER_1 1",
+            "  // this is a comment",
+        ]
+        .join("\n");
+        let expected = ["pshb 1", "stop"].join("\n");
+
+        let actual = expand_data_section(&input)?;
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
+    fn data_section_with_empty_line() -> Result<(), DataError> {
+        let input = [
+            "pshb NUMBER_1",
+            "pshb NUMBER_2",
+            "stop",
+            "",
+            "data:",
+            "  NUMBER_1 1",
+            "  ",
+            "  NUMBER_2 2",
+        ]
+        .join("\n");
+        let expected = ["pshb 1", "pshb 2", "stop"].join("\n");
 
         let actual = expand_data_section(&input)?;
 
