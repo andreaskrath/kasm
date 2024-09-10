@@ -110,6 +110,9 @@ data:
 Anything below the `data:` marker is considered part of the data section, and will be parsed as such.
 Therefore, any source code placed below the marker will result in a data processing error.
 
+The constants in the data section are expanded at runtime, before the program is interpreted.
+As such, using constants does not result in a performance loss when the program is interpretted, but it does carry a small overhead to perform the substitution process before interpretation starts.
+
 # Overview
 - [Set](#Set)
 - [Push](#Push)
