@@ -20,10 +20,8 @@ pub fn expand_data_section(s: &str) -> Result<String, DataError> {
                 .next()
                 .expect("due to the line not being empty, there should always be at least a key");
 
-            for c in key.chars() {
-                if !c.is_ascii_uppercase() && !c.is_ascii_digit() && c != '_' {
-                    return Err(DataError::InvalidKeyFormat(key.to_string()));
-                }
+            if !is_screaming_snake_case(key) {
+                return Err(DataError::InvalidKeyFormat(key.to_string()));
             }
 
             let value = split
@@ -38,6 +36,64 @@ pub fn expand_data_section(s: &str) -> Result<String, DataError> {
         Ok(program)
     } else {
         Ok(s.to_string())
+    }
+}
+
+fn is_screaming_snake_case(s: &str) -> bool {
+    s.chars()
+        .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
+}
+
+#[cfg(test)]
+mod is_screaming_snake_case {
+    use crate::preprocess::is_screaming_snake_case;
+
+    #[test]
+    fn lowercase() {
+        let input = "one";
+        assert!(!is_screaming_snake_case(input));
+    }
+
+    #[test]
+    fn uppercase() {
+        let input = "ONE";
+        assert!(is_screaming_snake_case(input));
+    }
+
+    #[test]
+    fn lowercase_with_underscores() {
+        let input = "number_one";
+        assert!(!is_screaming_snake_case(input));
+    }
+
+    #[test]
+    fn uppercase_with_underscores() {
+        let input = "NUMBER_ONE";
+        assert!(is_screaming_snake_case(input));
+    }
+
+    #[test]
+    fn lowercase_with_digits() {
+        let input = "number1";
+        assert!(!is_screaming_snake_case(input));
+    }
+
+    #[test]
+    fn uppercase_with_digits() {
+        let input = "NUMBER1";
+        assert!(is_screaming_snake_case(input));
+    }
+
+    #[test]
+    fn lowercase_with_underscores_and_digits() {
+        let input = "number_1";
+        assert!(!is_screaming_snake_case(input));
+    }
+
+    #[test]
+    fn uppercase_with_underscores_and_digits() {
+        let input = "NUMBER_1";
+        assert!(is_screaming_snake_case(input));
     }
 }
 
