@@ -83,6 +83,9 @@ Execute errors on the other hard indicate that something went wrong during execu
 
 In other words, execute errors indicate an issue that occured during the execution of the program, most often this would be logic errors in the program.
 
+# Preprocessing
+The following section are part of the preprocessing step of the interpreter. In other words, these things happen before the program is interpretted.
+
 ## Data Section
 The data section functions similar to a key-value store that can be used to defined meaningfully named constants for a program, and is entirely optional to use.
 
