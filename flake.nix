@@ -24,7 +24,6 @@
           mkShell {
             buildInputs = [
               rust-bin.stable.latest.default
-              cargo-edit
               just
             ];
           };
