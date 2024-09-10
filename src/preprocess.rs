@@ -39,6 +39,7 @@ pub fn expand_data_section(s: &str) -> Result<String, DataError> {
     }
 }
 
+#[inline]
 fn is_screaming_snake_case(s: &str) -> bool {
     s.chars()
         .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
