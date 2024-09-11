@@ -6,7 +6,7 @@ pub fn expand_data_section(s: &str) -> Result<String, DataError> {
     if let Some(data_section_start) = s.rfind(DATA_SECTION) {
         let (program, data) = s
             .split_at_checked(data_section_start)
-            .ok_or(DataError::Encoding)?;
+            .expect("this should always be a valid split because its ascii");
 
         let mut program = program.trim_end().to_string();
         for line in data.lines().skip(1) {

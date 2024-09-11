@@ -48,10 +48,4 @@ pub enum DataError {
     MissingValue(String),
     #[error("the format for the key '{0}' is invalid")]
     InvalidKeyFormat(String),
-
-    /// Not sure when this error occurs, or if it even can occur at all given the string that is split on.
-    ///
-    /// However, for good measuer this provides a better error message than unwrapping.
-    #[error("there is an issue with the encoding, only use ascii")]
-    Encoding,
 }
