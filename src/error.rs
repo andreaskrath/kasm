@@ -2,8 +2,6 @@ use thiserror::Error;
 
 #[derive(Debug, Error, PartialEq)]
 pub enum InterpreterError {
-    #[error("failed to allocated the stack")]
-    FailedStackAllocation,
     #[error("failed to create or open output file, underlying cause is: {0}")]
     FailedOutputFileCreation(String),
     #[error("failed to decode line {0}: {1}")]
