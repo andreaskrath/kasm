@@ -137,6 +137,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Not](#Not)
 - [Test](#Test)
 - [Compare](#Compare)
+- [Jump](#Jump)
 
 ## Set
 Sets a register to a given value.
@@ -560,3 +561,44 @@ The following example is a byte instruction and will subtract 1 from the value i
 ```
 cmpb rg 1
 ```
+
+## Jump
+Jumps to a given location in the program.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the compare instruction.
+
+```
+j** operand
+```
+
+Where `**` is replaced by any of the jump variants.
+
+Jump instructions are unsized operations, meaning the operand is always intepreted as a word.
+
+### Variants
+There are 11 different jump variants.
+
+|Name                    |Instruction|Condition           |
+|:----------------------:|:---------:|:------------------:|
+|Jump                    |`jmp`      |unconditional       |
+|Jump If Zero            |`jiz`      |zf == 1             |
+|Jump If Not Zero        |`jnz`      |zf == 0             |
+|Jump If Overflow        |`jio`      |of == 1             |
+|Jump If Not Overflow    |`jno`      |of == 0             |
+|Jump If Sign            |`jis`      |sf == 1             |
+|Jump If Not Sign        |`jns`      |sf == 0             |
+|Jump If Greater         |`jig`      |of == 0 && zf == 0  |
+|Jump If Lesser          |`jil`      |of == 1 && zf == 0  |
+|Jump If Greater Or Equal|`jge`      |of == 0 \|\| zf == 1|
+|Jump If Lesser Or Equal |`jle`      |of == 1 \|\| zf == 1|
+
+### Example
+The following example jumps to the location contained in register *a*, if the zero flag is set.
+
+```
+jiz ra
+```
+
