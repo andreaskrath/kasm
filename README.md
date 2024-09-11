@@ -27,3 +27,4 @@ The following list is not necessarily in any specific order, however it encompas
 - [ ] Heap, and associated instructions (store, load, indexing etc.)
 - [ ] Documentation of the architecture, instruction set etc.
 - [ ] Relative jump locations (+2, -2 or the like)
+- [ ] A debug like mode (set with CLI flag) that allows incremental interpretation (stepping)
