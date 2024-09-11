@@ -132,6 +132,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Call](#Call)
 - [Return](#Return)
 - [And](#And)
+- [Or](#Or)
 
 ## Set
 Sets a register to a given value.
@@ -449,4 +450,25 @@ The following example is a word instruction and performs a bitwise AND operation
 
 ```
 andw ra rb
+```
+
+## Or
+Performs a bitwise OR operation between the two parameters and stores the result in the first parameter.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the or instruction.
+
+```
+or* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a half instruction and performs a bitwise OR operation between register *a* and register *b* and stores the result in the former.
+
+```
+orh ra rb
 ```
