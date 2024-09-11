@@ -133,6 +133,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Return](#Return)
 - [And](#And)
 - [Or](#Or)
+- [Xor](#Xor)
 
 ## Set
 Sets a register to a given value.
@@ -471,4 +472,25 @@ The following example is a half instruction and performs a bitwise OR operation 
 
 ```
 orh ra rb
+```
+
+## Xor
+Performs a bitwise XOR operation between the two parameters and stores the result in the first parameter.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the xor instruction.
+
+```
+xor* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a byte instruction and performs a bitwise XOR operation between register *a* and register *b* and stores the result in the former.
+
+```
+xorb ra rb
 ```
