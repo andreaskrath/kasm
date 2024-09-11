@@ -130,6 +130,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Print Stack](#Print-Stack)
 - [Stop](#Stop)
 - [Call](#Call)
+- [Return](#Return)
 
 ## Set
 Sets a register to a given value.
@@ -414,4 +415,16 @@ The following example calls the function starting on line 10.
 
 ```
 call 10
+```
+
+## Return
+Pops a word from the stack and jumps to the location indicated by the word.
+
+No flags are affected by this instruction.
+
+### Format
+The format of the return instruction is always the same, as it is an unsized instruction.
+
+```
+ret
 ```
