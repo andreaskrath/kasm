@@ -128,6 +128,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Remainder](#Remainder)
 - [Print Register](#Print-Register)
 - [Print Stack](#Print-Stack)
+- [Stop](#Stop)
 
 ## Set
 Sets a register to a given value.
@@ -377,3 +378,17 @@ If you instead used the `prsb` variant, to interpret the stack section as bytes,
 
 Note that this instruction always ends on a newline.
 
+## Stop
+Halts the execution of the program.
+Every program must end with a stop instruction, otherwise the program will not terminate correctly.
+
+If the program ends on an empty line, then the program will have a decode error, because it tried to interpret the empty line as an instruction.
+
+No flags are affected by this instruction.
+
+### Format
+The format of the stop instruction is always the same, as it is an unsized instruction.
+
+```
+stop 
+```
