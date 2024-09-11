@@ -135,6 +135,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Or](#Or)
 - [Xor](#Xor)
 - [Not](#Not)
+- [Test](#Test)
 
 ## Set
 Sets a register to a given value.
@@ -515,4 +516,25 @@ The following example is a quarter instruction and negates the bits in register 
 
 ```
 notq rd 
+```
+
+## Test
+Performs a bitwise AND operation between the two parameters and discards the result.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the test instruction.
+
+```
+tst* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a word instruction and performs a bitwise AND operation between register *a* and register *b*, after which the result is discarded.
+
+```
+tstw ra rb
 ```
