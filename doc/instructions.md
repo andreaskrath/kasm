@@ -159,7 +159,7 @@ No flags are affected by this instruction.
 This is a generalized format for the set instruction.
 
 ```
-est* register operand
+set* register operand
 ```
 Where `*` is replaced by any of the size suffixes.
 
