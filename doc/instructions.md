@@ -256,7 +256,7 @@ divq rd 4
 ```
 
 ### Error
-This instruction can return a divide by zero error in case the divisor is zero.
+This instruction will return a divide by zero error in case the divisor is zero.
 
 ## Remainder
 Divides the first parameter with the second to determine the remainder, and stores the result in the first parameter.
@@ -281,7 +281,7 @@ remh ra 3
 ```
 
 ### Error
-This instruction can return a divide by zero error in case the divisor is zero.
+This instruction will return a divide by zero error in case the divisor is zero.
 
 ## Stop
 Halts the execution of the program.
@@ -320,6 +320,9 @@ The following example calls the function starting on line 10.
 call 10
 ```
 
+### Error
+This instruction will return a stack overflow error in case the stack cannot contain the eight bytes to be pushed onto it.
+
 ## Return
 Pops a word from the stack and jumps to the location indicated by the word.
 
@@ -331,6 +334,9 @@ The format of the return instruction is always the same, as it is an unsized ins
 ```
 ret
 ```
+
+### Error
+This instruction will return a stack underflow error in case the stack contains less than eight bytes.
 
 ## Jump
 Jumps to a given location in the program.
@@ -371,6 +377,13 @@ The following example jumps to the location contained in register *a*, if the ze
 ```
 jiz ra
 ```
+
+### Error
+This instruction can indirectly cause an error, if the location being jumped to is either:
+- not part of the source code, i.e. jumping to line 100 if the program is only 50 lines
+- an empty line
+
+In these cases the following interpretation loop will result in an error.
 
 ## Compare
 Subtracts the second parameter from the first and discards the result.
@@ -520,7 +533,7 @@ pshw ra
 ```
 
 ### Error
-This instruction can return a stack overflow error in case the stack cannot contain the value specified to be pushed onto it.
+This instruction will return a stack overflow error in case the stack cannot contain the value specified to be pushed onto it.
 
 ## Pop
 Pops a value from the stack into a register.
@@ -544,7 +557,7 @@ poph rb
 ```
 
 ### Error
-This instruction can return a stack underflow error in case the stack contains less bytes than specified to be popped by the instruction.
+This instruction will return a stack underflow error in case the stack contains less bytes than specified to be popped by the instruction.
 
 ## Print Register
 Prints a register value to the defined output.
@@ -574,6 +587,9 @@ re: 150
 ```
 
 Note that this instruction always ends on a newline.
+
+### Error
+This instruction can result in an IO error, if the register could not be written to the defined output.
 
 ## Print Stack
 Prints a section of values from the top of the stack, to the defined output.
@@ -611,3 +627,6 @@ If you instead used the `prsb` variant, to interpret the stack section as bytes,
 ```
 
 Note that this instruction always ends on a newline.
+
+### Error
+This instruction can result in an IO error, if the stack section could not be written to the defined output.
