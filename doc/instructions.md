@@ -136,6 +136,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Xor](#Xor)
 - [Not](#Not)
 - [Test](#Test)
+- [Compare](#Compare)
 
 ## Set
 Sets a register to a given value.
@@ -537,4 +538,25 @@ The following example is a word instruction and performs a bitwise AND operation
 
 ```
 tstw ra rb
+```
+
+## Compare
+Subtracts the second parameter from the first and discards the result.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the compare instruction.
+
+```
+cmp* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a byte instruction and will subtract 1 from the value in register *g* and discard the result.
+
+```
+cmpb rg 1
 ```
