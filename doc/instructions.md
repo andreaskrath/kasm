@@ -24,6 +24,7 @@ In essence, they can be thought of as private registers.
 
 ## Flags
 There are three flags: **overflow**, **zero**, and **sign**.
+These flags are sometimes abbreviated as **of**, **zf**, and **sf**, respectively.
 
 The overflow flag is set when an instruction results in an arithmetic overflow.
 Also note that in the case of an overflow, the wrapped value is stored as the result, and the overflow flag is set.
