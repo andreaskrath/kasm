@@ -131,6 +131,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Stop](#Stop)
 - [Call](#Call)
 - [Return](#Return)
+- [And](#And)
 
 ## Set
 Sets a register to a given value.
@@ -427,4 +428,25 @@ The format of the return instruction is always the same, as it is an unsized ins
 
 ```
 ret
+```
+
+## And
+Performs a bitwise AND operation between the two parameters and stores the result in the first parameter.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the and instruction.
+
+```
+and* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a word instruction and performs a bitwise AND operation between register *a* and register *b* and stores the result in the former.
+
+```
+andw ra rb
 ```
