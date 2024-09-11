@@ -129,6 +129,7 @@ As such, using constants does not result in a performance loss when the program 
 - [Print Register](#Print-Register)
 - [Print Stack](#Print-Stack)
 - [Stop](#Stop)
+- [Call](#Call)
 
 ## Set
 Sets a register to a given value.
@@ -391,4 +392,26 @@ The format of the stop instruction is always the same, as it is an unsized instr
 
 ```
 stop 
+```
+
+## Call
+Pushes a return address onto the stack and jumps to a new location in the program.
+The return address is the line below the call instruction.
+
+No flags are affected by this instruction.
+
+### Format
+The format of the call instruction is always the same, as it is an unsized instruction.
+
+```
+call operand
+```
+
+The operand is always interpreted as a word.
+
+### Example
+The following example calls the function starting on line 10.
+
+```
+call 10
 ```
