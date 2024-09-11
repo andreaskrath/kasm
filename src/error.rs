@@ -2,16 +2,16 @@ use thiserror::Error;
 
 #[derive(Debug, Error, PartialEq)]
 pub enum InterpreterError {
-    #[error("failed to create or open output file, underlying cause is: {0}")]
-    FailedOutputFileCreation(String),
     #[error("failed to decode line {0}: {1}")]
     Decode(usize, DecodeError),
     #[error("failed to execute line {0}: {1}")]
     Execute(usize, ExecuteError),
-    #[error("failed to preprocess data section: {0}")]
+    #[error("failed to process data section: {0}")]
     Data(DataError),
-    #[error("program counter out of bounds on line '{0}'")]
+    #[error("line '{0}' is not part of the specified program")]
     InvalidProgramCounter(usize),
+    #[error("failed to create or open output file, underlying cause is: {0}")]
+    FailedOutputFileCreation(String),
 }
 
 #[derive(Debug, Error, PartialEq)]
@@ -46,7 +46,7 @@ pub enum ExecuteError {
 pub enum DataError {
     #[error("there is no value defined for the key '{0}'")]
     MissingValue(String),
-    #[error("the format for the key '{0}' is invalid, only use upper case ascii")]
+    #[error("the format for the key '{0}' is invalid")]
     InvalidKeyFormat(String),
 
     /// Not sure when this error occurs, or if it even can occur at all given the string that is split on.
