@@ -119,25 +119,35 @@ As such, using constants does not result in a performance loss when the program 
 
 # Overview
 - [Set](#Set)
-- [Push](#Push)
-- [Pop](#Pop)
+
+**Arithmetic**
 - [Addition](#Addition)
 - [Subtraction](#Subtraction)
 - [Multiplication](#Multiplication)
 - [Division](#Division)
 - [Remainder](#Remainder)
-- [Print Register](#Print-Register)
-- [Print Stack](#Print-Stack)
+
+**Control Flow**
 - [Stop](#Stop)
 - [Call](#Call)
 - [Return](#Return)
+- [Jump](#Jump)
+- [Compare](#Compare)
+- [Test](#Test)
+
+**Stack**
+- [Push](#Push)
+- [Pop](#Pop)
+
+**Bitwise**
 - [And](#And)
 - [Or](#Or)
 - [Xor](#Xor)
 - [Not](#Not)
-- [Test](#Test)
-- [Compare](#Compare)
-- [Jump](#Jump)
+
+**Print**
+- [Print Register](#Print-Register)
+- [Print Stack](#Print-Stack)
 
 ## Set
 Sets a register to a given value.
@@ -150,8 +160,8 @@ This is a generalized format for the set instruction.
 ```
 est* register operand
 ```
-
 Where `*` is replaced by any of the size suffixes.
+
 
 ### Example
 The following example is a byte instruction and will set register *a* to the value 200.
@@ -159,54 +169,6 @@ The following example is a byte instruction and will set register *a* to the val
 ```
 setb ra 200
 ```
-
-## Push
-Pushes a value onto the stack.
-
-No flags are affected by this instruction.
-
-### Format
-This is a generalized format for the push instruction.
-
-```
-psh* operand
-```
-
-Where `*` is replaced by any of the size suffixes.
-
-### Example
-The following example is a word instruction and will push the value in register *a* onto the stack.
-
-```
-pshw ra
-```
-
-### Error
-This instruction can return a stack overflow error in case the stack cannot contain the value specified to be pushed onto it.
-
-## Pop
-Pops a value from the stack into a register.
-
-No flags are affected by this instruction.
-
-### Format
-This is a generalized format for the pop instruction.
-
-```
-pop* register
-```
-
-Where `*` is replaced by any of the size suffixes.
-
-### Example
-The following example is a half instruction and will pop the four topmost bytes on the stack into register *b*.
-
-```
-poph rb
-```
-
-### Error
-This instruction can return a stack underflow error in case the stack contained less bytes than specified to be popped by the instruction.
 
 ## Addition
 Adds two values and stores the result in the first parameter.
@@ -321,72 +283,6 @@ remh ra 3
 ### Error
 This instruction can return a divide by zero error in case the divisor is zero.
 
-## Print Register
-Prints a register value to the defined output.
-
-No flags are affected by this instruction.
-
-### Format
-This is a generalized format for the print register instruction.
-
-```
-prr* register
-```
-
-Where `*` is replaced by any of the size suffixes.
-
-### Example
-The following example is a byte instruction and prints the least significant byte of register *e* to the defined output.
-
-```
-prrb rd
-```
-
-Say that the least significant byte of register *e* contains the value 150, then the output would look like the following.
-
-```
-re: 150
-```
-
-Note that this instruction always ends on a newline.
-
-## Print Stack
-Prints a section of values from the top of the stack, to the defined output.
-
-No flags are affected by this instruction.
-
-### Format
-This is a generalized format for the print stack instruction.
-
-```
-prs* operand
-```
-
-Where `*` is replaced by any of the size suffixes.
-
-Note that here is also an additional prefix that can be used here, `s` which will interpret the specified section of the stack as an ASCII string.
-
-### Example
-The following example is a string instruction and prints the 5 topmost bytes on the stack interpreted as an ASCII string.
-
-```
-prss 5
-```
-
-Say that the stack looks like the following: \[72, 101, 108, 108, 111\] with the left side being towards the bottom of the stackand the right side being towards the top.
-
-```
-Hello
-```
-
-If you instead used the `prsb` variant, to interpret the stack section as bytes, the output would be the following.
-
-```
-[72, 101, 108, 108, 111]
-```
-
-Note that this instruction always ends on a newline.
-
 ## Stop
 Halts the execution of the program.
 Every program must end with a stop instruction, otherwise the program will not terminate correctly.
@@ -434,6 +330,88 @@ The format of the return instruction is always the same, as it is an unsized ins
 
 ```
 ret
+```
+
+## Jump
+Jumps to a given location in the program.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the compare instruction.
+
+```
+j** operand
+```
+
+Where `**` is replaced by any of the jump variants.
+
+Jump instructions are unsized operations, meaning the operand is always intepreted as a word.
+
+### Variants
+There are 11 different jump variants.
+
+|Name                    |Instruction|Condition           |
+|:----------------------:|:---------:|:------------------:|
+|Jump                    |`jmp`      |unconditional       |
+|Jump If Zero            |`jiz`      |zf == 1             |
+|Jump If Not Zero        |`jnz`      |zf == 0             |
+|Jump If Overflow        |`jio`      |of == 1             |
+|Jump If Not Overflow    |`jno`      |of == 0             |
+|Jump If Sign            |`jis`      |sf == 1             |
+|Jump If Not Sign        |`jns`      |sf == 0             |
+|Jump If Greater         |`jig`      |of == 0 && zf == 0  |
+|Jump If Lesser          |`jil`      |of == 1 && zf == 0  |
+|Jump If Greater Or Equal|`jge`      |of == 0 \|\| zf == 1|
+|Jump If Lesser Or Equal |`jle`      |of == 1 \|\| zf == 1|
+
+### Example
+The following example jumps to the location contained in register *a*, if the zero flag is set.
+
+```
+jiz ra
+```
+
+## Compare
+Subtracts the second parameter from the first and discards the result.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the compare instruction.
+
+```
+cmp* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a byte instruction and will subtract 1 from the value in register *g* and discard the result.
+
+```
+cmpb rg 1
+```
+
+## Test
+Performs a bitwise AND operation between the two parameters and discards the result.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the test instruction.
+
+```
+tst* register operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a word instruction and performs a bitwise AND operation between register *a* and register *b*, after which the result is discarded.
+
+```
+tstw ra rb
 ```
 
 ## And
@@ -520,85 +498,116 @@ The following example is a quarter instruction and negates the bits in register 
 notq rd 
 ```
 
-## Test
-Performs a bitwise AND operation between the two parameters and discards the result.
-
-All flags are affected by this instruction.
-
-### Format
-This is a generalized format for the test instruction.
-
-```
-tst* register operand
-```
-
-Where `*` is replaced by any of the size suffixes.
-
-### Example
-The following example is a word instruction and performs a bitwise AND operation between register *a* and register *b*, after which the result is discarded.
-
-```
-tstw ra rb
-```
-
-## Compare
-Subtracts the second parameter from the first and discards the result.
-
-All flags are affected by this instruction.
-
-### Format
-This is a generalized format for the compare instruction.
-
-```
-cmp* register operand
-```
-
-Where `*` is replaced by any of the size suffixes.
-
-### Example
-The following example is a byte instruction and will subtract 1 from the value in register *g* and discard the result.
-
-```
-cmpb rg 1
-```
-
-## Jump
-Jumps to a given location in the program.
+## Push
+Pushes a value onto the stack.
 
 No flags are affected by this instruction.
 
 ### Format
-This is a generalized format for the compare instruction.
+This is a generalized format for the push instruction.
 
 ```
-j** operand
+psh* operand
 ```
 
-Where `**` is replaced by any of the jump variants.
-
-Jump instructions are unsized operations, meaning the operand is always intepreted as a word.
-
-### Variants
-There are 11 different jump variants.
-
-|Name                    |Instruction|Condition           |
-|:----------------------:|:---------:|:------------------:|
-|Jump                    |`jmp`      |unconditional       |
-|Jump If Zero            |`jiz`      |zf == 1             |
-|Jump If Not Zero        |`jnz`      |zf == 0             |
-|Jump If Overflow        |`jio`      |of == 1             |
-|Jump If Not Overflow    |`jno`      |of == 0             |
-|Jump If Sign            |`jis`      |sf == 1             |
-|Jump If Not Sign        |`jns`      |sf == 0             |
-|Jump If Greater         |`jig`      |of == 0 && zf == 0  |
-|Jump If Lesser          |`jil`      |of == 1 && zf == 0  |
-|Jump If Greater Or Equal|`jge`      |of == 0 \|\| zf == 1|
-|Jump If Lesser Or Equal |`jle`      |of == 1 \|\| zf == 1|
+Where `*` is replaced by any of the size suffixes.
 
 ### Example
-The following example jumps to the location contained in register *a*, if the zero flag is set.
+The following example is a word instruction and will push the value in register *a* onto the stack.
 
 ```
-jiz ra
+pshw ra
 ```
 
+### Error
+This instruction can return a stack overflow error in case the stack cannot contain the value specified to be pushed onto it.
+
+## Pop
+Pops a value from the stack into a register.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the pop instruction.
+
+```
+pop* register
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a half instruction and will pop the four topmost bytes on the stack into register *b*.
+
+```
+poph rb
+```
+
+### Error
+This instruction can return a stack underflow error in case the stack contains less bytes than specified to be popped by the instruction.
+
+## Print Register
+Prints a register value to the defined output.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the print register instruction.
+
+```
+prr* register
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a byte instruction and prints the least significant byte of register *e* to the defined output.
+
+```
+prrb rd
+```
+
+Say that the least significant byte of register *e* contains the value 150, then the output would look like the following.
+
+```
+re: 150
+```
+
+Note that this instruction always ends on a newline.
+
+## Print Stack
+Prints a section of values from the top of the stack, to the defined output.
+
+No flags are affected by this instruction.
+
+### Format
+This is a generalized format for the print stack instruction.
+
+```
+prs* operand
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+Note that here is also an additional prefix that can be used here, `s` which will interpret the specified section of the stack as an ASCII string.
+
+### Example
+The following example is a string instruction and prints the 5 topmost bytes on the stack interpreted as an ASCII string.
+
+```
+prss 5
+```
+
+Say that the stack looks like the following: \[72, 101, 108, 108, 111\] with the left side being towards the bottom of the stackand the right side being towards the top.
+
+```
+Hello
+```
+
+If you instead used the `prsb` variant, to interpret the stack section as bytes, the output would be the following.
+
+```
+[72, 101, 108, 108, 111]
+```
+
+Note that this instruction always ends on a newline.
