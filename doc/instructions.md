@@ -90,7 +90,7 @@ The following section are part of the preprocessing step of the interpreter. In 
 ## Data Section
 The data section functions similar to a key-value store that can be used to defined meaningfully named constants for a program, and is entirely optional to use.
 
-It is located at the tail end of the source code and is initialized with `data:` where the lines below defines the key-value pairs.
+It is located at the tail end of the source code and is initialized with `DATA:` where the lines below defines the key-value pairs.
 
 The key or name **must** be ascii uppercase letters, digits or underscores, for example `FIB_NUMBER_1` is a valid key, while `fib-number-1` is not.
 
@@ -103,7 +103,7 @@ And the constant, `FIVE_HUNDRED 500`, is used in relation to a byte-operation it
 
 The following is an example of a data section.
 ```
-data:
+DATA:
   FIB_NUMBER_1 0
   FIVE_HUNDRED 500
 
@@ -111,7 +111,7 @@ data:
   FIB_NUMBER_2 1
 ```
 
-Anything below the `data:` marker is considered part of the data section, and will be parsed as such.
+Anything below the `DATA:` marker is considered part of the data section, and will be parsed as such.
 Therefore, any source code placed below the marker will result in a data processing error.
 
 The constants in the data section are expanded at runtime, before the program is interpreted.

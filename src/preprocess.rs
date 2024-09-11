@@ -1,6 +1,6 @@
 use crate::{constant::COMMENT, error::DataError};
 
-const DATA_SECTION: &str = "data:";
+const DATA_SECTION: &str = "DATA:";
 
 pub fn expand_data_section(s: &str) -> Result<String, DataError> {
     if let Some(data_section_start) = s.rfind(DATA_SECTION) {
@@ -104,7 +104,7 @@ mod expand_data_section {
 
     #[test]
     fn invalid_key_format() {
-        let input = ["pshb one", "stop", "", "data:", "    one 1"].join("\n");
+        let input = ["pshb one", "stop", "", "DATA:", "    one 1"].join("\n");
         let expected = Err(DataError::InvalidKeyFormat("one".to_string()));
 
         let actual = expand_data_section(&input);
@@ -125,7 +125,7 @@ mod expand_data_section {
 
     #[test]
     fn data_section() -> Result<(), DataError> {
-        let input = ["pshb NUMBER_1", "stop", "", "data:", "  NUMBER_1 1"].join("\n");
+        let input = ["pshb NUMBER_1", "stop", "", "DATA:", "  NUMBER_1 1"].join("\n");
         let expected = ["pshb 1", "stop"].join("\n");
 
         let actual = expand_data_section(&input)?;
@@ -141,7 +141,7 @@ mod expand_data_section {
             "pshb NUMBER_1",
             "stop",
             "",
-            "data:",
+            "DATA:",
             "  NUMBER_1 1",
             "  // this is a comment",
         ]
@@ -162,7 +162,7 @@ mod expand_data_section {
             "pshb NUMBER_2",
             "stop",
             "",
-            "data:",
+            "DATA:",
             "  NUMBER_1 1",
             "  ",
             "  NUMBER_2 2",

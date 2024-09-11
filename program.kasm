@@ -14,7 +14,7 @@ jnz 3
 prsb 10
 stop
 
-data:
+DATA:
     TARGET_FIB_NUMBER 10
 	FIB_1 0
 	FIB_2 1
