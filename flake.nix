@@ -24,6 +24,8 @@
           mkShell {
             buildInputs = [
               rust-bin.stable.latest.default
+              rust-analyzer
+              taplo
               just
             ];
           };
