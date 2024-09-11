@@ -134,6 +134,7 @@ As such, using constants does not result in a performance loss when the program 
 - [And](#And)
 - [Or](#Or)
 - [Xor](#Xor)
+- [Not](#Not)
 
 ## Set
 Sets a register to a given value.
@@ -493,4 +494,25 @@ The following example is a byte instruction and performs a bitwise XOR operation
 
 ```
 xorb ra rb
+```
+
+## Not
+Performs a bitwise negation of a register.
+
+All flags are affected by this instruction.
+
+### Format
+This is a generalized format for the not instruction.
+
+```
+not* register
+```
+
+Where `*` is replaced by any of the size suffixes.
+
+### Example
+The following example is a quarter instruction and negates the bits in register *d*.
+
+```
+notq rd 
 ```
