@@ -116,6 +116,7 @@ Therefore, any source code placed below the marker will result in a data process
 
 The constants in the data section are expanded at runtime, before the program is interpreted.
 As such, using constants does not result in a performance loss when the program is interpretted, but it does carry a small overhead to perform the substitution process before interpretation starts.
+This also means that the data section is not actually a valid part of the program, it is substituted and removed before the program is interpretted.
 
 # Overview
 - [Set](#Set)
