@@ -20,6 +20,7 @@ The following list contains my goals for the project:
 The following list is not necessarily in any specific order, however it encompasses the long term goals of this project:
 - [x] Unsigned instruction set (also including instructions without a size component)
 - [x] Data section of program
+- [x] A debug mode (set with CLI flag) that allows incremental interpretation (stepping)
 - [ ] Logging/tracing
 - [ ] Call functions by name
 - [ ] Signed instruction set
@@ -27,4 +28,3 @@ The following list is not necessarily in any specific order, however it encompas
 - [ ] Heap, and associated instructions (store, load, indexing etc.)
 - [ ] Documentation of the architecture, instruction set etc.
 - [ ] Relative jump locations (+2, -2 or the like)
-- [ ] A debug like mode (set with CLI flag) that allows incremental interpretation (stepping)
