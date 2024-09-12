@@ -6,6 +6,7 @@ pub struct Configuration {
     pub print_instructions_executed: bool,
     pub instructions_executed: u64,
     pub output: Box<dyn Writer>,
+    pub debug: bool,
 }
 
 impl Configuration {
@@ -15,6 +16,7 @@ impl Configuration {
             print_instructions_executed: false,
             instructions_executed: 0,
             output: Box::new(Vec::new()),
+            debug: false,
         }
     }
 }
@@ -38,6 +40,7 @@ impl TryFrom<Arguments> for Configuration {
             print_instructions_executed: args.instructions,
             instructions_executed: 0,
             output,
+            debug: args.debug,
         };
         Ok(c)
     }
@@ -52,4 +55,8 @@ pub struct Arguments {
     /// Creates or uses the specified file as output for print instructions, otherwise stdout is used
     #[arg(long = "output", short = 'o', value_name = "FILE")]
     output: Option<PathBuf>,
+
+    /// Interprets the program in debug mode
+    #[arg(long = "debug", short = 'd', default_value = "false")]
+    debug: bool,
 }
