@@ -110,6 +110,53 @@ mod regression {
         }
     }
 
+    mod instructions {
+        use crate::Arguments;
+        use clap::Parser;
+
+        #[test]
+        fn undefined() {
+            let args = [""];
+            let expected = Arguments {
+                instructions: false,
+                output: None,
+                debug: false,
+            };
+
+            let actual = Arguments::parse_from(args);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn long() {
+            let args = ["", "--instructions"];
+            let expected = Arguments {
+                instructions: true,
+                output: None,
+                debug: false,
+            };
+
+            let actual = Arguments::parse_from(args);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn short() {
+            let args = ["", "-i"];
+            let expected = Arguments {
+                instructions: true,
+                output: None,
+                debug: false,
+            };
+
+            let actual = Arguments::parse_from(args);
+
+            assert_eq!(actual, expected);
+        }
+    }
+
     mod output {
         use std::path::PathBuf;
 
