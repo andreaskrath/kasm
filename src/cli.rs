@@ -46,7 +46,7 @@ impl TryFrom<Arguments> for Configuration {
     }
 }
 
-#[derive(Debug, Parser)]
+#[derive(Debug, Parser, PartialEq)]
 pub struct Arguments {
     /// Print the amount of executed instructions after the program is finished
     #[arg(long = "instructions", short = 'i', default_value = "false")]
@@ -59,4 +59,54 @@ pub struct Arguments {
     /// Interprets the program in debug mode
     #[arg(long = "debug", short = 'd', default_value = "false")]
     debug: bool,
+}
+
+#[cfg(test)]
+mod regression {
+    mod debug {
+        use crate::Arguments;
+        use clap::Parser;
+
+        #[test]
+        fn undefined() {
+            let args = [""];
+            let expected = Arguments {
+                instructions: false,
+                output: None,
+                debug: false,
+            };
+
+            let actual = Arguments::parse_from(args);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn long() {
+            let args = ["", "--debug"];
+            let expected = Arguments {
+                instructions: false,
+                output: None,
+                debug: true,
+            };
+
+            let actual = Arguments::parse_from(args);
+
+            assert_eq!(actual, expected);
+        }
+
+        #[test]
+        fn short() {
+            let args = ["", "-d"];
+            let expected = Arguments {
+                instructions: false,
+                output: None,
+                debug: true,
+            };
+
+            let actual = Arguments::parse_from(args);
+
+            assert_eq!(actual, expected);
+        }
+    }
 }
