@@ -28,3 +28,11 @@ type DecodeFn = fn(SplitWhitespace) -> Result<Instruction, DecodeError>;
 pub type DecodeTable = Map<&'static str, DecodeFn>;
 
 pub const COMMENT: &str = "//";
+
+pub const DEBUG_HELP: &str = r#"You can take the following actions:
+  - 'next'/'n' will advance the interpretation by one instruction
+  - 'stop'/'s' will stop the interpretation\n
+"#;
+
+pub const DEBUG_INITIAL: &str = r#"You are running the program in debug mode.
+Use the 'help'/'h' action for more information."#;

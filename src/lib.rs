@@ -1,10 +1,12 @@
 use cli::Configuration;
-use constant::{Word, COMMENT, STACK_SIZE};
+use constant::{Word, COMMENT, DEBUG_HELP, DEBUG_INITIAL, STACK_SIZE};
 use error::InterpreterError;
 use flags::Flags;
+use instruction::Instruction;
 use preprocess::expand_data_section;
 use register::Register;
 use registers::Registers;
+use std::io::stdin;
 
 pub use cli::Arguments;
 use stack::Stack;
@@ -66,25 +68,69 @@ impl Interpreter {
 
     pub fn run(&mut self, program: &str) -> Result<(), InterpreterError> {
         let data_expanded_program = expand_data_section(program).map_err(InterpreterError::Data)?;
-        let program: Vec<&str> = data_expanded_program.lines().collect();
+        let program: Box<[&str]> = data_expanded_program.lines().collect();
+
+        if self.config.debug {
+            self.debug(program)?;
+        } else {
+            self.full(program)?;
+        }
+
+        Ok(())
+    }
+
+    fn advance(&mut self, program: &[&str]) -> Result<(), InterpreterError> {
+        let line = program
+            .get(self.pc())
+            .ok_or(InterpreterError::InvalidProgramCounter(self.pc()))?;
+
+        self.program_counter += 1;
+
+        if line.starts_with(COMMENT) {
+            return Ok(());
+        }
+
+        let instruction = self
+            .decode(line)
+            .map_err(|e| InterpreterError::Decode(self.pc() - 1, e))?;
+
+        self.execute(instruction)
+            .map_err(|e| InterpreterError::Execute(self.pc() - 1, e))?;
+
+        Ok(())
+    }
+
+    fn full(&mut self, program: Box<[&str]>) -> Result<(), InterpreterError> {
+        while self.running {
+            self.advance(&program)?;
+        }
+
+        Ok(())
+    }
+
+    fn debug(&mut self, program: Box<[&str]>) -> Result<(), InterpreterError> {
+        println!("{DEBUG_INITIAL}");
 
         while self.running {
-            let line = program
-                .get(self.pc())
-                .ok_or(InterpreterError::InvalidProgramCounter(self.pc()))?;
+            let mut action = String::new();
+            stdin().read_line(&mut action).unwrap();
 
-            self.program_counter += 1;
-
-            if line.starts_with(COMMENT) {
-                continue;
+            match action.trim() {
+                "help" | "h" => {
+                    println!("{DEBUG_HELP}");
+                }
+                "next" | "n" => {
+                    self.advance(&program)?;
+                }
+                "stop" | "s" => {
+                    self.execute(Instruction::Stop)
+                        .map_err(|err| InterpreterError::Execute(self.pc(), err))?;
+                    break;
+                }
+                unknown => println!("unknown action: '{unknown}'"),
             }
 
-            let instruction = self
-                .decode(line)
-                .map_err(|e| InterpreterError::Decode(self.pc() - 1, e))?;
-
-            self.execute(instruction)
-                .map_err(|e| InterpreterError::Execute(self.pc() - 1, e))?;
+            println!("pc: {}, sp: {}", self.pc(), self.stack.sp());
         }
 
         Ok(())

@@ -19,6 +19,10 @@ impl Stack {
         Self { bytes, pointer: 0 }
     }
 
+    pub fn sp(&self) -> usize {
+        self.pointer as usize
+    }
+
     #[expect(
         clippy::indexing_slicing,
         reason = "the indexing in the for loop is guarded by the condition at the start of the function"
@@ -89,10 +93,6 @@ impl Stack {
             .collect();
 
         Ok(slice)
-    }
-
-    fn sp(&self) -> usize {
-        self.pointer as usize
     }
 }
 
