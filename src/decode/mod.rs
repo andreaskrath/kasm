@@ -135,7 +135,14 @@ const DECODE_TABLE: DecodeTable = phf_map! {
     "prss" => PrintStackDecoder::print_stack_str,
 };
 
-fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
+fn try_get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, DecodeError> {
+    match iter.next() {
+        Some(s_operand) => Ok(s_operand),
+        None => Err(DecodeError::IncompleteInstruction),
+    }
+}
+
+fn try_get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
     let (Some(s_register), Some(s_operand)) = (iter.next(), iter.next()) else {
         return Err(DecodeError::IncompleteInstruction);
     };
@@ -143,18 +150,11 @@ fn get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), De
     Ok((s_register, s_operand))
 }
 
-fn get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, DecodeError> {
-    match iter.next() {
-        Some(s_operand) => Ok(s_operand),
-        None => Err(DecodeError::IncompleteInstruction),
-    }
-}
-
 struct DecoderHelper;
 
 impl DecoderHelper {
     fn try_register(iter: SplitWhitespace) -> Result<Register, DecodeError> {
-        let s_register = get_first_parameter_str(iter)?;
+        let s_register = try_get_first_parameter_str(iter)?;
         let register = Register::try_from(s_register)?;
 
         Ok(register)
@@ -164,7 +164,7 @@ impl DecoderHelper {
     where
         T: FromStr,
     {
-        let s_operand = get_first_parameter_str(iter)?;
+        let s_operand = try_get_first_parameter_str(iter)?;
         let operand = Operand::try_from(s_operand)?;
 
         Ok(operand)
@@ -176,7 +176,7 @@ impl DecoderHelper {
     where
         T: FromStr,
     {
-        let (s_register, s_operand) = get_both_parameters_str(iter)?;
+        let (s_register, s_operand) = try_get_both_parameters_str(iter)?;
         let register = Register::try_from(s_register)?;
         let operand = Operand::try_from(s_operand)?;
 
@@ -187,7 +187,7 @@ impl DecoderHelper {
     where
         T: FromStr,
     {
-        let (s_operand1, s_operand2) = get_both_parameters_str(iter)?;
+        let (s_operand1, s_operand2) = try_get_both_parameters_str(iter)?;
         let operand1 = Operand::try_from(s_operand1)?;
         let operand2 = Operand::try_from(s_operand2)?;
 
@@ -212,15 +212,15 @@ impl Instruction {
 }
 
 #[cfg(test)]
-mod get_both_parameters_str {
-    use super::get_both_parameters_str;
+mod try_get_both_parameters_str {
+    use super::try_get_both_parameters_str;
     use crate::error::DecodeError;
 
     #[test]
     fn empty_parameters() {
         let iter = "".split_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
-        let actual = get_both_parameters_str(iter);
+        let actual = try_get_both_parameters_str(iter);
         assert_eq!(actual, expected);
     }
 
@@ -228,7 +228,7 @@ mod get_both_parameters_str {
     fn missing_second_parameter() {
         let iter = "ra".split_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
-        let actual = get_both_parameters_str(iter);
+        let actual = try_get_both_parameters_str(iter);
         assert_eq!(actual, expected);
     }
 
@@ -236,21 +236,21 @@ mod get_both_parameters_str {
     fn both_parameters_defined() {
         let iter = "ra 0".split_whitespace();
         let expected = Ok(("ra", "0"));
-        let actual = get_both_parameters_str(iter);
+        let actual = try_get_both_parameters_str(iter);
         assert_eq!(actual, expected);
     }
 }
 
 #[cfg(test)]
-mod get_first_parameter_str {
-    use super::get_first_parameter_str;
+mod try_get_first_parameter_str {
+    use super::try_get_first_parameter_str;
     use crate::error::DecodeError;
 
     #[test]
     fn empty_parameter() {
         let iter = "".split_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
-        let actual = get_first_parameter_str(iter);
+        let actual = try_get_first_parameter_str(iter);
         assert_eq!(actual, expected);
     }
 
@@ -258,7 +258,7 @@ mod get_first_parameter_str {
     fn first_parameter_defined() {
         let iter = "ra".split_whitespace();
         let expected = Ok("ra");
-        let actual = get_first_parameter_str(iter);
+        let actual = try_get_first_parameter_str(iter);
         assert_eq!(actual, expected);
     }
 }
