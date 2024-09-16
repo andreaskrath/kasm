@@ -41,6 +41,12 @@ mod test;
 mod xor;
 
 impl Interpreter {
+    /// Decodes an instruction in string representation into an [`Instruction`].
+    ///
+    /// # Errors
+    /// An error is returned if something went wrong during decoding.
+    ///
+    /// This includes, but is not limited to issues with the instruction itself, or issues in decoding instruction parameters.
     pub fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
         let mut s_iter = s.split_whitespace();
         let instruction = s_iter.next().ok_or(DecodeError::EmptyLine)?;
@@ -135,6 +141,10 @@ const DECODE_TABLE: DecodeTable = phf_map! {
     "prss" => PrintStackDecoder::print_stack_str,
 };
 
+/// Attempts to get one parameter from the instruction arguments.
+///
+/// # Errors
+/// Will return [`DecodeError::IncompleteInstruction`] if no parameter could be found.
 fn try_get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, DecodeError> {
     match iter.next() {
         Some(s_operand) => Ok(s_operand),
@@ -142,6 +152,10 @@ fn try_get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, Decode
     }
 }
 
+/// Attempts to get two parameters from the instruction arguments.
+///
+/// # Errors
+/// Will return [`DecodeError::IncompleteInstruction`] if either parameter could be found.
 fn try_get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
     let (Some(s_register), Some(s_operand)) = (iter.next(), iter.next()) else {
         return Err(DecodeError::IncompleteInstruction);
