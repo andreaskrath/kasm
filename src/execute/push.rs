@@ -18,7 +18,7 @@ impl Interpreter {
         Ok(())
     }
 
-    pub fn push_value<T>(&mut self, operand: Operand<T>) -> Result<(), ExecuteError>
+    fn push_value<T>(&mut self, operand: Operand<T>) -> Result<(), ExecuteError>
     where
         T: ToBytes + FromBytes,
     {

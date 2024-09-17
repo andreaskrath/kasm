@@ -19,7 +19,7 @@ impl Interpreter {
         Ok(())
     }
 
-    pub fn pop_value<T>(&mut self, register: Register) -> Result<(), ExecuteError>
+    fn pop_value<T>(&mut self, register: Register) -> Result<(), ExecuteError>
     where
         T: FromBytes + ToWord,
     {
