@@ -1,7 +1,7 @@
 use crate::{instruction::Compare, operand::Operand, utils::Arithmetic, Interpreter};
 
 impl Interpreter {
-    pub fn compare(&mut self, instruction: Compare) {
+    pub(super) fn compare(&mut self, instruction: Compare) {
         match instruction {
             Compare::Byte(o1, o2) => self.compare_value(o1, o2),
             Compare::Quarter(o1, o2) => self.compare_value(o1, o2),

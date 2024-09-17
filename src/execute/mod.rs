@@ -32,7 +32,7 @@ impl Interpreter {
         }
     }
 
-    pub fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
+    pub(super) fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         self.config.instructions_executed += 1;
 
         match instruction {

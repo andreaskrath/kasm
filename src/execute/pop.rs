@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn pop(&mut self, instruction: Pop) -> Result<(), ExecuteError> {
+    pub(super) fn pop(&mut self, instruction: Pop) -> Result<(), ExecuteError> {
         match instruction {
             Pop::Byte(register) => self.pop_value::<Byte>(register)?,
             Pop::Quarter(register) => self.pop_value::<Quarter>(register)?,

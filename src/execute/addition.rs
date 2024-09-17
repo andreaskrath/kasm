@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn add(&mut self, instruction: Addition) {
+    pub(super) fn add(&mut self, instruction: Addition) {
         match instruction {
             Addition::Byte(r, o) => self.add_value(r, o),
             Addition::Quarter(r, o) => self.add_value(r, o),

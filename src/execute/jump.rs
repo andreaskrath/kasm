@@ -1,7 +1,7 @@
 use crate::{constant::Word, instruction::Jump, operand::Operand, Interpreter};
 
 impl Interpreter {
-    pub fn jump(&mut self, instruction: Jump) {
+    pub(super) fn jump(&mut self, instruction: Jump) {
         match instruction {
             Jump::Unconditional(o) => self.jump_unconditional(o),
             Jump::IfZero(o) => self.jump_if_zero(o),

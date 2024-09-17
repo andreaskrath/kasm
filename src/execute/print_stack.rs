@@ -9,7 +9,7 @@ use crate::{
 use std::{char, fmt::Debug};
 
 impl Interpreter {
-    pub fn print_stack(&mut self, instruction: PrintStack) -> Result<(), ExecuteError> {
+    pub(super) fn print_stack(&mut self, instruction: PrintStack) -> Result<(), ExecuteError> {
         match instruction {
             PrintStack::Byte(o) => self.print_stack_value::<Byte>(o)?,
             PrintStack::Quarter(o) => self.print_stack_value::<Quarter>(o)?,

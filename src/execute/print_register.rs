@@ -10,7 +10,10 @@ use crate::{
 use std::fmt::Display;
 
 impl Interpreter {
-    pub fn print_register(&mut self, instruction: PrintRegister) -> Result<(), ExecuteError> {
+    pub(super) fn print_register(
+        &mut self,
+        instruction: PrintRegister,
+    ) -> Result<(), ExecuteError> {
         match instruction {
             PrintRegister::Byte(r) => self.print_register_value::<Byte>(r)?,
             PrintRegister::Quarter(r) => self.print_register_value::<Quarter>(r)?,

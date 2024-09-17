@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn rem(&mut self, instruction: Remainder) -> Result<(), ExecuteError> {
+    pub(super) fn rem(&mut self, instruction: Remainder) -> Result<(), ExecuteError> {
         match instruction {
             Remainder::Byte(r, o) => self.rem_value(r, o),
             Remainder::Quarter(r, o) => self.rem_value(r, o),

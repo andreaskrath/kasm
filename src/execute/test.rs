@@ -1,7 +1,7 @@
 use crate::{instruction::Test, operand::Operand, utils::BitWise, Interpreter};
 
 impl Interpreter {
-    pub fn test(&mut self, instruction: Test) {
+    pub(super) fn test(&mut self, instruction: Test) {
         match instruction {
             Test::Byte(o1, o2) => self.test_value(o1, o2),
             Test::Quarter(o1, o2) => self.test_value(o1, o2),

@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn not(&mut self, instruction: Not) {
+    pub(super) fn not(&mut self, instruction: Not) {
         match instruction {
             Not::Byte(r) => self.not_value::<Byte>(r),
             Not::Quarter(r) => self.not_value::<Quarter>(r),

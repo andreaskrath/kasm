@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn or(&mut self, instruction: Or) {
+    pub(super) fn or(&mut self, instruction: Or) {
         match instruction {
             Or::Byte(r, o) => self.or_value(r, o),
             Or::Quarter(r, o) => self.or_value(r, o),

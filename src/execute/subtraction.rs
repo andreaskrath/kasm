@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn sub(&mut self, instruction: Subtraction) {
+    pub(super) fn sub(&mut self, instruction: Subtraction) {
         match instruction {
             Subtraction::Byte(r, o) => self.sub_value(r, o),
             Subtraction::Quarter(r, o) => self.sub_value(r, o),

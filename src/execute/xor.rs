@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn xor(&mut self, instruction: Xor) {
+    pub(super) fn xor(&mut self, instruction: Xor) {
         match instruction {
             Xor::Byte(r, o) => self.xor_value(r, o),
             Xor::Quarter(r, o) => self.xor_value(r, o),

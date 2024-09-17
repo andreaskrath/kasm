@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn set(&mut self, instruction: Set) {
+    pub(super) fn set(&mut self, instruction: Set) {
         match instruction {
             Set::Byte(r, o) => self.set_value(r, o),
             Set::Quarter(r, o) => self.set_value(r, o),

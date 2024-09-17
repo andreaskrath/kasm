@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn and(&mut self, instruction: And) {
+    pub(super) fn and(&mut self, instruction: And) {
         match instruction {
             And::Byte(r, o) => self.and_value(r, o),
             And::Quarter(r, o) => self.and_value(r, o),

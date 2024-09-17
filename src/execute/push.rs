@@ -7,7 +7,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub fn push(&mut self, instruction: Push) -> Result<(), ExecuteError> {
+    pub(super) fn push(&mut self, instruction: Push) -> Result<(), ExecuteError> {
         match instruction {
             Push::Byte(operand) => self.push_value(operand)?,
             Push::Quarter(operand) => self.push_value(operand)?,

@@ -47,7 +47,7 @@ impl Interpreter {
     /// An error is returned if something went wrong during decoding.
     ///
     /// This includes, but is not limited to issues with the instruction itself, or issues in decoding instruction parameters.
-    pub fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
+    pub(super) fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
         let mut s_iter = s.split_whitespace();
         let instruction = s_iter.next().ok_or(DecodeError::EmptyLine)?;
         let decoder = DECODE_TABLE
