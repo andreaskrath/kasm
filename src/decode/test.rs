@@ -1,36 +1,36 @@
-use super::DecoderHelper;
+use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, Test},
 };
 use std::str::SplitWhitespace;
 
-pub struct TestDecoder;
+pub struct TestParameterDecoder;
 
-impl TestDecoder {
-    pub fn test_byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = DecoderHelper::try_double_operand(iter)?;
+impl TestParameterDecoder {
+    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
         let instruction = Test::Byte(operand1, operand2);
 
         Ok(Instruction::Test(instruction))
     }
 
-    pub fn test_quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = DecoderHelper::try_double_operand(iter)?;
+    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
         let instruction = Test::Quarter(operand1, operand2);
 
         Ok(Instruction::Test(instruction))
     }
 
-    pub fn test_half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = DecoderHelper::try_double_operand(iter)?;
+    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
         let instruction = Test::Half(operand1, operand2);
 
         Ok(Instruction::Test(instruction))
     }
 
-    pub fn test_word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = DecoderHelper::try_double_operand(iter)?;
+    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
         let instruction = Test::Word(operand1, operand2);
 
         Ok(Instruction::Test(instruction))

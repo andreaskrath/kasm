@@ -1,36 +1,36 @@
-use super::DecoderHelper;
+use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, Multiplication},
 };
 use std::str::SplitWhitespace;
 
-pub struct MulDecoder;
+pub struct MultiplicationParameterDecoder;
 
-impl MulDecoder {
-    pub fn mul_byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = DecoderHelper::try_register_and_operand(iter)?;
+impl MultiplicationParameterDecoder {
+    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
         let instruction = Multiplication::Byte(register, operand);
 
         Ok(Instruction::Multiplication(instruction))
     }
 
-    pub fn mul_quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = DecoderHelper::try_register_and_operand(iter)?;
+    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
         let instruction = Multiplication::Quarter(register, operand);
 
         Ok(Instruction::Multiplication(instruction))
     }
 
-    pub fn mul_half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = DecoderHelper::try_register_and_operand(iter)?;
+    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
         let instruction = Multiplication::Half(register, operand);
 
         Ok(Instruction::Multiplication(instruction))
     }
 
-    pub fn mul_word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = DecoderHelper::try_register_and_operand(iter)?;
+    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
         let instruction = Multiplication::Word(register, operand);
 
         Ok(Instruction::Multiplication(instruction))
