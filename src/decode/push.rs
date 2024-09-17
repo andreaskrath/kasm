@@ -2,35 +2,35 @@ use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, Push},
+    constant::Parameters,
 };
-use std::str::SplitWhitespace;
 
 pub struct PushParameterDecoder;
 
 impl PushParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Push::Byte(operand);
 
         Ok(Instruction::Push(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Push::Quarter(operand);
 
         Ok(Instruction::Push(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Push::Half(operand);
 
         Ok(Instruction::Push(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Push::Word(operand);
 
         Ok(Instruction::Push(instruction))

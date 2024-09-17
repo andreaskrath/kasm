@@ -2,84 +2,84 @@ use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, Jump},
+    constant::Parameters,
 };
-use std::str::SplitWhitespace;
 
 pub struct JumpParameterDecoder;
 
 impl JumpParameterDecoder {
-    pub fn unconditional(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn unconditional(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::Unconditional(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_zero(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_zero(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfZero(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_not_zero(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_not_zero(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfNotZero(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_sign(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_sign(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfSign(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_not_sign(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_not_sign(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfNotSign(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_overflow(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_overflow(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfOverflow(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_not_overflow(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_not_overflow(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfNotOverflow(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_greater(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_greater(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfGreater(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_lesser(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_lesser(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfLesser(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_greater_or_equal(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_greater_or_equal(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfGreaterOrEqual(operand);
 
         Ok(Instruction::Jump(instruction))
     }
 
-    pub fn if_lesser_or_equal(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn if_lesser_or_equal(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = Jump::IfLesserOrEqual(operand);
 
         Ok(Instruction::Jump(instruction))

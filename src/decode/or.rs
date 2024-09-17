@@ -1,36 +1,36 @@
 use super::ParameterDecoderHelper;
 use crate::{
+    constant::Parameters,
     error::DecodeError,
     instruction::{Instruction, Or},
 };
-use std::str::SplitWhitespace;
 
 pub struct OrParameterDecoder;
 
 impl OrParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Or::Byte(register, operand);
 
         Ok(Instruction::Or(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Or::Quarter(register, operand);
 
         Ok(Instruction::Or(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Or::Half(register, operand);
 
         Ok(Instruction::Or(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Or::Word(register, operand);
 
         Ok(Instruction::Or(instruction))

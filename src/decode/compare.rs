@@ -2,35 +2,35 @@ use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Compare, Instruction},
+    constant::Parameters,
 };
-use std::str::SplitWhitespace;
 
 pub struct CompareParameterDecoder;
 
 impl CompareParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(parameters)?;
         let instruction = Compare::Byte(operand1, operand2);
 
         Ok(Instruction::Compare(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(parameters)?;
         let instruction = Compare::Quarter(operand1, operand2);
 
         Ok(Instruction::Compare(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(parameters)?;
         let instruction = Compare::Half(operand1, operand2);
 
         Ok(Instruction::Compare(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (operand1, operand2) = ParameterDecoderHelper::try_double_operand(parameters)?;
         let instruction = Compare::Word(operand1, operand2);
 
         Ok(Instruction::Compare(instruction))

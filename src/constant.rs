@@ -2,7 +2,7 @@
 
 use crate::{error::DecodeError, instruction::Instruction};
 use phf::Map;
-use std::str::SplitWhitespace;
+use std::str::SplitAsciiWhitespace;
 
 pub type Byte = u8;
 pub type Quarter = u16;
@@ -24,7 +24,7 @@ pub const STACK_SIZE: usize = MEGA_BYTE * 4;
 #[cfg(test)]
 pub const TEST_STACK_SIZE: usize = Quarter::MAX as usize;
 
-type DecodeFn = fn(SplitWhitespace) -> Result<Instruction, DecodeError>;
+type DecodeFn = fn(Parameters) -> Result<Instruction, DecodeError>;
 pub type DecodeTable = Map<&'static str, DecodeFn>;
 
 pub const COMMENT: &str = "//";
@@ -36,3 +36,5 @@ pub const DEBUG_HELP: &str = r#"You can take the following actions:
 
 pub const DEBUG_INITIAL: &str = r#"You are running the program in debug mode.
 Use the 'help'/'h' action for more information."#;
+
+pub type Parameters<'a> = SplitAsciiWhitespace<'a>;

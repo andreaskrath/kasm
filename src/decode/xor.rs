@@ -2,35 +2,35 @@ use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, Xor},
+    constant::Parameters,
 };
-use std::str::SplitWhitespace;
 
 pub struct XorParameterDecoder;
 
 impl XorParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Xor::Byte(register, operand);
 
         Ok(Instruction::Xor(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Xor::Quarter(register, operand);
 
         Ok(Instruction::Xor(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Xor::Half(register, operand);
 
         Ok(Instruction::Xor(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Xor::Word(register, operand);
 
         Ok(Instruction::Xor(instruction))

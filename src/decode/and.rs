@@ -1,36 +1,36 @@
 use super::ParameterDecoderHelper;
 use crate::{
+    constant::Parameters,
     error::DecodeError,
     instruction::{And, Instruction},
 };
-use std::str::SplitWhitespace;
 
 pub struct AndParameterDecoder;
 
 impl AndParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = And::Byte(register, operand);
 
         Ok(Instruction::And(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = And::Quarter(register, operand);
 
         Ok(Instruction::And(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = And::Half(register, operand);
 
         Ok(Instruction::And(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = And::Word(register, operand);
 
         Ok(Instruction::And(instruction))

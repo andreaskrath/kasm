@@ -2,42 +2,42 @@ use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, PrintStack},
+    constant::Parameters,
 };
-use std::str::SplitWhitespace;
 
 pub struct PrintStackParameterDecoder;
 
 impl PrintStackParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = PrintStack::Byte(operand);
 
         Ok(Instruction::PrintStack(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = PrintStack::Quarter(operand);
 
         Ok(Instruction::PrintStack(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = PrintStack::Half(operand);
 
         Ok(Instruction::PrintStack(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = PrintStack::Word(operand);
 
         Ok(Instruction::PrintStack(instruction))
     }
 
-    pub fn str(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn str(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
         let instruction = PrintStack::Str(operand);
 
         Ok(Instruction::PrintStack(instruction))

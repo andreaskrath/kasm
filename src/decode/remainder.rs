@@ -2,35 +2,35 @@ use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, Remainder},
+    constant::Parameters,
 };
-use std::str::SplitWhitespace;
 
 pub struct RemainderParameterDecoder;
 
 impl RemainderParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Remainder::Byte(register, operand);
 
         Ok(Instruction::Remainder(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Remainder::Quarter(register, operand);
 
         Ok(Instruction::Remainder(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Remainder::Half(register, operand);
 
         Ok(Instruction::Remainder(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let (register, operand) = ParameterDecoderHelper::try_register_and_operand(parameters)?;
         let instruction = Remainder::Word(register, operand);
 
         Ok(Instruction::Remainder(instruction))

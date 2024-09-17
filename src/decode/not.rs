@@ -1,36 +1,36 @@
 use super::ParameterDecoderHelper;
 use crate::{
+    constant::Parameters,
     error::DecodeError,
     instruction::{Instruction, Not},
 };
-use std::str::SplitWhitespace;
 
 pub struct NotParameterDecoder;
 
 impl NotParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = Not::Byte(register);
 
         Ok(Instruction::Not(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = Not::Quarter(register);
 
         Ok(Instruction::Not(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = Not::Half(register);
 
         Ok(Instruction::Not(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = Not::Word(register);
 
         Ok(Instruction::Not(instruction))

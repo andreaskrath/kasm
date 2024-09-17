@@ -2,35 +2,35 @@ use super::ParameterDecoderHelper;
 use crate::{
     error::DecodeError,
     instruction::{Instruction, PrintRegister},
+    constant::Parameters,
 };
-use std::str::SplitWhitespace;
 
 pub struct PrintRegisterParameterDecoder;
 
 impl PrintRegisterParameterDecoder {
-    pub fn byte(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn byte(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = PrintRegister::Byte(register);
 
         Ok(Instruction::PrintRegister(instruction))
     }
 
-    pub fn quarter(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn quarter(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = PrintRegister::Quarter(register);
 
         Ok(Instruction::PrintRegister(instruction))
     }
 
-    pub fn half(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn half(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = PrintRegister::Half(register);
 
         Ok(Instruction::PrintRegister(instruction))
     }
 
-    pub fn word(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let register = ParameterDecoderHelper::try_register(iter)?;
+    pub fn word(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let register = ParameterDecoderHelper::try_register(parameters)?;
         let instruction = PrintRegister::Word(register);
 
         Ok(Instruction::PrintRegister(instruction))

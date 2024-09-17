@@ -1,6 +1,10 @@
 use crate::{
-    constant::DecodeTable, error::DecodeError, instruction::Instruction, operand::Operand,
-    register::Register, Interpreter,
+    constant::{DecodeTable, Parameters},
+    error::DecodeError,
+    instruction::Instruction,
+    operand::Operand,
+    register::Register,
+    Interpreter,
 };
 use addition::AdditionParameterDecoder;
 use and::AndParameterDecoder;
@@ -17,7 +21,7 @@ use print_stack::PrintStackParameterDecoder;
 use push::PushParameterDecoder;
 use remainder::RemainderParameterDecoder;
 use set::SetParameterDecoder;
-use std::str::{FromStr, SplitWhitespace};
+use std::str::FromStr;
 use subtraction::SubtractionParameterDecoder;
 use test::TestParameterDecoder;
 use xor::XorParameterDecoder;
@@ -48,7 +52,7 @@ impl Interpreter {
     ///
     /// This includes, but is not limited to issues with the instruction itself, or issues in decoding instruction parameters.
     pub(super) fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
-        let mut s_iter = s.split_whitespace();
+        let mut s_iter = s.split_ascii_whitespace();
         let instruction = s_iter.next().ok_or(DecodeError::EmptyLine)?;
         let decoder = DECODE_TABLE
             .get(instruction)
@@ -145,8 +149,8 @@ const DECODE_TABLE: DecodeTable = phf_map! {
 ///
 /// # Errors
 /// Will return [`DecodeError::IncompleteInstruction`] if no parameter could be found.
-fn try_get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, DecodeError> {
-    match iter.next() {
+fn try_get_first_parameter_str(mut parameters: Parameters) -> Result<&str, DecodeError> {
+    match parameters.next() {
         Some(s_operand) => Ok(s_operand),
         None => Err(DecodeError::IncompleteInstruction),
     }
@@ -156,8 +160,8 @@ fn try_get_first_parameter_str(mut iter: SplitWhitespace) -> Result<&str, Decode
 ///
 /// # Errors
 /// Will return [`DecodeError::IncompleteInstruction`] if either parameter could be found.
-fn try_get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str), DecodeError> {
-    let (Some(s_register), Some(s_operand)) = (iter.next(), iter.next()) else {
+fn try_get_both_parameters_str(mut parameters: Parameters) -> Result<(&str, &str), DecodeError> {
+    let (Some(s_register), Some(s_operand)) = (parameters.next(), parameters.next()) else {
         return Err(DecodeError::IncompleteInstruction);
     };
 
@@ -167,41 +171,43 @@ fn try_get_both_parameters_str(mut iter: SplitWhitespace) -> Result<(&str, &str)
 struct ParameterDecoderHelper;
 
 impl ParameterDecoderHelper {
-    fn try_register(iter: SplitWhitespace) -> Result<Register, DecodeError> {
-        let s_register = try_get_first_parameter_str(iter)?;
+    fn try_register(parameters: Parameters) -> Result<Register, DecodeError> {
+        let s_register = try_get_first_parameter_str(parameters)?;
         let register = Register::try_from(s_register)?;
 
         Ok(register)
     }
 
-    fn try_operand<T>(iter: SplitWhitespace) -> Result<Operand<T>, DecodeError>
+    fn try_operand<T>(parameters: Parameters) -> Result<Operand<T>, DecodeError>
     where
         T: FromStr,
     {
-        let s_operand = try_get_first_parameter_str(iter)?;
+        let s_operand = try_get_first_parameter_str(parameters)?;
         let operand = Operand::try_from(s_operand)?;
 
         Ok(operand)
     }
 
     fn try_register_and_operand<T>(
-        iter: SplitWhitespace,
+        parameters: Parameters,
     ) -> Result<(Register, Operand<T>), DecodeError>
     where
         T: FromStr,
     {
-        let (s_register, s_operand) = try_get_both_parameters_str(iter)?;
+        let (s_register, s_operand) = try_get_both_parameters_str(parameters)?;
         let register = Register::try_from(s_register)?;
         let operand = Operand::try_from(s_operand)?;
 
         Ok((register, operand))
     }
 
-    fn try_double_operand<T>(iter: SplitWhitespace) -> Result<(Operand<T>, Operand<T>), DecodeError>
+    fn try_double_operand<T>(
+        parameters: Parameters,
+    ) -> Result<(Operand<T>, Operand<T>), DecodeError>
     where
         T: FromStr,
     {
-        let (s_operand1, s_operand2) = try_get_both_parameters_str(iter)?;
+        let (s_operand1, s_operand2) = try_get_both_parameters_str(parameters)?;
         let operand1 = Operand::try_from(s_operand1)?;
         let operand2 = Operand::try_from(s_operand2)?;
 
@@ -209,18 +215,19 @@ impl ParameterDecoderHelper {
     }
 }
 
+/// TODO: move implementation from Instruction to something else.
 impl Instruction {
-    pub fn stop(_iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+    pub fn stop(_parameters: Parameters) -> Result<Instruction, DecodeError> {
         Ok(Instruction::Stop)
     }
 
-    pub fn call(iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
-        let operand = ParameterDecoderHelper::try_operand(iter)?;
+    pub fn call(parameters: Parameters) -> Result<Instruction, DecodeError> {
+        let operand = ParameterDecoderHelper::try_operand(parameters)?;
 
         Ok(Instruction::Call(operand))
     }
 
-    pub fn ret(_iter: SplitWhitespace) -> Result<Instruction, DecodeError> {
+    pub fn ret(_parameters: Parameters) -> Result<Instruction, DecodeError> {
         Ok(Instruction::Return)
     }
 }
@@ -232,7 +239,7 @@ mod try_get_both_parameters_str {
 
     #[test]
     fn empty_parameters() {
-        let iter = "".split_whitespace();
+        let iter = "".split_ascii_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
         let actual = try_get_both_parameters_str(iter);
         assert_eq!(actual, expected);
@@ -240,7 +247,7 @@ mod try_get_both_parameters_str {
 
     #[test]
     fn missing_second_parameter() {
-        let iter = "ra".split_whitespace();
+        let iter = "ra".split_ascii_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
         let actual = try_get_both_parameters_str(iter);
         assert_eq!(actual, expected);
@@ -248,7 +255,7 @@ mod try_get_both_parameters_str {
 
     #[test]
     fn both_parameters_defined() {
-        let iter = "ra 0".split_whitespace();
+        let iter = "ra 0".split_ascii_whitespace();
         let expected = Ok(("ra", "0"));
         let actual = try_get_both_parameters_str(iter);
         assert_eq!(actual, expected);
@@ -262,7 +269,7 @@ mod try_get_first_parameter_str {
 
     #[test]
     fn empty_parameter() {
-        let iter = "".split_whitespace();
+        let iter = "".split_ascii_whitespace();
         let expected = Err(DecodeError::IncompleteInstruction);
         let actual = try_get_first_parameter_str(iter);
         assert_eq!(actual, expected);
@@ -270,7 +277,7 @@ mod try_get_first_parameter_str {
 
     #[test]
     fn first_parameter_defined() {
-        let iter = "ra".split_whitespace();
+        let iter = "ra".split_ascii_whitespace();
         let expected = Ok("ra");
         let actual = try_get_first_parameter_str(iter);
         assert_eq!(actual, expected);
@@ -284,7 +291,7 @@ mod decoder_helper {
 
         #[test]
         fn missing_parameter() {
-            let iter = "".split_whitespace();
+            let iter = "".split_ascii_whitespace();
             let expected = Err(DecodeError::IncompleteInstruction);
             let actual = ParameterDecoderHelper::try_register(iter);
             assert_eq!(actual, expected);
@@ -292,7 +299,7 @@ mod decoder_helper {
 
         #[test]
         fn invalid_register() {
-            let iter = "rx".split_whitespace();
+            let iter = "rx".split_ascii_whitespace();
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
             let actual = ParameterDecoderHelper::try_register(iter);
             assert_eq!(actual, expected);
@@ -300,7 +307,7 @@ mod decoder_helper {
 
         #[test]
         fn valid_register() {
-            let iter = "ra".split_whitespace();
+            let iter = "ra".split_ascii_whitespace();
             let expected = Ok(Register::A);
             let actual = ParameterDecoderHelper::try_register(iter);
             assert_eq!(actual, expected);
@@ -316,7 +323,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_parameter() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -324,7 +331,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "rx".split_whitespace();
+                let iter = "rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -332,7 +339,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "-1".split_whitespace();
+                let iter = "-1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -340,7 +347,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "200u8".split_whitespace();
+                let iter = "200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -348,7 +355,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_in_operand() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Ok(Operand::Register(Register::A));
                 let actual = ParameterDecoderHelper::try_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -356,7 +363,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_immediate_value_in_operand() {
-                let iter = "10".split_whitespace();
+                let iter = "10".split_ascii_whitespace();
                 let expected = Ok(Operand::Immediate(10));
                 let actual = ParameterDecoderHelper::try_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -371,7 +378,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_parameter() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -379,7 +386,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "rx".split_whitespace();
+                let iter = "rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -387,7 +394,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "-1".split_whitespace();
+                let iter = "-1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -395,7 +402,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "200u8".split_whitespace();
+                let iter = "200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -403,7 +410,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_in_operand() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Ok(Operand::Register(Register::A));
                 let actual = ParameterDecoderHelper::try_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -411,7 +418,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_immediate_value_in_operand() {
-                let iter = "10".split_whitespace();
+                let iter = "10".split_ascii_whitespace();
                 let expected = Ok(Operand::Immediate(10));
                 let actual = ParameterDecoderHelper::try_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -426,7 +433,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_parameter() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -434,7 +441,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "rx".split_whitespace();
+                let iter = "rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -442,7 +449,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "-1".split_whitespace();
+                let iter = "-1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -450,7 +457,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "200u8".split_whitespace();
+                let iter = "200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -458,7 +465,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_in_operand() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Ok(Operand::Register(Register::A));
                 let actual = ParameterDecoderHelper::try_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -466,7 +473,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_immediate_value_in_operand() {
-                let iter = "10".split_whitespace();
+                let iter = "10".split_ascii_whitespace();
                 let expected = Ok(Operand::Immediate(10));
                 let actual = ParameterDecoderHelper::try_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -481,7 +488,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_parameter() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -489,7 +496,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "rx".split_whitespace();
+                let iter = "rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -497,7 +504,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "-1".split_whitespace();
+                let iter = "-1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -505,7 +512,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "200u8".split_whitespace();
+                let iter = "200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -513,7 +520,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_in_operand() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Ok(Operand::Register(Register::A));
                 let actual = ParameterDecoderHelper::try_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -521,7 +528,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_immediate_value_in_operand() {
-                let iter = "10".split_whitespace();
+                let iter = "10".split_ascii_whitespace();
                 let expected = Ok(Operand::Immediate(10));
                 let actual = ParameterDecoderHelper::try_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -538,7 +545,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -546,7 +553,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_paramter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -554,7 +561,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_parameter() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -562,7 +569,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -570,7 +577,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -578,7 +585,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -586,7 +593,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_register_in_operand() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -594,7 +601,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_immediate_value_in_operand() {
-                let iter = "ra 10".split_whitespace();
+                let iter = "ra 10".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Immediate(10)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -609,7 +616,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -617,7 +624,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_paramter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -625,7 +632,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_parameter() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -633,7 +640,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -641,7 +648,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -649,7 +656,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -657,7 +664,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_register_in_operand() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -665,7 +672,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_immediate_value_in_operand() {
-                let iter = "ra 10".split_whitespace();
+                let iter = "ra 10".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Immediate(10)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -680,7 +687,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -688,7 +695,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_paramter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -696,7 +703,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_parameter() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -704,7 +711,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -712,7 +719,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -720,7 +727,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -728,7 +735,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_register_in_operand() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -736,7 +743,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_immediate_value_in_operand() {
-                let iter = "ra 10".split_whitespace();
+                let iter = "ra 10".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Immediate(10)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -751,7 +758,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -759,7 +766,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_paramter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -767,7 +774,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_parameter() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -775,7 +782,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -783,7 +790,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -791,7 +798,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -799,7 +806,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_register_in_operand() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -807,7 +814,7 @@ mod decoder_helper {
 
             #[test]
             fn valid_register_and_immediate_value_in_operand() {
-                let iter = "ra 10".split_whitespace();
+                let iter = "ra 10".split_ascii_whitespace();
                 let expected = Ok((Register::A, Operand::Immediate(10)));
                 let actual = ParameterDecoderHelper::try_register_and_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -824,7 +831,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -832,7 +839,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_parameter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -840,7 +847,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_operand() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -848,7 +855,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_first_operand() {
-                let iter = "-1 ra".split_whitespace();
+                let iter = "-1 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -856,7 +863,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_first_operand() {
-                let iter = "200u8 ra".split_whitespace();
+                let iter = "200u8 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -864,7 +871,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_second_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -872,7 +879,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_second_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -880,7 +887,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_second_operand() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -888,7 +895,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_both_operands() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((
                     Operand::Register(Register::A),
                     Operand::Register(Register::B),
@@ -899,7 +906,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_both_operands() {
-                let iter = "10 20".split_whitespace();
+                let iter = "10 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -907,7 +914,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_first_operand_and_immediate_value_in_second_operand() {
-                let iter = "ra 20".split_whitespace();
+                let iter = "ra 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Register(Register::A), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -915,7 +922,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_first_operand_and_register_in_second_operand() {
-                let iter = "10 rb".split_whitespace();
+                let iter = "10 rb".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Byte>(iter);
                 assert_eq!(actual, expected);
@@ -930,7 +937,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -938,7 +945,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_parameter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -946,7 +953,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_operand() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -954,7 +961,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_first_operand() {
-                let iter = "-1 ra".split_whitespace();
+                let iter = "-1 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -962,7 +969,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_first_operand() {
-                let iter = "200u8 ra".split_whitespace();
+                let iter = "200u8 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -970,7 +977,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_second_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -978,7 +985,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_second_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -986,7 +993,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_second_operand() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -994,7 +1001,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_both_operands() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((
                     Operand::Register(Register::A),
                     Operand::Register(Register::B),
@@ -1005,7 +1012,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_both_operands() {
-                let iter = "10 20".split_whitespace();
+                let iter = "10 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -1013,7 +1020,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_first_operand_and_immediate_value_in_second_operand() {
-                let iter = "ra 20".split_whitespace();
+                let iter = "ra 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Register(Register::A), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -1021,7 +1028,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_first_operand_and_register_in_second_operand() {
-                let iter = "10 rb".split_whitespace();
+                let iter = "10 rb".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Quarter>(iter);
                 assert_eq!(actual, expected);
@@ -1036,7 +1043,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1044,7 +1051,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_parameter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1052,7 +1059,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_operand() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1060,7 +1067,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_first_operand() {
-                let iter = "-1 ra".split_whitespace();
+                let iter = "-1 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1068,7 +1075,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_first_operand() {
-                let iter = "200u8 ra".split_whitespace();
+                let iter = "200u8 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1076,7 +1083,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_second_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1084,7 +1091,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_second_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1092,7 +1099,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_second_operand() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1100,7 +1107,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_both_operands() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((
                     Operand::Register(Register::A),
                     Operand::Register(Register::B),
@@ -1111,7 +1118,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_both_operands() {
-                let iter = "10 20".split_whitespace();
+                let iter = "10 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1119,7 +1126,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_first_operand_and_immediate_value_in_second_operand() {
-                let iter = "ra 20".split_whitespace();
+                let iter = "ra 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Register(Register::A), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1127,7 +1134,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_first_operand_and_register_in_second_operand() {
-                let iter = "10 rb".split_whitespace();
+                let iter = "10 rb".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Half>(iter);
                 assert_eq!(actual, expected);
@@ -1142,7 +1149,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_both_parameters() {
-                let iter = "".split_whitespace();
+                let iter = "".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1150,7 +1157,7 @@ mod decoder_helper {
 
             #[test]
             fn missing_second_parameter() {
-                let iter = "ra".split_whitespace();
+                let iter = "ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::IncompleteInstruction);
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1158,7 +1165,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_first_operand() {
-                let iter = "rx ra".split_whitespace();
+                let iter = "rx ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1166,7 +1173,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_first_operand() {
-                let iter = "-1 ra".split_whitespace();
+                let iter = "-1 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1174,7 +1181,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_first_operand() {
-                let iter = "200u8 ra".split_whitespace();
+                let iter = "200u8 ra".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1182,7 +1189,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_register_in_second_operand() {
-                let iter = "ra rx".split_whitespace();
+                let iter = "ra rx".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1190,7 +1197,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_immediate_value_in_second_operand() {
-                let iter = "ra -1".split_whitespace();
+                let iter = "ra -1".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1198,7 +1205,7 @@ mod decoder_helper {
 
             #[test]
             fn invalid_operand_error_in_second_operand() {
-                let iter = "ra 200u8".split_whitespace();
+                let iter = "ra 200u8".split_ascii_whitespace();
                 let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1206,7 +1213,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_both_operands() {
-                let iter = "ra rb".split_whitespace();
+                let iter = "ra rb".split_ascii_whitespace();
                 let expected = Ok((
                     Operand::Register(Register::A),
                     Operand::Register(Register::B),
@@ -1217,7 +1224,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_both_operands() {
-                let iter = "10 20".split_whitespace();
+                let iter = "10 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1225,7 +1232,7 @@ mod decoder_helper {
 
             #[test]
             fn register_in_first_operand_and_immediate_value_in_second_operand() {
-                let iter = "ra 20".split_whitespace();
+                let iter = "ra 20".split_ascii_whitespace();
                 let expected = Ok((Operand::Register(Register::A), Operand::Immediate(20)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
@@ -1233,7 +1240,7 @@ mod decoder_helper {
 
             #[test]
             fn immediate_value_in_first_operand_and_register_in_second_operand() {
-                let iter = "10 rb".split_whitespace();
+                let iter = "10 rb".split_ascii_whitespace();
                 let expected = Ok((Operand::Immediate(10), Operand::Register(Register::B)));
                 let actual = ParameterDecoderHelper::try_double_operand::<Word>(iter);
                 assert_eq!(actual, expected);
