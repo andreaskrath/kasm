@@ -1,5 +1,5 @@
 use cli::Configuration;
-use constant::{Word, COMMENT, DEBUG_HELP, DEBUG_INITIAL, STACK_SIZE};
+use constant::{Word, COMMENT, DEBUG_HELP, DEBUG_INITIAL};
 use error::InterpreterError;
 use flags::Flags;
 use instruction::Instruction;
@@ -36,13 +36,15 @@ pub struct Interpreter {
 
 impl Interpreter {
     pub fn try_new(args: Arguments) -> Result<Self, InterpreterError> {
+        let config = Configuration::try_from(args)?;
+
         let p = Self {
             registers: [0; Register::VARIANT_COUNT],
             program_counter: 0,
             flags: Flags::new(),
             running: true,
-            stack: Stack::new(STACK_SIZE),
-            config: Configuration::try_from(args)?,
+            stack: Stack::new(config.stack_size),
+            config,
         };
         Ok(p)
     }

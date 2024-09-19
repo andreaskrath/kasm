@@ -13,13 +13,12 @@ pub type SignedQuarter = i16;
 pub type SignedHalf = i32;
 pub type SignedWord = i64;
 
-/// The amount of bytes in a mega byte.
-const MEGA_BYTE: usize = 1_048_576;
+pub const KILO_BYTE: usize = 1024;
 
-/// The size of the stack in the virtual processor.
-///
-/// The value is in bytes.
-pub const STACK_SIZE: usize = MEGA_BYTE * 4;
+/// The amount of bytes in a mega byte.
+pub const MEGA_BYTE: usize = KILO_BYTE * KILO_BYTE;
+
+pub const GIGA_BYTE: usize = KILO_BYTE * KILO_BYTE * KILO_BYTE;
 
 #[cfg(test)]
 pub const TEST_STACK_SIZE: usize = Quarter::MAX as usize;

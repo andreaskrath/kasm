@@ -17,6 +17,10 @@ pub enum InterpreterError {
     #[error("failed to process data section: {0}")]
     Data(DataError),
 
+    /// A wrapper for an argument error.
+    #[error("faled to process command line arguments: {0}")]
+    Argument(ArgumentError),
+
     /// Used to indicate the program counter being outside bounds of the program.
     #[error("line '{0}' is not part of the specified program")]
     InvalidProgramCounter(usize),
@@ -96,4 +100,30 @@ pub enum DataError {
     /// Indicates a key not conforming to the screaming snake case format.
     #[error("the format for the key '{0}' is invalid")]
     InvalidKeyFormat(String),
+}
+
+#[derive(Debug, Error, PartialEq)]
+pub enum ArgumentError {
+    #[error(
+        "could not retrieve the size suffix of the stack flag, this may be due to encoding issues, only use ascii"
+    )]
+    CouldNotSplitSuffix,
+
+    /// Indicates the suffix of the stack flag is not a known variant.
+    #[error("invalid stack size suffix'{0}'")]
+    InvalidStackSizeSuffix(String),
+
+    /// Indicates the initial numerical value supplied for the stack size is not valid.
+    #[error(
+        "the number '{0}' could not be parsed to a {}-bit unsigned integer",
+        usize::BITS
+    )]
+    InvalidInitialStackSize(String),
+
+    /// Indicates the computed numerical value for the stack size is not valid.
+    #[error(
+        "the computed stack size in bytes cannot be represented by a {}-bit unsigned integer",
+        usize::BITS
+    )]
+    InvalidComputedStackSize,
 }
