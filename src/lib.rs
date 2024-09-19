@@ -1,15 +1,15 @@
+pub use cli::Arguments;
 use cli::Configuration;
 use constant::{Word, COMMENT, DEBUG_HELP, DEBUG_INITIAL};
-use error::InterpreterError;
+pub use error::ArgumentError;
+pub use error::InterpreterError;
 use flags::Flags;
 use instruction::Instruction;
 use preprocess::expand_data_section;
 use register::Register;
 use registers::Registers;
-use std::io::stdin;
-
-pub use cli::Arguments;
 use stack::Stack;
+use std::io::stdin;
 
 mod cli;
 mod constant;
@@ -68,8 +68,8 @@ impl Interpreter {
         self.program_counter as usize
     }
 
-    pub fn run(&mut self, program: &str) -> Result<(), InterpreterError> {
-        let data_expanded_program = expand_data_section(program).map_err(InterpreterError::Data)?;
+    pub fn run(&mut self, content: &str) -> Result<(), InterpreterError> {
+        let data_expanded_program = expand_data_section(content).map_err(InterpreterError::Data)?;
         let program: Box<[&str]> = data_expanded_program.lines().collect();
 
         if self.config.debug {

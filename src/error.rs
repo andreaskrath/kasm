@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use thiserror::Error;
 
 /// The application level error.
@@ -126,4 +127,24 @@ pub enum ArgumentError {
         usize::BITS
     )]
     InvalidComputedStackSize,
+
+    /// Indicates the specified program file could not be found.
+    #[error("could not find a file named '{0}'")]
+    FileNotFound(PathBuf),
+
+    /// Indicates an issue with permissions, the specific issue is specified by the String parameter.
+    #[error("could not {0} due to lacking permissions")]
+    LackingPermissions(String),
+
+    /// Indicates an unknown error occured while trying to open the specified input file.
+    #[error("an unknown error occured while trying to open specified program file, underlying cause is: {0}")]
+    UnknownProgramFileIssue(String),
+
+    /// Indicates an issue with encoding in the program file making reading the file impossible.
+    #[error("the program file contains invalid encoding, it must be UTF-8 compatible")]
+    ProgramFileInvalidEncoding,
+
+    /// Indicates the specified program file is not in fact a file.
+    #[error("'{0}' is not a file")]
+    NotAFile(PathBuf),
 }

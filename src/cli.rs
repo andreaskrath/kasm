@@ -59,6 +59,9 @@ impl TryFrom<Arguments> for Configuration {
 
 #[derive(Debug, Parser, PartialEq)]
 pub struct Arguments {
+    #[arg(required = true, value_name = "FILE")]
+    pub file_name: PathBuf,
+
     /// Print the amount of executed instructions after the program is finished
     #[arg(long = "instructions", short = 'i')]
     instructions: bool,
@@ -108,13 +111,16 @@ fn parse_stack_size(s: String) -> Result<usize, ArgumentError> {
 #[cfg(test)]
 mod regression {
     mod debug {
+        use std::path::PathBuf;
+
         use crate::Arguments;
         use clap::Parser;
 
         #[test]
         fn undefined() {
-            let args = [""];
+            let args = ["", "file.kasm"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: false,
                 output: None,
                 debug: false,
@@ -128,8 +134,9 @@ mod regression {
 
         #[test]
         fn long() {
-            let args = ["", "--debug"];
+            let args = ["", "file.kasm", "--debug"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: false,
                 output: None,
                 debug: true,
@@ -143,8 +150,9 @@ mod regression {
 
         #[test]
         fn short() {
-            let args = ["", "-d"];
+            let args = ["", "file.kasm", "-d"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: false,
                 output: None,
                 debug: true,
@@ -158,13 +166,16 @@ mod regression {
     }
 
     mod instructions {
+        use std::path::PathBuf;
+
         use crate::Arguments;
         use clap::Parser;
 
         #[test]
         fn undefined() {
-            let args = [""];
+            let args = ["", "file.kasm"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: false,
                 output: None,
                 debug: false,
@@ -178,8 +189,9 @@ mod regression {
 
         #[test]
         fn long() {
-            let args = ["", "--instructions"];
+            let args = ["", "file.kasm", "--instructions"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: true,
                 output: None,
                 debug: false,
@@ -193,8 +205,9 @@ mod regression {
 
         #[test]
         fn short() {
-            let args = ["", "-i"];
+            let args = ["", "file.kasm", "-i"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: true,
                 output: None,
                 debug: false,
@@ -215,8 +228,9 @@ mod regression {
 
         #[test]
         fn undefined() {
-            let args = [""];
+            let args = ["", "file.kasm"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: false,
                 output: None,
                 debug: false,
@@ -230,8 +244,9 @@ mod regression {
 
         #[test]
         fn long() {
-            let args = ["", "--output", "file.txt"];
+            let args = ["", "file.kasm", "--output", "file.txt"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: false,
                 output: Some(PathBuf::from("file.txt")),
                 debug: false,
@@ -245,8 +260,9 @@ mod regression {
 
         #[test]
         fn short() {
-            let args = ["", "-o", "file.txt"];
+            let args = ["", "file.kasm", "-o", "file.txt"];
             let expected = Arguments {
+                file_name: PathBuf::from("file.kasm"),
                 instructions: false,
                 output: Some(PathBuf::from("file.txt")),
                 debug: false,
