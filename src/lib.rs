@@ -1,3 +1,4 @@
+use cli::parse_stack_size;
 pub use cli::Arguments;
 use cli::Configuration;
 use constant::{Word, COMMENT, DEBUG_HELP, DEBUG_INITIAL};
@@ -36,6 +37,8 @@ pub struct Interpreter {
 
 impl Interpreter {
     pub fn try_new(args: Arguments) -> Result<Self, InterpreterError> {
+        let stack_size =
+            parse_stack_size(args.stack_size.clone()).map_err(InterpreterError::Argument)?;
         let config = Configuration::try_from(args)?;
 
         let p = Self {
@@ -43,7 +46,7 @@ impl Interpreter {
             program_counter: 0,
             flags: Flags::new(),
             running: true,
-            stack: Stack::new(config.stack_size),
+            stack: Stack::new(stack_size),
             config,
         };
         Ok(p)

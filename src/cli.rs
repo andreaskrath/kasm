@@ -11,20 +11,16 @@ pub struct Configuration {
     pub instructions_executed: u64,
     pub output: Box<dyn Writer>,
     pub debug: bool,
-    pub stack_size: usize,
 }
 
 impl Configuration {
     #[cfg(test)]
     pub fn new_test() -> Self {
-        use crate::constant::TEST_STACK_SIZE;
-
         Self {
             print_instructions_executed: false,
             instructions_executed: 0,
             output: Box::new(Vec::new()),
             debug: false,
-            stack_size: TEST_STACK_SIZE,
         }
     }
 }
@@ -44,14 +40,11 @@ impl TryFrom<Arguments> for Configuration {
             None => Box::new(stdout()),
         };
 
-        let stack_size = parse_stack_size(args.stack_size).map_err(InterpreterError::Argument)?;
-
         let c = Self {
             print_instructions_executed: args.instructions,
             instructions_executed: 0,
             output,
             debug: args.debug,
-            stack_size,
         };
         Ok(c)
     }
@@ -76,13 +69,13 @@ pub struct Arguments {
 
     /// The size of the stack; requires a size suffix: b/B = byte, k/K = kilobyte, m/M = megabyte, g/G = gigabyte
     #[arg(long = "stack", short = 's', value_name = "SIZE", default_value = "4m")]
-    stack_size: String,
+    pub(super) stack_size: String,
 }
 
 /// Parses the indicated stack size by the stack size flag.
 ///
 /// Ensures correct format and numeric values for the underlying architecture.
-fn parse_stack_size(s: String) -> Result<usize, ArgumentError> {
+pub(super) fn parse_stack_size(s: String) -> Result<usize, ArgumentError> {
     let (num, size_suffix) = s
         .split_at_checked(s.len() - 1)
         .ok_or(ArgumentError::CouldNotSplitSuffix)?;
