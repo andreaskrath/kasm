@@ -118,6 +118,27 @@ The constants in the data section are expanded at runtime, before the program is
 As such, using constants does not result in a performance loss when the program is interpretted, but it does carry a small overhead to perform the substitution process before interpretation starts.
 This also means that the data section is not actually a valid part of the program, it is substituted and removed before the program is interpretted.
 
+## Functions
+Kasm supports functions that will be substituted for their jump destination before the program is interpretted.
+
+Functions are defined with the `fn` keyword, following by the function name and ending with a colon. The function name must be snake case. Not following this format will result in a preprocessing error.
+
+For example, if I want to define a function that increments register *a* it could look like this:
+```
+fn inc_ra:
+  // function body
+```
+
+Usually you want end a function body on the `ret` instruction to return to the call site of the function, however this is not a hard requirement.
+
+The function substitution process will ensure that:
+- any place you call a function by name, such as `call inc_ra`, the function name is substituted with the location of the first line of the function that is called
+- all functions adhere to the specified format
+- any function call is valid, i.e. calling a function that is actually defined elsewhere in the program
+- a given function name can only be defined once
+
+Violating any of the above will result in an error.
+
 # Overview
 - [Set](#Set)
 
