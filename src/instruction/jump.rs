@@ -12,3 +12,9 @@ pub enum Jump {
     IfGreaterOrEqual,
     IfLesserOrEqual,
 }
+
+#[derive(Debug, PartialEq)]
+pub enum Relative {
+    Positive,
+    Negative,
+}

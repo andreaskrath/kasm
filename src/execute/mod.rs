@@ -41,7 +41,9 @@ impl Interpreter {
             Instruction::Call(operand) => self.call(operand)?,
             Instruction::Compare(compare_ins) => self.compare(compare_ins),
             Instruction::Division(div_ins) => self.div(div_ins)?,
-            Instruction::Jump(jump_ins, operand) => self.jump(jump_ins, operand),
+            Instruction::Jump(jump_ins, operand, relative) => {
+                self.jump(jump_ins, operand, relative)
+            }
             Instruction::Multiplication(mul_ins) => self.mul(mul_ins),
             Instruction::Not(not_ins) => self.not(not_ins),
             Instruction::Or(or_ins) => self.or(or_ins),

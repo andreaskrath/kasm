@@ -5,7 +5,7 @@ pub use addition::Addition;
 pub use and::And;
 pub use compare::Compare;
 pub use division::Division;
-pub use jump::Jump;
+pub use jump::{Jump, Relative};
 pub use multiplication::Multiplication;
 pub use not::Not;
 pub use or::Or;
@@ -44,7 +44,7 @@ pub enum Instruction {
     Call(Operand<Word>),
     Compare(Compare),
     Division(Division),
-    Jump(Jump, Operand<Word>),
+    Jump(Jump, Operand<Word>, Option<Relative>),
     Multiplication(Multiplication),
     Not(Not),
     Or(Or),
