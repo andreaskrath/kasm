@@ -427,6 +427,24 @@ mod expand_function_calls {
     }
 
     #[test]
+    fn call_before_function_definition() -> Result<(), PreProcessError> {
+        let input = ["call inc_ra", "", "fn inc_ra:", "  addb ra 1", "  ret"].join("\n");
+        let expected: Box<[String]> = Box::new([
+            String::from("call 3"),
+            String::from(""),
+            String::from("fn inc_ra:"),
+            String::from("  addb ra 1"),
+            String::from("  ret"),
+        ]);
+
+        let actual = expand_function_calls(input)?;
+
+        assert_eq!(actual, expected);
+
+        Ok(())
+    }
+
+    #[test]
     fn multiple_substitutions_and_calls() -> Result<(), PreProcessError> {
         let input = [
             "fn inc_ra:",
