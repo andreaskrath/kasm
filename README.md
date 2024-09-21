@@ -22,9 +22,9 @@ The following list is not necessarily in any specific order, however it encompas
 - [x] Data section of program
 - [x] A debug mode (set with CLI flag) that allows incremental interpretation (stepping)
 - [x] Call functions by name
+- [x] Relative jump locations (+2, -2 or the like)
 - [ ] Logging/tracing
 - [ ] Signed instruction set
 - [ ] Support float instructions
 - [ ] Heap, and associated instructions (store, load, indexing etc.)
 - [ ] Documentation of the architecture, instruction set etc.
-- [ ] Relative jump locations (+2, -2 or the like)
