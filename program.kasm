@@ -1,18 +1,21 @@
-pshb FIB_1
-pshb FIB_2
-setb rd KNOWN_FIB_NUMBERS
-popb ra
-popb rb
-setb rc rb
-addb rb ra
-pshb rc
-pshb ra
-pshb rb
-addb rd 1
-cmpb rd TARGET_FIB_NUMBER
-jnz 3
-prsb 10
-stop
+call calc_fib_num
+
+fn calc_fib_num:
+  pshb FIB_1
+  pshb FIB_2
+  setb rd KNOWN_FIB_NUMBERS
+  popb ra
+  popb rb
+  setb rc rb
+  addb rb ra
+  pshb rc
+  pshb ra
+  pshb rb
+  addb rd 1
+  cmpb rd TARGET_FIB_NUMBER
+  jnz 6
+  prsb 10
+  stop
 
 DATA:
     TARGET_FIB_NUMBER 10
