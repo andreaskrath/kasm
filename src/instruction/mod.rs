@@ -44,7 +44,7 @@ pub enum Instruction {
     Call(Operand<Word>),
     Compare(Compare),
     Division(Division),
-    Jump(Jump),
+    Jump(Jump, Operand<Word>),
     Multiplication(Multiplication),
     Not(Not),
     Or(Or),

@@ -10,79 +10,79 @@ pub struct JumpParameterDecoder;
 impl JumpParameterDecoder {
     pub fn unconditional(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::Unconditional(operand);
+        let instruction = Jump::Unconditional;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_zero(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfZero(operand);
+        let instruction = Jump::IfZero;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_not_zero(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfNotZero(operand);
+        let instruction = Jump::IfNotZero;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_sign(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfSign(operand);
+        let instruction = Jump::IfSign;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_not_sign(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfNotSign(operand);
+        let instruction = Jump::IfNotSign;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_overflow(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfOverflow(operand);
+        let instruction = Jump::IfOverflow;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_not_overflow(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfNotOverflow(operand);
+        let instruction = Jump::IfNotOverflow;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_greater(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfGreater(operand);
+        let instruction = Jump::IfGreater;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_lesser(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfLesser(operand);
+        let instruction = Jump::IfLesser;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_greater_or_equal(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfGreaterOrEqual(operand);
+        let instruction = Jump::IfGreaterOrEqual;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 
     pub fn if_lesser_or_equal(parameters: Parameters) -> Result<Instruction, DecodeError> {
         let operand = ParameterDecoderHelper::try_operand(parameters)?;
-        let instruction = Jump::IfLesserOrEqual(operand);
+        let instruction = Jump::IfLesserOrEqual;
 
-        Ok(Instruction::Jump(instruction))
+        Ok(Instruction::Jump(instruction, operand))
     }
 }
 
@@ -140,7 +140,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jmp ra";
-            let expected = Instruction::Jump(Jump::Unconditional(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::Unconditional, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -152,7 +152,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jmp 10";
-            let expected = Instruction::Jump(Jump::Unconditional(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::Unconditional, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -214,7 +214,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jiz ra";
-            let expected = Instruction::Jump(Jump::IfZero(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfZero, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -226,7 +226,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jiz 10";
-            let expected = Instruction::Jump(Jump::IfZero(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfZero, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -288,7 +288,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jnz ra";
-            let expected = Instruction::Jump(Jump::IfNotZero(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfNotZero, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -300,7 +300,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jnz 10";
-            let expected = Instruction::Jump(Jump::IfNotZero(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfNotZero, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -362,7 +362,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jis ra";
-            let expected = Instruction::Jump(Jump::IfSign(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfSign, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -374,7 +374,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jis 10";
-            let expected = Instruction::Jump(Jump::IfSign(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfSign, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -436,7 +436,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jns ra";
-            let expected = Instruction::Jump(Jump::IfNotSign(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfNotSign, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -448,7 +448,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jns 10";
-            let expected = Instruction::Jump(Jump::IfNotSign(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfNotSign, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -510,7 +510,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jio ra";
-            let expected = Instruction::Jump(Jump::IfOverflow(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfOverflow, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -522,7 +522,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jio 10";
-            let expected = Instruction::Jump(Jump::IfOverflow(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfOverflow, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -584,7 +584,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jno ra";
-            let expected = Instruction::Jump(Jump::IfNotOverflow(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfNotOverflow, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -596,7 +596,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jno 10";
-            let expected = Instruction::Jump(Jump::IfNotOverflow(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfNotOverflow, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -658,7 +658,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jig ra";
-            let expected = Instruction::Jump(Jump::IfGreater(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfGreater, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -670,7 +670,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jig 10";
-            let expected = Instruction::Jump(Jump::IfGreater(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfGreater, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -732,7 +732,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jil ra";
-            let expected = Instruction::Jump(Jump::IfLesser(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfLesser, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -744,7 +744,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jil 10";
-            let expected = Instruction::Jump(Jump::IfLesser(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfLesser, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -807,7 +807,7 @@ mod regression {
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jge ra";
             let expected =
-                Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Register(Register::A)));
+                Instruction::Jump(Jump::IfGreaterOrEqual, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -819,7 +819,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jge 10";
-            let expected = Instruction::Jump(Jump::IfGreaterOrEqual(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfGreaterOrEqual, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
@@ -881,7 +881,7 @@ mod regression {
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
             let instruction = "jle ra";
-            let expected = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Register(Register::A)));
+            let expected = Instruction::Jump(Jump::IfLesserOrEqual, Operand::Register(Register::A));
 
             let actual = decode(instruction)?;
 
@@ -893,7 +893,7 @@ mod regression {
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jle 10";
-            let expected = Instruction::Jump(Jump::IfLesserOrEqual(Operand::Immediate(10)));
+            let expected = Instruction::Jump(Jump::IfLesserOrEqual, Operand::Immediate(10));
 
             let actual = decode(instruction)?;
 
