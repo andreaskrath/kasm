@@ -7,6 +7,7 @@ pub use error::InterpreterError;
 use flags::Flags;
 use instruction::Instruction;
 use preprocess::expand_data_section;
+use preprocess::expand_function_calls;
 use register::Register;
 use registers::Registers;
 use stack::Stack;
@@ -72,8 +73,10 @@ impl Interpreter {
     }
 
     pub fn run(&mut self, content: &str) -> Result<(), InterpreterError> {
-        let data_expanded_program = expand_data_section(content).map_err(InterpreterError::Data)?;
-        let program: Box<[&str]> = data_expanded_program.lines().collect();
+        let data_expanded_program =
+            expand_data_section(content).map_err(InterpreterError::PreProcess)?;
+        let program =
+            expand_function_calls(data_expanded_program).map_err(InterpreterError::PreProcess)?;
 
         if self.config.debug {
             self.debug(program)?;
@@ -84,7 +87,7 @@ impl Interpreter {
         Ok(())
     }
 
-    fn advance(&mut self, program: &[&str]) -> Result<(), InterpreterError> {
+    fn advance(&mut self, program: &[String]) -> Result<(), InterpreterError> {
         let line = program
             .get(self.pc())
             .ok_or(InterpreterError::InvalidProgramCounter(self.pc()))?;
@@ -105,7 +108,7 @@ impl Interpreter {
         Ok(())
     }
 
-    fn full(&mut self, program: Box<[&str]>) -> Result<(), InterpreterError> {
+    fn full(&mut self, program: Box<[String]>) -> Result<(), InterpreterError> {
         while self.running {
             self.advance(&program)?;
         }
@@ -113,7 +116,7 @@ impl Interpreter {
         Ok(())
     }
 
-    fn debug(&mut self, program: Box<[&str]>) -> Result<(), InterpreterError> {
+    fn debug(&mut self, program: Box<[String]>) -> Result<(), InterpreterError> {
         println!("{DEBUG_INITIAL}");
 
         while self.running {

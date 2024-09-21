@@ -21,8 +21,8 @@ The following list is not necessarily in any specific order, however it encompas
 - [x] Unsigned instruction set (also including instructions without a size component)
 - [x] Data section of program
 - [x] A debug mode (set with CLI flag) that allows incremental interpretation (stepping)
+- [x] Call functions by name
 - [ ] Logging/tracing
-- [ ] Call functions by name
 - [ ] Signed instruction set
 - [ ] Support float instructions
 - [ ] Heap, and associated instructions (store, load, indexing etc.)

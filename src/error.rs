@@ -14,9 +14,9 @@ pub enum InterpreterError {
     #[error("failed to execute line {0}: {1}")]
     Execute(usize, ExecuteError),
 
-    /// A wrapper for a data error.
-    #[error("failed to process data section: {0}")]
-    Data(DataError),
+    /// A wrapper for a preprocess error.
+    #[error("failed during preprocessing: {0}")]
+    PreProcess(PreProcessError),
 
     /// A wrapper for an argument error.
     #[error("faled to process command line arguments: {0}")]
@@ -91,16 +91,38 @@ pub enum ExecuteError {
     DivideByZero,
 }
 
-/// Represents an error during the parsing and substitution of the data section.
+/// Represents an error during the parsing and substitution during preprocessing.
 #[derive(Debug, Error, PartialEq)]
-pub enum DataError {
+pub enum PreProcessError {
     /// Indicates a key in the data section is missing a corresponding value.
     #[error("there is no value defined for the key '{0}'")]
     MissingValue(String),
 
-    /// Indicates a key not conforming to the screaming snake case format.
+    /// Indicates a key in the data section not conforming to the screaming snake case format.
     #[error("the format for the key '{0}' is invalid")]
     InvalidKeyFormat(String),
+
+    /// Indicates a missing function name after the 'fn' keyword.
+    #[error("no function name is specified")]
+    MissingFunctionName,
+
+    /// Indicates a missing colon suffix on function name.
+    #[error("missing colon suffix on function name")]
+    MissingColonSuffix,
+
+    /// Indicates the same function name defined multiple times.
+    #[error("function name '{0}' is defined multiple times")]
+    DuplicateFunctionName(String),
+
+    /// Indicates a call was made to a function that is not defined in the program.
+    #[error("called undefined function named '{0}'")]
+    UndefinedFunctionCalled(String),
+
+    #[error("function name '{0}' is not snake case")]
+    InvalidFunctionNameFormat(String),
+
+    #[error("a function was named after an instruction")]
+    FunctionNamedAfterInstruction,
 }
 
 #[derive(Debug, Error, PartialEq)]

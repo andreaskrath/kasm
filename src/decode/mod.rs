@@ -63,7 +63,7 @@ impl Interpreter {
     }
 }
 
-const DECODE_TABLE: DecodeTable = phf_map! {
+pub const DECODE_TABLE: DecodeTable = phf_map! {
     "stop" => Instruction::stop,
     "setb" => SetParameterDecoder::byte,
     "setq" => SetParameterDecoder::quarter,
