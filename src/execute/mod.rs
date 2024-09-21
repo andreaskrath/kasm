@@ -77,8 +77,11 @@ impl Interpreter {
     }
 
     fn call(&mut self, operand: Operand<Word>) -> Result<(), ExecuteError> {
+        let return_address = self.program_counter + 1;
+        self.stack.push(return_address)?;
+
         let destination = self.get_operand_value(operand);
-        self.stack.push(destination)?;
+        self.program_counter = destination;
 
         Ok(())
     }
@@ -145,17 +148,19 @@ mod call {
     #[test]
     fn call_from_register() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
-        i.registers.set(Register::A, Word::MAX);
+        i.registers.set(Register::A, 500);
         let instruction = Instruction::Call(Operand::Register(Register::A));
-        let expected = Word::MAX;
+        let expected_return_address = 1;
+        let expected_program_counter = 500;
 
         i.execute(instruction)?;
-        let actual: Word = i
+        let actual_return_address: Word = i
             .stack
             .pop()
             .expect("should be able to pop value from stack");
 
-        assert_eq!(actual, expected);
+        assert_eq!(actual_return_address, expected_return_address);
+        assert_eq!(i.program_counter, expected_program_counter);
 
         Ok(())
     }
@@ -163,16 +168,18 @@ mod call {
     #[test]
     fn call_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
-        let instruction = Instruction::Call(Operand::Immediate(Word::MAX));
-        let expected = Word::MAX;
+        let instruction = Instruction::Call(Operand::Immediate(500));
+        let expected_return_address = 1;
+        let expected_program_counter = 500;
 
         i.execute(instruction)?;
-        let actual: Word = i
+        let actual_return_address: Word = i
             .stack
             .pop()
             .expect("should be able to pop value from stack");
 
-        assert_eq!(actual, expected);
+        assert_eq!(actual_return_address, expected_return_address);
+        assert_eq!(i.program_counter, expected_program_counter);
 
         Ok(())
     }
