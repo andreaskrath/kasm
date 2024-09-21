@@ -41,86 +41,79 @@ impl OrParameterDecoder {
 mod regression {
     mod byte {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, Or},
             operand::Operand,
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_first_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orb";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn incomplete_instruction_error_missing_second_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orb ra";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orb rx 1";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error_in_operand() {
-            let mut i = Interpreter::new_test();
             let instruction = "orb ra rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_immediate_value_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orb ra -1";
             let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_operand_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orb ra 200u8";
             let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn second_param_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orb ra rb";
             let expected = Instruction::Or(Or::Byte(Register::A, Operand::Register(Register::B)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -129,11 +122,10 @@ mod regression {
 
         #[test]
         fn second_param_immediate() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orb ra 20";
             let expected = Instruction::Or(Or::Byte(Register::A, Operand::Immediate(20)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -143,87 +135,80 @@ mod regression {
 
     mod quarter {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, Or},
             operand::Operand,
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_first_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orq";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn incomplete_instruction_error_missing_second_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orq ra";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orq rx 1";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error_in_operand() {
-            let mut i = Interpreter::new_test();
             let instruction = "orq ra rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_immediate_value_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orq ra -1";
             let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_operand_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orq ra 200u8";
             let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn second_param_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orq ra rb";
             let expected =
                 Instruction::Or(Or::Quarter(Register::A, Operand::Register(Register::B)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -232,11 +217,10 @@ mod regression {
 
         #[test]
         fn second_param_immediate() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orq ra 20";
             let expected = Instruction::Or(Or::Quarter(Register::A, Operand::Immediate(20)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -246,86 +230,79 @@ mod regression {
 
     mod half {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, Or},
             operand::Operand,
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_first_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orh";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn incomplete_instruction_error_missing_second_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orh ra";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orh rx 1";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error_in_operand() {
-            let mut i = Interpreter::new_test();
             let instruction = "orh ra rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_immediate_value_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orh ra -1";
             let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_operand_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orh ra 200u8";
             let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn second_param_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orh ra rb";
             let expected = Instruction::Or(Or::Half(Register::A, Operand::Register(Register::B)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -334,11 +311,10 @@ mod regression {
 
         #[test]
         fn second_param_immediate() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orh ra 20";
             let expected = Instruction::Or(Or::Half(Register::A, Operand::Immediate(20)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -348,86 +324,79 @@ mod regression {
 
     mod word {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, Or},
             operand::Operand,
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_first_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orw";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn incomplete_instruction_error_missing_second_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "orw ra";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orw rx 1";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error_in_operand() {
-            let mut i = Interpreter::new_test();
             let instruction = "orw ra rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_immediate_value_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orw ra -1";
             let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_operand_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "orw ra 200u8";
             let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn second_param_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orw ra rb";
             let expected = Instruction::Or(Or::Word(Register::A, Operand::Register(Register::B)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -436,11 +405,10 @@ mod regression {
 
         #[test]
         fn second_param_immediate() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "orw ra 20";
             let expected = Instruction::Or(Or::Word(Register::A, Operand::Immediate(20)));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 

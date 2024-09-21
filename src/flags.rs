@@ -90,21 +90,21 @@ mod half {
     #[test]
     fn min_value_not_set() {
         let mut f = Flags::new();
-        f.set(0b00000000_00000000_00000000_00000000 as Half, false);
+        f.set(0b0000_0000_0000_0000_0000_0000_0000_0000 as Half, false);
         assert!(!f.sign);
     }
 
     #[test]
     fn min_value_that_sets() {
         let mut f = Flags::new();
-        f.set(0b10000000_00000000_00000000_00000000 as Half, false);
+        f.set(0b1000_0000_0000_0000_0000_0000_0000_0000 as Half, false);
         assert!(f.sign);
     }
 
     #[test]
     fn max_value_that_sets() {
         let mut f = Flags::new();
-        f.set(0b11111111_11111111_11111111_11111111 as Half, false);
+        f.set(0b1111_1111_1111_1111_1111_1111_1111_1111 as Half, false);
         assert!(f.sign);
     }
 }
@@ -119,7 +119,8 @@ mod word {
     fn min_value_not_set() {
         let mut f = Flags::new();
         f.set(
-            0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000 as Word,
+            0b0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000
+                as Word,
             false,
         );
         assert!(!f.sign);
@@ -129,7 +130,8 @@ mod word {
     fn min_value_that_sets() {
         let mut f = Flags::new();
         f.set(
-            0b10000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000 as Word,
+            0b1000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000
+                as Word,
             false,
         );
         assert!(f.sign);
@@ -139,7 +141,8 @@ mod word {
     fn max_value_that_sets() {
         let mut f = Flags::new();
         f.set(
-            0b11111111_11111111_11111111_11111111_11111111_11111111_11111111_11111111 as Word,
+            0b1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111_1111
+                as Word,
             false,
         );
         assert!(f.sign);

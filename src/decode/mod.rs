@@ -4,7 +4,6 @@ use crate::{
     instruction::Instruction,
     operand::Operand,
     register::Register,
-    Interpreter,
 };
 use addition::AdditionParameterDecoder;
 use and::AndParameterDecoder;
@@ -44,23 +43,21 @@ mod subtraction;
 mod test;
 mod xor;
 
-impl Interpreter {
-    /// Decodes an instruction in string representation into an [`Instruction`].
-    ///
-    /// # Errors
-    /// An error is returned if something went wrong during decoding.
-    ///
-    /// This includes, but is not limited to issues with the instruction itself, or issues in decoding instruction parameters.
-    pub(super) fn decode(&mut self, s: &str) -> Result<Instruction, DecodeError> {
-        let mut s_iter = s.split_ascii_whitespace();
-        let instruction = s_iter.next().ok_or(DecodeError::EmptyLine)?;
-        let decoder = DECODE_TABLE
-            .get(instruction)
-            .ok_or(DecodeError::UnknownInstruction(instruction.to_string()))?;
-        let instruction = decoder(s_iter)?;
+/// Decodes an instruction in string representation into an [`Instruction`].
+///
+/// # Errors
+/// An error is returned if something went wrong during decoding.
+///
+/// This includes, but is not limited to issues with the instruction itself, or issues in decoding instruction parameters.
+pub(super) fn decode(s: &str) -> Result<Instruction, DecodeError> {
+    let mut s_iter = s.split_ascii_whitespace();
+    let instruction = s_iter.next().ok_or(DecodeError::EmptyLine)?;
+    let decoder = DECODE_TABLE
+        .get(instruction)
+        .ok_or(DecodeError::UnknownInstruction(instruction.to_string()))?;
+    let instruction = decoder(s_iter)?;
 
-        Ok(instruction)
-    }
+    Ok(instruction)
 }
 
 pub const DECODE_TABLE: DecodeTable = phf_map! {
@@ -1251,26 +1248,24 @@ mod decoder_helper {
 
 #[cfg(test)]
 mod regression {
-    use crate::{error::DecodeError, instruction::Instruction, Interpreter};
+    use crate::{decode::decode, error::DecodeError, instruction::Instruction};
 
     #[test]
     fn unknown_instruction() {
-        let mut i = Interpreter::new_test();
         let instruction = "hello";
         let expected = Err(DecodeError::UnknownInstruction(instruction.to_string()));
 
-        let actual = i.decode(instruction);
+        let actual = decode(instruction);
 
-        assert_eq!(actual, expected)
+        assert_eq!(actual, expected);
     }
 
     #[test]
     fn stop() -> Result<(), DecodeError> {
-        let mut i = Interpreter::new_test();
         let instruction = "stop";
         let expected = Instruction::Stop;
 
-        let actual = i.decode(instruction)?;
+        let actual = decode(instruction)?;
 
         assert_eq!(actual, expected);
 
@@ -1279,11 +1274,10 @@ mod regression {
 
     #[test]
     fn ret() -> Result<(), DecodeError> {
-        let mut i = Interpreter::new_test();
         let instruction = "ret";
         let expected = Instruction::Return;
 
-        let actual = i.decode(instruction)?;
+        let actual = decode(instruction)?;
 
         assert_eq!(actual, expected);
 
@@ -1292,61 +1286,56 @@ mod regression {
 
     mod call_regression {
         use crate::{
-            error::DecodeError, instruction::Instruction, operand::Operand, register::Register,
-            Interpreter,
+            decode::decode, error::DecodeError, instruction::Instruction, operand::Operand,
+            register::Register,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "call";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "call rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_immediate_value_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "call -1";
             let expected = Err(DecodeError::InvalidImmediateValue("-1".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_operand_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "call 200u8";
             let expected = Err(DecodeError::InvalidOperand("200u8".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn register_in_operand() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "call ra";
             let expected = Instruction::Call(Operand::Register(Register::A));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -1355,11 +1344,10 @@ mod regression {
 
         #[test]
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "call 10";
             let expected = Instruction::Call(Operand::Immediate(10));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 

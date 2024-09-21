@@ -22,7 +22,7 @@ impl Interpreter {
 
         let (result, overflow) = a.overflow_add(b);
         self.flags.set(result, overflow);
-        self.registers.set(register, result)
+        self.registers.set(register, result);
     }
 }
 

@@ -1,8 +1,8 @@
 use super::ParameterDecoderHelper;
 use crate::{
+    constant::Parameters,
     error::DecodeError,
     instruction::{Instruction, PrintRegister},
-    constant::Parameters,
 };
 
 pub struct PrintRegisterParameterDecoder;
@@ -41,41 +41,38 @@ impl PrintRegisterParameterDecoder {
 mod regression {
     mod byte {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, PrintRegister},
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrb";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrb rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn valid_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "prrb ra";
             let expected = Instruction::PrintRegister(PrintRegister::Byte(Register::A));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -85,41 +82,38 @@ mod regression {
 
     mod quarter {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, PrintRegister},
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrq";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrq rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn valid_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "prrq ra";
             let expected = Instruction::PrintRegister(PrintRegister::Quarter(Register::A));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -129,41 +123,38 @@ mod regression {
 
     mod half {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, PrintRegister},
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrh";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrh rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn valid_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "prrh ra";
             let expected = Instruction::PrintRegister(PrintRegister::Half(Register::A));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 
@@ -173,41 +164,38 @@ mod regression {
 
     mod word {
         use crate::{
+            decode::decode,
             error::DecodeError,
             instruction::{Instruction, PrintRegister},
             register::Register,
-            Interpreter,
         };
 
         #[test]
         fn incomplete_instruction_error_missing_param() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrw";
             let expected = Err(DecodeError::IncompleteInstruction);
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn invalid_register_error() {
-            let mut i = Interpreter::new_test();
             let instruction = "prrw rx";
             let expected = Err(DecodeError::InvalidRegister("rx".to_string()));
 
-            let actual = i.decode(instruction);
+            let actual = decode(instruction);
 
             assert_eq!(actual, expected);
         }
 
         #[test]
         fn valid_register() -> Result<(), DecodeError> {
-            let mut i = Interpreter::new_test();
             let instruction = "prrw ra";
             let expected = Instruction::PrintRegister(PrintRegister::Word(Register::A));
 
-            let actual = i.decode(instruction)?;
+            let actual = decode(instruction)?;
 
             assert_eq!(actual, expected);
 

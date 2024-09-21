@@ -28,8 +28,7 @@ impl Interpreter {
         let amount = self.get_operand_value(operand);
         let values = self.stack.slice::<T>(amount)?;
 
-        writeln!(self.config.output, "{:?}", values)
-            .map_err(|err| ExecuteError::IO(err.to_string()))
+        writeln!(self.config.output, "{values:?}").map_err(|err| ExecuteError::IO(err.to_string()))
     }
 
     fn print_stack_str(&mut self, operand: Operand<Word>) -> Result<(), ExecuteError> {

@@ -38,8 +38,7 @@ pub struct Interpreter {
 
 impl Interpreter {
     pub fn try_new(args: Arguments) -> Result<Self, InterpreterError> {
-        let stack_size =
-            parse_stack_size(args.stack_size.clone()).map_err(InterpreterError::Argument)?;
+        let stack_size = parse_stack_size(&args.stack_size).map_err(InterpreterError::Argument)?;
         let config = Configuration::try_from(args)?;
 
         let p = Self {
@@ -98,9 +97,8 @@ impl Interpreter {
             return Ok(());
         }
 
-        let instruction = self
-            .decode(line)
-            .map_err(|e| InterpreterError::Decode(self.pc() - 1, e))?;
+        let instruction =
+            decode::decode(line).map_err(|e| InterpreterError::Decode(self.pc() - 1, e))?;
 
         self.execute(instruction)
             .map_err(|e| InterpreterError::Execute(self.pc() - 1, e))?;
@@ -261,7 +259,7 @@ mod integration {
     #[test]
     fn comment_has_no_effect() -> Result<(), InterpreterError> {
         let mut i = Interpreter::new_test();
-        let program = [format!("{} setb rb 5", COMMENT).as_ref(), "stop"].join("\n");
+        let program = [format!("{COMMENT} setb rb 5").as_ref(), "stop"].join("\n");
         let expected = 0;
 
         i.run(&program)?;

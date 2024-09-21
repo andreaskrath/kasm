@@ -75,7 +75,7 @@ pub struct Arguments {
 /// Parses the indicated stack size by the stack size flag.
 ///
 /// Ensures correct format and numeric values for the underlying architecture.
-pub(super) fn parse_stack_size(s: String) -> Result<usize, ArgumentError> {
+pub(super) fn parse_stack_size(s: &str) -> Result<usize, ArgumentError> {
     let (num, size_suffix) = s
         .split_at_checked(s.len() - 1)
         .ok_or(ArgumentError::CouldNotSplitSuffix)?;
@@ -282,7 +282,7 @@ mod parse_stack_size {
         let input = String::from("500ø");
         let expected = Err(ArgumentError::CouldNotSplitSuffix);
 
-        let actual = parse_stack_size(input);
+        let actual = parse_stack_size(&input);
 
         assert_eq!(actual, expected);
     }
@@ -292,7 +292,7 @@ mod parse_stack_size {
         let input = String::from("500l");
         let expected = Err(ArgumentError::InvalidStackSizeSuffix("l".to_string()));
 
-        let actual = parse_stack_size(input);
+        let actual = parse_stack_size(&input);
 
         assert_eq!(actual, expected);
     }
@@ -305,7 +305,7 @@ mod parse_stack_size {
             usize::MAX
         )));
 
-        let actual = parse_stack_size(input);
+        let actual = parse_stack_size(&input);
 
         assert_eq!(actual, expected);
     }
@@ -315,7 +315,7 @@ mod parse_stack_size {
         let input = format!("{}k", usize::MAX);
         let expected = Err(ArgumentError::InvalidComputedStackSize);
 
-        let actual = parse_stack_size(input);
+        let actual = parse_stack_size(&input);
 
         assert_eq!(actual, expected);
     }
@@ -325,7 +325,7 @@ mod parse_stack_size {
         let input = String::from("2b");
         let expected = 2;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())
@@ -336,7 +336,7 @@ mod parse_stack_size {
         let input = String::from("2B");
         let expected = 2;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())
@@ -347,7 +347,7 @@ mod parse_stack_size {
         let input = String::from("2k");
         let expected = 2 * KILO_BYTE;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())
@@ -358,7 +358,7 @@ mod parse_stack_size {
         let input = String::from("2K");
         let expected = 2 * KILO_BYTE;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())
@@ -369,7 +369,7 @@ mod parse_stack_size {
         let input = String::from("2m");
         let expected = 2 * MEGA_BYTE;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())
@@ -380,7 +380,7 @@ mod parse_stack_size {
         let input = String::from("2M");
         let expected = 2 * MEGA_BYTE;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())
@@ -391,7 +391,7 @@ mod parse_stack_size {
         let input = String::from("2g");
         let expected = 2 * GIGA_BYTE;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())
@@ -402,7 +402,7 @@ mod parse_stack_size {
         let input = String::from("2G");
         let expected = 2 * GIGA_BYTE;
 
-        let actual = parse_stack_size(input)?;
+        let actual = parse_stack_size(&input)?;
 
         assert_eq!(actual, expected);
         Ok(())

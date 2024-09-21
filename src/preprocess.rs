@@ -98,11 +98,11 @@ pub fn expand_function_calls(s_program: String) -> Result<Box<[String]>, PreProc
                 let Some(destination) = f_index.get(possible_function) else {
                     if possible_function.parse::<Word>().is_ok() {
                         continue;
-                    } else {
-                        return Err(PreProcessError::UndefinedFunctionCalled(
-                            possible_function.to_string(),
-                        ));
                     }
+
+                    return Err(PreProcessError::UndefinedFunctionCalled(
+                        possible_function.to_string(),
+                    ));
                 };
 
                 *line = line.replacen(possible_function, &destination.to_string(), 1);
@@ -415,7 +415,7 @@ mod expand_function_calls {
             String::from("fn inc_ra:"),
             String::from("  addb ra 1"),
             String::from("  ret"),
-            String::from(""),
+            String::new(),
             String::from("call 1"),
         ]);
 
@@ -431,7 +431,7 @@ mod expand_function_calls {
         let input = ["call inc_ra", "", "fn inc_ra:", "  addb ra 1", "  ret"].join("\n");
         let expected: Box<[String]> = Box::new([
             String::from("call 3"),
-            String::from(""),
+            String::new(),
             String::from("fn inc_ra:"),
             String::from("  addb ra 1"),
             String::from("  ret"),
@@ -463,11 +463,11 @@ mod expand_function_calls {
             String::from("fn inc_ra:"),
             String::from("  addb ra 1"),
             String::from("  ret"),
-            String::from(""),
+            String::new(),
             String::from("fn sub_ra:"),
             String::from("  subb ra 1"),
             String::from("  ret"),
-            String::from(""),
+            String::new(),
             String::from("call 1"),
             String::from("call 5"),
         ]);
@@ -497,7 +497,7 @@ mod expand_function_calls {
             String::from("  // adds one to register a"),
             String::from("  addb ra 1"),
             String::from("  ret"),
-            String::from(""),
+            String::new(),
             String::from("call 2"),
         ]);
 
