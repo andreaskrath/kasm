@@ -84,61 +84,6 @@ Execute errors on the other hard indicate that something went wrong during execu
 
 In other words, execute errors indicate an issue that occured during the execution of the program, most often this would be logic errors in the program.
 
-# Preprocessing
-The following section are part of the preprocessing step of the interpreter. In other words, these things happen before the program is interpretted.
-
-## Data Section
-The data section functions similar to a key-value store that can be used to defined meaningfully named constants for a program, and is entirely optional to use.
-
-It is located at the tail end of the source code and is initialized with `DATA:` where the lines below defines the key-value pairs.
-
-The key or name **must** be ascii uppercase letters, digits or underscores, for example `FIB_NUMBER_1` is a valid key, while `fib-number-1` is not.
-
-The value of a key can be any value you would otherwise utilize in-place of the constant.
-Therefore, depending on where you use the given constant it could be either a numerical value or a register.
-
-The size of the numerical values and registers are defined by the operation they are used in relation to.
-Meaning if the constant, `FIVE 5`, is used in relation to a byte-operation it will be interpretted as a byte.
-And the constant, `FIVE_HUNDRED 500`, is used in relation to a byte-operation it will result in a decode error, when the interpreter attempts to decode that instruction.
-
-The following is an example of a data section.
-```
-DATA:
-  FIB_NUMBER_1 0
-  FIVE_HUNDRED 500
-
-  // empty lines are allowed with or without comments
-  FIB_NUMBER_2 1
-```
-
-Anything below the `DATA:` marker is considered part of the data section, and will be parsed as such.
-Therefore, any source code placed below the marker will result in a data processing error.
-
-The constants in the data section are expanded at runtime, before the program is interpreted.
-As such, using constants does not result in a performance loss when the program is interpretted, but it does carry a small overhead to perform the substitution process before interpretation starts.
-This also means that the data section is not actually a valid part of the program, it is substituted and removed before the program is interpretted.
-
-## Functions
-Kasm supports functions that will be substituted for their jump destination before the program is interpretted.
-
-Functions are defined with the `fn` keyword, following by the function name and ending with a colon. The function name must be snake case. Not following this format will result in a preprocessing error.
-
-For example, if I want to define a function that increments register *a* it could look like this:
-```
-fn inc_ra:
-  // function body
-```
-
-Usually you want end a function body on the `ret` instruction to return to the call site of the function, however this is not a hard requirement.
-
-The function substitution process will ensure that:
-- any place you call a function by name, such as `call inc_ra`, the function name is substituted with the location of the first line of the function that is called
-- all functions adhere to the specified format
-- any function call is valid, i.e. calling a function that is actually defined elsewhere in the program
-- a given function name can only be defined once
-
-Violating any of the above will result in an error.
-
 # Overview
 - [Set](#Set)
 
@@ -652,3 +597,59 @@ Note that this instruction always ends on a newline.
 
 ### Error
 This instruction can result in an IO error, if the stack section could not be written to the defined output.
+
+# Preprocessing
+The following section are part of the preprocessing step of the interpreter. In other words, these things happen before the program is interpretted.
+
+## Data Section
+The data section functions similar to a key-value store that can be used to defined meaningfully named constants for a program, and is entirely optional to use.
+
+It is located at the tail end of the source code and is initialized with `DATA:` where the lines below defines the key-value pairs.
+
+The key or name **must** be ascii uppercase letters, digits or underscores, for example `FIB_NUMBER_1` is a valid key, while `fib-number-1` is not.
+
+The value of a key can be any value you would otherwise utilize in-place of the constant.
+Therefore, depending on where you use the given constant it could be either a numerical value or a register.
+
+The size of the numerical values and registers are defined by the operation they are used in relation to.
+Meaning if the constant, `FIVE 5`, is used in relation to a byte-operation it will be interpretted as a byte.
+And the constant, `FIVE_HUNDRED 500`, is used in relation to a byte-operation it will result in a decode error, when the interpreter attempts to decode that instruction.
+
+The following is an example of a data section.
+```
+DATA:
+  FIB_NUMBER_1 0
+  FIVE_HUNDRED 500
+
+  // empty lines are allowed with or without comments
+  FIB_NUMBER_2 1
+```
+
+Anything below the `DATA:` marker is considered part of the data section, and will be parsed as such.
+Therefore, any source code placed below the marker will result in a data processing error.
+
+The constants in the data section are expanded at runtime, before the program is interpreted.
+As such, using constants does not result in a performance loss when the program is interpretted, but it does carry a small overhead to perform the substitution process before interpretation starts.
+This also means that the data section is not actually a valid part of the program, it is substituted and removed before the program is interpretted.
+
+## Functions
+Kasm supports functions that will be substituted for their jump destination before the program is interpretted.
+
+Functions are defined with the `fn` keyword, following by the function name and ending with a colon. The function name must be snake case. Not following this format will result in a preprocessing error.
+
+For example, if I want to define a function that increments register *a* it could look like this:
+```
+fn inc_ra:
+  // function body
+```
+
+Usually you want end a function body on the `ret` instruction to return to the call site of the function, however this is not a hard requirement.
+
+The function substitution process will ensure that:
+- any place you call a function by name, such as `call inc_ra`, the function name is substituted with the location of the first line of the function that is called
+- all functions adhere to the specified format
+- any function call is valid, i.e. calling a function that is actually defined elsewhere in the program
+- a given function name can only be defined once
+
+Violating any of the above will result in an error.
+
