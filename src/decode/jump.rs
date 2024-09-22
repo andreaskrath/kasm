@@ -243,6 +243,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jmp +ra";
+            let expected = Instruction::Jump(
+                Jump::Unconditional,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jmp -ra";
+            let expected = Instruction::Jump(
+                Jump::Unconditional,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jmp +10";
+            let expected = Instruction::Jump(
+                Jump::Unconditional,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jmp -10";
+            let expected = Instruction::Jump(
+                Jump::Unconditional,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_zero {
@@ -250,7 +314,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -321,6 +385,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jiz +ra";
+            let expected = Instruction::Jump(
+                Jump::IfZero,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jiz -ra";
+            let expected = Instruction::Jump(
+                Jump::IfZero,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jiz +10";
+            let expected = Instruction::Jump(
+                Jump::IfZero,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jiz -10";
+            let expected = Instruction::Jump(
+                Jump::IfZero,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_not_zero {
@@ -328,7 +456,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -399,6 +527,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jnz +ra";
+            let expected = Instruction::Jump(
+                Jump::IfNotZero,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jnz -ra";
+            let expected = Instruction::Jump(
+                Jump::IfNotZero,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jnz +10";
+            let expected = Instruction::Jump(
+                Jump::IfNotZero,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jnz -10";
+            let expected = Instruction::Jump(
+                Jump::IfNotZero,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_sign {
@@ -406,7 +598,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -477,6 +669,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jis +ra";
+            let expected = Instruction::Jump(
+                Jump::IfSign,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jis -ra";
+            let expected = Instruction::Jump(
+                Jump::IfSign,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jis +10";
+            let expected = Instruction::Jump(
+                Jump::IfSign,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jis -10";
+            let expected = Instruction::Jump(
+                Jump::IfSign,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_not_sign {
@@ -484,7 +740,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -555,6 +811,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jns +ra";
+            let expected = Instruction::Jump(
+                Jump::IfNotSign,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jns -ra";
+            let expected = Instruction::Jump(
+                Jump::IfNotSign,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jns +10";
+            let expected = Instruction::Jump(
+                Jump::IfNotSign,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jns -10";
+            let expected = Instruction::Jump(
+                Jump::IfNotSign,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_overflow {
@@ -562,7 +882,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -634,6 +954,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jio +ra";
+            let expected = Instruction::Jump(
+                Jump::IfOverflow,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jio -ra";
+            let expected = Instruction::Jump(
+                Jump::IfOverflow,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jio +10";
+            let expected = Instruction::Jump(
+                Jump::IfOverflow,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jio -10";
+            let expected = Instruction::Jump(
+                Jump::IfOverflow,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_not_overflow {
@@ -641,7 +1025,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -713,6 +1097,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jno +ra";
+            let expected = Instruction::Jump(
+                Jump::IfNotOverflow,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jno -ra";
+            let expected = Instruction::Jump(
+                Jump::IfNotOverflow,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jno +10";
+            let expected = Instruction::Jump(
+                Jump::IfNotOverflow,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jno -10";
+            let expected = Instruction::Jump(
+                Jump::IfNotOverflow,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_greater {
@@ -720,7 +1168,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -791,6 +1239,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jig +ra";
+            let expected = Instruction::Jump(
+                Jump::IfGreater,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jig -ra";
+            let expected = Instruction::Jump(
+                Jump::IfGreater,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jig +10";
+            let expected = Instruction::Jump(
+                Jump::IfGreater,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jig -10";
+            let expected = Instruction::Jump(
+                Jump::IfGreater,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_lesser {
@@ -798,7 +1310,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -869,6 +1381,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jil +ra";
+            let expected = Instruction::Jump(
+                Jump::IfLesser,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jil -ra";
+            let expected = Instruction::Jump(
+                Jump::IfLesser,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jil +10";
+            let expected = Instruction::Jump(
+                Jump::IfLesser,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jil -10";
+            let expected = Instruction::Jump(
+                Jump::IfLesser,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_greater_or_equal {
@@ -876,7 +1452,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -948,6 +1524,70 @@ mod regression {
 
             Ok(())
         }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jge +ra";
+            let expected = Instruction::Jump(
+                Jump::IfGreaterOrEqual,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jge -ra";
+            let expected = Instruction::Jump(
+                Jump::IfGreaterOrEqual,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jge +10";
+            let expected = Instruction::Jump(
+                Jump::IfGreaterOrEqual,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jge -10";
+            let expected = Instruction::Jump(
+                Jump::IfGreaterOrEqual,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
     }
 
     mod if_lesser_or_equal {
@@ -955,7 +1595,7 @@ mod regression {
             constant::Word,
             decode::decode,
             error::DecodeError,
-            instruction::{Instruction, Jump},
+            instruction::{Instruction, Jump, Relative},
             operand::Operand,
             register::Register,
         };
@@ -1020,6 +1660,70 @@ mod regression {
         fn immediate_value_in_operand() -> Result<(), DecodeError> {
             let instruction = "jle 10";
             let expected = Instruction::Jump(Jump::IfLesserOrEqual, Operand::Immediate(10), None);
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jle +ra";
+            let expected = Instruction::Jump(
+                Jump::IfLesserOrEqual,
+                Operand::Register(Register::A),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_register_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jle -ra";
+            let expected = Instruction::Jump(
+                Jump::IfLesserOrEqual,
+                Operand::Register(Register::A),
+                Some(Relative::Negative),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_positive_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jle +10";
+            let expected = Instruction::Jump(
+                Jump::IfLesserOrEqual,
+                Operand::Immediate(10),
+                Some(Relative::Positive),
+            );
+
+            let actual = decode(instruction)?;
+
+            assert_eq!(actual, expected);
+
+            Ok(())
+        }
+
+        #[test]
+        fn relative_negative_immediate_value_in_operand() -> Result<(), DecodeError> {
+            let instruction = "jle -10";
+            let expected = Instruction::Jump(
+                Jump::IfLesserOrEqual,
+                Operand::Immediate(10),
+                Some(Relative::Negative),
+            );
 
             let actual = decode(instruction)?;
 
