@@ -165,6 +165,49 @@ fn is_relative(s: &mut String) -> Option<Relative> {
 }
 
 #[cfg(test)]
+mod is_relative {
+    use crate::instruction::Relative;
+
+    use super::is_relative;
+
+    #[test]
+    fn not_relative() {
+        let mut input = String::from("5");
+        let expected_mutation = input.clone();
+        let expected_return = None;
+
+        let actual_return = is_relative(&mut input);
+
+        assert_eq!(input, expected_mutation);
+        assert_eq!(actual_return, expected_return);
+    }
+
+    #[test]
+    fn relative_positive() {
+        let mut input = String::from("+5");
+        let expected_mutation = String::from("5");
+        let expected_return = Some(Relative::Positive);
+
+        let actual_return = is_relative(&mut input);
+
+        assert_eq!(input, expected_mutation);
+        assert_eq!(actual_return, expected_return);
+    }
+
+    #[test]
+    fn relative_negative() {
+        let mut input = String::from("-5");
+        let expected_mutation = String::from("5");
+        let expected_return = Some(Relative::Negative);
+
+        let actual_return = is_relative(&mut input);
+
+        assert_eq!(input, expected_mutation);
+        assert_eq!(actual_return, expected_return);
+    }
+}
+
+#[cfg(test)]
 mod regression {
     mod unconditional {
         use crate::{
