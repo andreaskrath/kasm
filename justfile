@@ -1,7 +1,6 @@
 default:
     just -l
 
-
 # Run test cases
 test:
     cargo test -q
