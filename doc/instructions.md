@@ -321,6 +321,12 @@ Where `**` is replaced by any of the jump variants.
 
 Jump instructions are unsized operations, meaning the operand is always intepreted as a word.
 
+Note that there is a special variant of jumps called relative jumps. Their purpose is to make function code more self-contained and easier to write.
+
+You make a relative jump by prefixing the operand by either `+` or `-`, the former indicating a jump down, and the latter a jump up, in the source code.
+
+This means that instead of hardcoding a jump location inside a function, you can use a relative jump and not have to think about the jump location changing if the code changes location in the file.
+
 ### Variants
 There are 11 different jump variants.
 
@@ -343,6 +349,12 @@ The following example jumps to the location contained in register *a*, if the ze
 
 ```
 jiz ra
+```
+
+The following example performs a relative jump to the instruction two lines above the jump.
+
+```
+jmp -2
 ```
 
 ### Error
