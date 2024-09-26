@@ -91,17 +91,16 @@ impl Interpreter {
             .get(self.pc())
             .ok_or(InterpreterError::InvalidProgramCounter(self.pc()))?;
 
-        self.program_counter += 1;
-
         if line.starts_with(COMMENT) {
+            self.program_counter += 1;
             return Ok(());
         }
 
         let instruction =
-            decode::decode(line).map_err(|e| InterpreterError::Decode(self.pc() - 1, e))?;
+            decode::decode(line).map_err(|e| InterpreterError::Decode(self.pc(), e))?;
 
         self.execute(instruction)
-            .map_err(|e| InterpreterError::Execute(self.pc() - 1, e))?;
+            .map_err(|e| InterpreterError::Execute(self.pc(), e))?;
 
         Ok(())
     }
@@ -222,18 +221,27 @@ mod integration {
     fn compute_fibonacci_number_10() -> Result<(), InterpreterError> {
         let mut i = Interpreter::new_test();
         let program = [
-            "setb ra 0",
-            "setb rb 1",
-            "setb rc 2",
-            "addb ra rb",
-            "pshb ra",
-            "setb ra rb",
+            "pshb FIB_1",
+            "pshb FIB_2",
+            "setb rd KNOWN_FIB_NUMBERS",
+            "popb ra",
             "popb rb",
-            "addb rc 1",
-            "cmpb rc 10",
-            "jnz 3",
+            "setb rc rb",
+            "addb rb ra",
+            "pshb rc",
+            "pshb ra",
+            "pshb rb",
+            "addb rd 1",
+            "cmpb rd TARGET_FIB_NUMBER",
+            "jnz -9",
             "prrb rb",
             "stop",
+            "",
+            "DATA:",
+            "  TARGET_FIB_NUMBER 10",
+            "  FIB_1 0",
+            "  FIB_2 1",
+            "  KNOWN_FIB_NUMBERS 2",
         ]
         .join("\n");
         let expected_value = 34;

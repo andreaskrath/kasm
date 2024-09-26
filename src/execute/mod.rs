@@ -35,6 +35,8 @@ impl Interpreter {
     pub(super) fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         self.config.instructions_executed += 1;
 
+        let increment_pc = instruction.increment();
+
         match instruction {
             Instruction::Addition(add_ins) => self.add(add_ins),
             Instruction::And(and_ins) => self.and(and_ins),
@@ -58,6 +60,10 @@ impl Interpreter {
             Instruction::Subtraction(sub_ins) => self.sub(sub_ins),
             Instruction::Test(test_ins) => self.test(test_ins),
             Instruction::Xor(xor_ins) => self.xor(xor_ins),
+        }
+
+        if increment_pc {
+            self.program_counter += 1;
         }
 
         Ok(())

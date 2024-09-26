@@ -34,6 +34,8 @@ impl Interpreter {
                 Some(Relative::Negative) => self.program_counter -= destination,
                 None => self.program_counter = destination,
             }
+        } else {
+            self.program_counter += 1;
         }
     }
 }

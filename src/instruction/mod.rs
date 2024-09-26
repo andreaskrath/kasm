@@ -60,3 +60,18 @@ pub enum Instruction {
     Test(Test),
     Xor(Xor),
 }
+
+impl Instruction {
+    /// Returns true if this instruction should increment the program counter after execution.
+    pub fn increment(&self) -> bool {
+        use Instruction::*;
+
+        match self {
+            Addition(_) | And(_) | Compare(_) | Division(_) | Multiplication(_) | Not(_)
+            | Or(_) | Pop(_) | PrintRegister(_) | PrintStack(_) | Push(_) | Remainder(_)
+            | Set(_) | Subtraction(_) | Test(_) | Xor(_) => true,
+
+            Call(_) | Jump(_, _, _) | Return | Stop => false,
+        }
+    }
+}
