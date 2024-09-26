@@ -1,7 +1,21 @@
 name: Workflow
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
+  ci:
+    permissions:
+      contents: none
+    name: Pipeline
+    needs: [build, test, format, clippy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Done
+        run: exit 0
+
   build:
     name: Release build
     runs-on: ubuntu-latest
