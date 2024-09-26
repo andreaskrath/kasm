@@ -35,7 +35,7 @@ impl Interpreter {
     pub(super) fn execute(&mut self, instruction: Instruction) -> Result<(), ExecuteError> {
         self.config.instructions_executed += 1;
 
-        let increment_pc = instruction.increment();
+        let mut increment_pc = instruction.increment();
 
         match instruction {
             Instruction::Addition(add_ins) => self.add(add_ins),
@@ -44,7 +44,7 @@ impl Interpreter {
             Instruction::Compare(compare_ins) => self.compare(compare_ins),
             Instruction::Division(div_ins) => self.div(div_ins)?,
             Instruction::Jump(jump_ins, operand, relative) => {
-                self.jump(jump_ins, operand, relative)
+                increment_pc = !self.jump(jump_ins, operand, relative);
             }
             Instruction::Multiplication(mul_ins) => self.mul(mul_ins),
             Instruction::Not(not_ins) => self.not(not_ins),

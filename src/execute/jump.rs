@@ -6,12 +6,13 @@ use crate::{
 };
 
 impl Interpreter {
+    /// Returns true if a jump was performed.
     pub(super) fn jump(
         &mut self,
         instruction: Jump,
         operand: Operand<Word>,
         relative: Option<Relative>,
-    ) {
+    ) -> bool {
         let jump_condition = match &instruction {
             Jump::Unconditional => true,
             Jump::IfZero => self.flags.zero,
@@ -34,9 +35,9 @@ impl Interpreter {
                 Some(Relative::Negative) => self.program_counter -= destination,
                 None => self.program_counter = destination,
             }
-        } else {
-            self.program_counter += 1;
         }
+
+        jump_condition
     }
 }
 
