@@ -50,7 +50,7 @@ jobs:
           shared-key: "workflow"
 
       - name: Run test cases
-      - run: cargo test --all-features
+        run: cargo test --all-features
 
   format:
     name: Formatting
