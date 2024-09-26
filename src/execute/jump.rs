@@ -90,7 +90,7 @@ mod unconditional {
             Operand::Immediate(2),
             Some(Relative::Positive),
         );
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -107,8 +107,8 @@ mod unconditional {
             Operand::Immediate(2),
             Some(Relative::Negative),
         );
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -126,7 +126,7 @@ mod unconditional {
             Some(Relative::Positive),
         );
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -143,9 +143,9 @@ mod unconditional {
             Operand::Register(Register::A),
             Some(Relative::Negative),
         );
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -204,7 +204,7 @@ mod if_zero {
             Some(Relative::Positive),
         );
         i.flags.zero = true;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -222,8 +222,8 @@ mod if_zero {
             Some(Relative::Negative),
         );
         i.flags.zero = true;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -242,7 +242,7 @@ mod if_zero {
         );
         i.flags.zero = true;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -260,9 +260,9 @@ mod if_zero {
             Some(Relative::Negative),
         );
         i.flags.zero = true;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -321,7 +321,7 @@ mod if_not_zero {
             Some(Relative::Positive),
         );
         i.flags.zero = false;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -339,8 +339,8 @@ mod if_not_zero {
             Some(Relative::Negative),
         );
         i.flags.zero = false;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -359,7 +359,7 @@ mod if_not_zero {
         );
         i.flags.zero = false;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -377,9 +377,9 @@ mod if_not_zero {
             Some(Relative::Negative),
         );
         i.flags.zero = false;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -438,7 +438,7 @@ mod if_sign {
             Some(Relative::Positive),
         );
         i.flags.sign = true;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -456,8 +456,8 @@ mod if_sign {
             Some(Relative::Negative),
         );
         i.flags.sign = true;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -476,7 +476,7 @@ mod if_sign {
         );
         i.flags.sign = true;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -494,9 +494,9 @@ mod if_sign {
             Some(Relative::Negative),
         );
         i.flags.sign = true;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -555,7 +555,7 @@ mod if_not_sign {
             Some(Relative::Positive),
         );
         i.flags.sign = false;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -573,8 +573,8 @@ mod if_not_sign {
             Some(Relative::Negative),
         );
         i.flags.sign = false;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -593,7 +593,7 @@ mod if_not_sign {
         );
         i.flags.sign = false;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -611,9 +611,9 @@ mod if_not_sign {
             Some(Relative::Negative),
         );
         i.flags.sign = false;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -672,7 +672,7 @@ mod if_overflow {
             Some(Relative::Positive),
         );
         i.flags.overflow = true;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -690,8 +690,8 @@ mod if_overflow {
             Some(Relative::Negative),
         );
         i.flags.overflow = true;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -710,7 +710,7 @@ mod if_overflow {
         );
         i.flags.overflow = true;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -728,9 +728,9 @@ mod if_overflow {
             Some(Relative::Negative),
         );
         i.flags.overflow = true;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -790,7 +790,7 @@ mod if_not_overflow {
             Some(Relative::Positive),
         );
         i.flags.overflow = false;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -808,8 +808,8 @@ mod if_not_overflow {
             Some(Relative::Negative),
         );
         i.flags.overflow = false;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -828,7 +828,7 @@ mod if_not_overflow {
         );
         i.flags.overflow = false;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -846,9 +846,9 @@ mod if_not_overflow {
             Some(Relative::Negative),
         );
         i.flags.overflow = false;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -910,7 +910,7 @@ mod if_greater {
         );
         i.flags.overflow = false;
         i.flags.zero = false;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -929,8 +929,8 @@ mod if_greater {
         );
         i.flags.overflow = false;
         i.flags.zero = false;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -950,7 +950,7 @@ mod if_greater {
         i.flags.overflow = false;
         i.flags.zero = false;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -969,9 +969,9 @@ mod if_greater {
         );
         i.flags.overflow = false;
         i.flags.zero = false;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1033,7 +1033,7 @@ mod if_lesser {
         );
         i.flags.overflow = true;
         i.flags.zero = false;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1052,8 +1052,8 @@ mod if_lesser {
         );
         i.flags.overflow = true;
         i.flags.zero = false;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1073,7 +1073,7 @@ mod if_lesser {
         i.flags.overflow = true;
         i.flags.zero = false;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1092,9 +1092,9 @@ mod if_lesser {
         );
         i.flags.overflow = true;
         i.flags.zero = false;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1189,7 +1189,7 @@ mod if_greater_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = false;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1208,8 +1208,8 @@ mod if_greater_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = false;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1229,7 +1229,7 @@ mod if_greater_or_equal {
         i.flags.overflow = false;
         i.flags.zero = false;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1248,9 +1248,9 @@ mod if_greater_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = false;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1269,7 +1269,7 @@ mod if_greater_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = true;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1288,8 +1288,8 @@ mod if_greater_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = true;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1309,7 +1309,7 @@ mod if_greater_or_equal {
         i.flags.overflow = false;
         i.flags.zero = true;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1328,9 +1328,9 @@ mod if_greater_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = true;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1425,7 +1425,7 @@ mod if_lesser_or_equal {
         );
         i.flags.overflow = true;
         i.flags.zero = false;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1444,8 +1444,8 @@ mod if_lesser_or_equal {
         );
         i.flags.overflow = true;
         i.flags.zero = false;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1465,7 +1465,7 @@ mod if_lesser_or_equal {
         i.flags.overflow = true;
         i.flags.zero = false;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1484,9 +1484,9 @@ mod if_lesser_or_equal {
         );
         i.flags.overflow = true;
         i.flags.zero = false;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1505,7 +1505,7 @@ mod if_lesser_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = true;
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1524,8 +1524,8 @@ mod if_lesser_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = true;
-        i.program_counter = 2;
-        let expected = 0;
+        i.program_counter = 3;
+        let expected = 1;
 
         i.execute(instruction)?;
 
@@ -1545,7 +1545,7 @@ mod if_lesser_or_equal {
         i.flags.overflow = false;
         i.flags.zero = true;
         i.registers.set(Register::A, 2);
-        let expected = 2;
+        let expected = 3;
 
         i.execute(instruction)?;
 
@@ -1564,9 +1564,9 @@ mod if_lesser_or_equal {
         );
         i.flags.overflow = false;
         i.flags.zero = true;
-        i.program_counter = 2;
+        i.program_counter = 3;
         i.registers.set(Register::A, 2);
-        let expected = 0;
+        let expected = 1;
 
         i.execute(instruction)?;
 

@@ -79,7 +79,8 @@ pub fn expand_function_calls(s_program: String) -> Result<Box<[String]>, PreProc
                 return Err(PreProcessError::FunctionNamedAfterInstruction);
             }
 
-            if f_index.insert(f_name, line_number + 1).is_some() {
+            // adding 2 because we are one-indexing the source code
+            if f_index.insert(f_name, line_number + 2).is_some() {
                 return Err(PreProcessError::DuplicateFunctionName(f_name.to_string()));
             }
         }
@@ -313,9 +314,7 @@ mod is_snake_case {
 
 #[cfg(test)]
 mod expand_function_calls {
-    use crate::error::PreProcessError;
-
-    use super::expand_function_calls;
+    use crate::{error::PreProcessError, preprocess::expand_function_calls};
 
     #[test]
     fn missing_function_name_error() {
@@ -416,7 +415,7 @@ mod expand_function_calls {
             String::from("  addb ra 1"),
             String::from("  ret"),
             String::new(),
-            String::from("call 1"),
+            String::from("call 2"),
         ]);
 
         let actual = expand_function_calls(input)?;
@@ -430,7 +429,7 @@ mod expand_function_calls {
     fn call_before_function_definition() -> Result<(), PreProcessError> {
         let input = ["call inc_ra", "", "fn inc_ra:", "  addb ra 1", "  ret"].join("\n");
         let expected: Box<[String]> = Box::new([
-            String::from("call 3"),
+            String::from("call 4"),
             String::new(),
             String::from("fn inc_ra:"),
             String::from("  addb ra 1"),
@@ -468,8 +467,8 @@ mod expand_function_calls {
             String::from("  subb ra 1"),
             String::from("  ret"),
             String::new(),
-            String::from("call 1"),
-            String::from("call 5"),
+            String::from("call 2"),
+            String::from("call 6"),
         ]);
 
         let actual = expand_function_calls(input)?;
@@ -498,7 +497,7 @@ mod expand_function_calls {
             String::from("  addb ra 1"),
             String::from("  ret"),
             String::new(),
-            String::from("call 2"),
+            String::from("call 3"),
         ]);
 
         let actual = expand_function_calls(input)?;

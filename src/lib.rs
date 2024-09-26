@@ -8,6 +8,7 @@ use flags::Flags;
 use instruction::Instruction;
 use preprocess::expand_data_section;
 use preprocess::expand_function_calls;
+use program::Program;
 use register::Register;
 use registers::Registers;
 use stack::Stack;
@@ -22,6 +23,7 @@ mod flags;
 mod instruction;
 mod operand;
 mod preprocess;
+mod program;
 mod register;
 mod registers;
 mod stack;
@@ -43,7 +45,7 @@ impl Interpreter {
 
         let p = Self {
             registers: [0; Register::VARIANT_COUNT],
-            program_counter: 0,
+            program_counter: 1,
             flags: Flags::new(),
             running: true,
             stack: Stack::new(stack_size),
@@ -58,7 +60,7 @@ impl Interpreter {
 
         Self {
             registers: [0; Register::VARIANT_COUNT],
-            program_counter: 0,
+            program_counter: 1,
             flags: Flags::new(),
             running: true,
             stack: Stack::new(TEST_STACK_SIZE),
@@ -71,11 +73,12 @@ impl Interpreter {
         self.program_counter as usize
     }
 
-    pub fn run(&mut self, content: &str) -> Result<(), InterpreterError> {
-        let data_expanded_program =
-            expand_data_section(content).map_err(InterpreterError::PreProcess)?;
-        let program =
-            expand_function_calls(data_expanded_program).map_err(InterpreterError::PreProcess)?;
+    pub fn run(&mut self, source_code: &str) -> Result<(), InterpreterError> {
+        let data_expanded_source_code =
+            expand_data_section(source_code).map_err(InterpreterError::PreProcess)?;
+        let final_source_code = expand_function_calls(data_expanded_source_code)
+            .map_err(InterpreterError::PreProcess)?;
+        let program = Program::new(final_source_code);
 
         if self.config.debug {
             self.debug(program)?;
@@ -86,10 +89,8 @@ impl Interpreter {
         Ok(())
     }
 
-    fn advance(&mut self, program: &[String]) -> Result<(), InterpreterError> {
-        let line = program
-            .get(self.pc())
-            .ok_or(InterpreterError::InvalidProgramCounter(self.pc()))?;
+    fn advance(&mut self, program: &Program) -> Result<(), InterpreterError> {
+        let line = program.get(self.pc())?;
 
         if line.starts_with(COMMENT) {
             self.program_counter += 1;
@@ -105,7 +106,7 @@ impl Interpreter {
         Ok(())
     }
 
-    fn full(&mut self, program: Box<[String]>) -> Result<(), InterpreterError> {
+    fn full(&mut self, program: Program) -> Result<(), InterpreterError> {
         while self.running {
             self.advance(&program)?;
         }
@@ -113,7 +114,7 @@ impl Interpreter {
         Ok(())
     }
 
-    fn debug(&mut self, program: Box<[String]>) -> Result<(), InterpreterError> {
+    fn debug(&mut self, program: Program) -> Result<(), InterpreterError> {
         println!("{DEBUG_INITIAL}");
 
         while self.running {
@@ -180,7 +181,7 @@ mod integration {
         let mut i = Interpreter::new_test();
         let program = [
             format!("cmpb 0 {}", Byte::MAX).as_ref(), // this is 1 after wrapping around
-            "jil 3",
+            "jil 4",
             "setb ra 10",
             "stop",
         ]
@@ -199,7 +200,7 @@ mod integration {
     fn pop_empty_stack() {
         let mut i = Interpreter::new_test();
         let program = ["popb ra"].join("\n");
-        let expected = Err(InterpreterError::Execute(0, ExecuteError::StackUnderflow));
+        let expected = Err(InterpreterError::Execute(1, ExecuteError::StackUnderflow));
 
         let actual = i.run(&program);
 
@@ -209,8 +210,8 @@ mod integration {
     #[test]
     fn push_until_stack_overflow() {
         let mut i = Interpreter::new_test();
-        let program = ["pshw 10", "jmp 0"].join("\n");
-        let expected = Err(InterpreterError::Execute(0, ExecuteError::StackOverflow));
+        let program = ["pshw 10", "jmp 1"].join("\n");
+        let expected = Err(InterpreterError::Execute(1, ExecuteError::StackOverflow));
 
         let actual = i.run(&program);
 
@@ -284,7 +285,7 @@ mod integration {
         let mut i = Interpreter::new_test();
         let program = "hello";
         let expected = Err(InterpreterError::Decode(
-            0,
+            1,
             DecodeError::UnknownInstruction("hello".to_string()),
         ));
 
@@ -297,10 +298,12 @@ mod integration {
     fn execute_error_on_expected_line() {
         let mut i = Interpreter::new_test();
         let program = "divb ra 0";
-        let expected = Err(InterpreterError::Execute(0, ExecuteError::DivideByZero));
+        let expected = Err(InterpreterError::Execute(1, ExecuteError::DivideByZero));
 
         let actual = i.run(program);
 
         assert_eq!(actual, expected);
     }
+
+    // something to do with calling functions
 }

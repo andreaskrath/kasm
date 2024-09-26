@@ -158,7 +158,7 @@ mod call {
         let mut i = Interpreter::new_test();
         i.registers.set(Register::A, 500);
         let instruction = Instruction::Call(Operand::Register(Register::A));
-        let expected_return_address = 1;
+        let expected_return_address = 2;
         let expected_program_counter = 500;
 
         i.execute(instruction)?;
@@ -177,7 +177,7 @@ mod call {
     fn call_from_immediate() -> Result<(), ExecuteError> {
         let mut i = Interpreter::new_test();
         let instruction = Instruction::Call(Operand::Immediate(500));
-        let expected_return_address = 1;
+        let expected_return_address = 2;
         let expected_program_counter = 500;
 
         i.execute(instruction)?;
