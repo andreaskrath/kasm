@@ -89,6 +89,14 @@ pub enum ExecuteError {
     /// Indicates a division operation tried to divide by zero.
     #[error("attempted to divide by zero")]
     DivideByZero,
+
+    /// Indicates a program counter overflow during increment or relative jump.
+    #[error("the program counter overflowed")]
+    ProgramCounterOverflow,
+
+    /// Indicates a program counter underflow during relative jump.
+    #[error("the program counter underflowed")]
+    ProgramCounterUnderflow,
 }
 
 /// Represents an error during the parsing and substitution during preprocessing.

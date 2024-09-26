@@ -44,7 +44,7 @@ impl Interpreter {
             Instruction::Compare(compare_ins) => self.compare(compare_ins),
             Instruction::Division(div_ins) => self.div(div_ins)?,
             Instruction::Jump(jump_ins, operand, relative) => {
-                increment_pc = !self.jump(jump_ins, operand, relative);
+                increment_pc = !self.jump(jump_ins, operand, relative)?;
             }
             Instruction::Multiplication(mul_ins) => self.mul(mul_ins),
             Instruction::Not(not_ins) => self.not(not_ins),

@@ -1,5 +1,6 @@
 use crate::{
     constant::Word,
+    error::ExecuteError,
     instruction::{Jump, Relative},
     operand::Operand,
     Interpreter,
@@ -12,7 +13,7 @@ impl Interpreter {
         instruction: Jump,
         operand: Operand<Word>,
         relative: Option<Relative>,
-    ) -> bool {
+    ) -> Result<bool, ExecuteError> {
         let jump_condition = match &instruction {
             Jump::Unconditional => true,
             Jump::IfZero => self.flags.zero,
@@ -30,14 +31,20 @@ impl Interpreter {
         if jump_condition {
             let destination = self.get_operand_value(operand);
 
-            match relative {
-                Some(Relative::Positive) => self.program_counter += destination,
-                Some(Relative::Negative) => self.program_counter -= destination,
-                None => self.program_counter = destination,
+            self.program_counter = match relative {
+                Some(Relative::Positive) => self
+                    .program_counter
+                    .checked_add(destination)
+                    .ok_or(ExecuteError::ProgramCounterOverflow)?,
+                Some(Relative::Negative) => self
+                    .program_counter
+                    .checked_sub(destination)
+                    .ok_or(ExecuteError::ProgramCounterUnderflow)?,
+                None => destination,
             }
         }
 
-        jump_condition
+        Ok(jump_condition)
     }
 }
 
@@ -46,6 +53,7 @@ impl Interpreter {
 #[cfg(test)]
 mod unconditional {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -53,6 +61,37 @@ mod unconditional {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::Unconditional,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::Unconditional,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -158,6 +197,7 @@ mod unconditional {
 #[cfg(test)]
 mod if_zero {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -165,6 +205,39 @@ mod if_zero {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfZero,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.zero = true;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfZero,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.zero = true;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -275,6 +348,7 @@ mod if_zero {
 #[cfg(test)]
 mod if_not_zero {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -282,6 +356,39 @@ mod if_not_zero {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfNotZero,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.zero = false;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfNotZero,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.zero = false;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -392,6 +499,7 @@ mod if_not_zero {
 #[cfg(test)]
 mod if_sign {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -399,6 +507,39 @@ mod if_sign {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfSign,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.sign = true;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfSign,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.sign = true;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -509,6 +650,7 @@ mod if_sign {
 #[cfg(test)]
 mod if_not_sign {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -516,6 +658,39 @@ mod if_not_sign {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfNotSign,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.sign = false;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfNotSign,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.sign = false;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -626,6 +801,7 @@ mod if_not_sign {
 #[cfg(test)]
 mod if_overflow {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -633,6 +809,39 @@ mod if_overflow {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfOverflow,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.overflow = true;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfOverflow,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.overflow = true;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -743,6 +952,7 @@ mod if_overflow {
 #[cfg(test)]
 mod if_not_overflow {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -750,6 +960,39 @@ mod if_not_overflow {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfNotOverflow,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.overflow = false;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfNotOverflow,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.overflow = false;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -861,6 +1104,7 @@ mod if_not_overflow {
 #[cfg(test)]
 mod if_greater {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -868,6 +1112,41 @@ mod if_greater {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfGreater,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.overflow = false;
+        i.flags.zero = false;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfGreater,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.overflow = false;
+        i.flags.zero = false;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -984,6 +1263,7 @@ mod if_greater {
 #[cfg(test)]
 mod if_lesser {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -991,6 +1271,41 @@ mod if_lesser {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfLesser,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.overflow = true;
+        i.flags.zero = false;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfLesser,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.overflow = true;
+        i.flags.zero = false;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn immediate() -> Result<(), ExecuteError> {
@@ -1107,6 +1422,7 @@ mod if_lesser {
 #[cfg(test)]
 mod if_greater_or_equal {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -1114,6 +1430,41 @@ mod if_greater_or_equal {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfGreaterOrEqual,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.overflow = false;
+        i.flags.zero = false;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfGreaterOrEqual,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.overflow = false;
+        i.flags.zero = false;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn greater_immediate() -> Result<(), ExecuteError> {
@@ -1343,6 +1694,7 @@ mod if_greater_or_equal {
 #[cfg(test)]
 mod if_lesser_or_equal {
     use crate::{
+        constant::Word,
         error::ExecuteError,
         instruction::{Instruction, Jump, Relative},
         operand::Operand,
@@ -1350,6 +1702,41 @@ mod if_lesser_or_equal {
         registers::RegisterOperations,
         Interpreter,
     };
+
+    #[test]
+    fn program_counter_overflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfLesserOrEqual,
+            Operand::Immediate(1),
+            Some(Relative::Positive),
+        );
+        i.flags.overflow = true;
+        i.flags.zero = false;
+        i.program_counter = Word::MAX;
+        let expected = Err(ExecuteError::ProgramCounterOverflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn program_counter_underflow_error() {
+        let mut i = Interpreter::new_test();
+        let instruction = Instruction::Jump(
+            Jump::IfLesserOrEqual,
+            Operand::Immediate(2),
+            Some(Relative::Negative),
+        );
+        i.flags.overflow = true;
+        i.flags.zero = false;
+        let expected = Err(ExecuteError::ProgramCounterUnderflow);
+
+        let actual = i.execute(instruction);
+
+        assert_eq!(actual, expected);
+    }
 
     #[test]
     fn lesser_immediate() -> Result<(), ExecuteError> {
