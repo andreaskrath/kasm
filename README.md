@@ -28,3 +28,4 @@ The following list is not necessarily in any specific order, however it encompas
 - [ ] Support float instructions
 - [ ] Heap, and associated instructions (store, load, indexing etc.)
 - [ ] Documentation of the architecture, instruction set etc.
+- [ ] Revamp cli to utilize commands (run, debug, prepare) instead of flags
