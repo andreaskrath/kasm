@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Interpreter {
-    pub(super)  fn div(&mut self, instruction: Division) -> Result<(), ExecuteError> {
+    pub(super) fn div(&mut self, instruction: Division) -> Result<(), ExecuteError> {
         match instruction {
             Division::Byte(r, o) => self.div_value(r, o),
             Division::Quarter(r, o) => self.div_value(r, o),
