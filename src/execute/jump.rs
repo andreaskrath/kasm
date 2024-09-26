@@ -23,7 +23,7 @@ impl Interpreter {
             Jump::IfGreater => !self.flags.overflow && !self.flags.zero,
             Jump::IfLesser => self.flags.overflow && !self.flags.zero,
             Jump::IfGreaterOrEqual => !self.flags.overflow || self.flags.zero,
-            Jump::IfLesserOrEqual => self.flags.overflow || self.flags.zero,
+            Jump::IfLesserOrEqual => self.flags.overflow ^ self.flags.zero,
         };
 
         if jump_condition {
