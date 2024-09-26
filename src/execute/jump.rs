@@ -29,13 +29,10 @@ impl Interpreter {
         if jump_condition {
             let destination = self.get_operand_value(operand);
 
-            if let Some(relative_jump) = relative {
-                match relative_jump {
-                    Relative::Positive => self.program_counter += destination,
-                    Relative::Negative => self.program_counter -= destination,
-                }
-            } else {
-                self.program_counter = destination;
+            match relative {
+                Some(Relative::Positive) => self.program_counter += destination,
+                Some(Relative::Negative) => self.program_counter -= destination,
+                None => self.program_counter = destination,
             }
         }
     }
