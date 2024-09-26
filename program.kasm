@@ -13,12 +13,12 @@ fn calc_fib_num:
   pshb rb
   addb rd 1
   cmpb rd TARGET_FIB_NUMBER
-  jnz 6
+  jnz -9
   prsb 10
   stop
 
 DATA:
-    TARGET_FIB_NUMBER 10
-	FIB_1 0
-	FIB_2 1
-	KNOWN_FIB_NUMBERS 2
+  TARGET_FIB_NUMBER 10
+  FIB_1 0
+  FIB_2 1
+  KNOWN_FIB_NUMBERS 2
