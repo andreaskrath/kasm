@@ -32,7 +32,7 @@ jobs:
           shared-key: "workflow"
 
       - name: Run test cases
-      - run: cargo build --release
+        run: cargo build --release
 
   test:
     name: Test Suite
