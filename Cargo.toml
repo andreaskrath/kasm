@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.5.18", features = ["derive"] }
 phf = { version = "0.11.2", features = ["macros"] }
-thiserror = "1.0.63"
+thiserror = "1.0.64"
 variant_count = "1.1.0"
 
 [lints.rust]
