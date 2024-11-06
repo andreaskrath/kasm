@@ -146,8 +146,8 @@ pub enum ArgumentError {
 
     /// Indicates the initial numerical value supplied for the stack size is not valid.
     #[error(
-        "the number '{0}' could not be parsed to a {}-bit unsigned integer",
-        usize::BITS
+        "the number '{0}' could not be parsed to a {size}-bit unsigned integer",
+        size = usize::BITS
     )]
     InvalidInitialStackSize(String),
 
