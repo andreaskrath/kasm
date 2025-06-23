@@ -7,7 +7,7 @@ edition = "2021"
 clap = { version = "4.5.40", features = ["derive"] }
 phf = { version = "0.12.1", features = ["macros"] }
 thiserror = "2.0.12"
-variant_count = "1.1.0"
+variant_count = "1.2.0"
 
 [lints.rust]
 unsafe_code = "deny"
