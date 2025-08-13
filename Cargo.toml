@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-clap = { version = "4.5.42", features = ["derive"] }
+clap = { version = "4.5.45", features = ["derive"] }
 phf = { version = "0.12.1", features = ["macros"] }
 thiserror = "2.0.12"
 variant_count = "1.2.0"
